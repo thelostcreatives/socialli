@@ -6,7 +6,9 @@ import {
   AppConfig
 } from 'blockstack';
 
-const appConfig = new AppConfig()
+const appConfig = new AppConfig(
+  ["store_write", "publish_data"],
+)
 const userSession = new UserSession({ appConfig: appConfig })
 
 export default class App extends Component {
@@ -40,6 +42,7 @@ export default class App extends Component {
       userSession.handlePendingSignIn().then((userData) => {
         window.history.replaceState({}, document.title, "/")
         this.setState({ userData: userData})
+        userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false})
       });
     }
   }

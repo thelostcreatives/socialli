@@ -46,6 +46,11 @@ export default class Profile extends Component {
 
   componentWillMount() {
     const { userSession } = this.props;
+    userSession.getFile("/hello.json", {decrypt: false})
+      .then((fileContents) => {
+          // get the contents of the file /hello.txt
+          console.log(JSON.parse(fileContents));
+      });
     this.setState({
       person: new Person(userSession.loadUserData().profile),
     });
