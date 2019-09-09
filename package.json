@@ -1,7 +1,7 @@
 {
-  "name": "hello-blockstack",
+  "name": "anylist",
   "version": "0.0.0",
-  "description": "A simple Blockstack app using ReactJS",
+  "description": "Create shareable list about anything.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blockstack/hello-blockstack.git"
