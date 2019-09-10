@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Profile from './Profile.js';
 import Signin from './Signin.js';
 import {
@@ -11,39 +11,36 @@ const appConfig = new AppConfig(
 )
 const userSession = new UserSession({ appConfig: appConfig })
 
-export default class App extends Component {
+export default (props) => {
 
+    useEffect (() => {
+        if (userSession.isSignInPending()) {
+          userSession.handlePendingSignIn().then((userData) => {
+            window.history.replaceState({}, document.title, "/")
+            this.setState({ userData: userData})
+            userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false})
+          });
+        }
+    });
 
-  handleSignIn(e) {
-    e.preventDefault();
-    userSession.redirectToSignIn();
-  }
-
-  handleSignOut(e) {
-    e.preventDefault();
-    userSession.signUserOut(window.location.origin);
-  }
-
-  render() {
     return (
       <div className="site-wrapper">
         <div className="site-wrapper-inner">
           { !userSession.isUserSignedIn() ?
-            <Signin userSession={userSession} handleSignIn={ this.handleSignIn } />
-            : <Profile userSession={userSession} handleSignOut={ this.handleSignOut } />
+            <Signin userSession={userSession} handleSignIn={ handleSignIn } />
+            : <Profile userSession={userSession} handleSignOut={ handleSignOut } />
           }
         </div>
       </div>
     );
-  }
+}
 
-  componentDidMount() {
-    if (userSession.isSignInPending()) {
-      userSession.handlePendingSignIn().then((userData) => {
-        window.history.replaceState({}, document.title, "/")
-        this.setState({ userData: userData})
-        userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false})
-      });
-    }
-  }
+function handleSignIn(e) {
+    e.preventDefault();
+    userSession.redirectToSignIn();
+}
+
+function handleSignOut(e) {
+    e.preventDefault();
+    userSession.signUserOut(window.location.origin);
 }
