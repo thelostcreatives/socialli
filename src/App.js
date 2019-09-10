@@ -12,13 +12,14 @@ const appConfig = new AppConfig(
 const userSession = new UserSession({ appConfig: appConfig })
 
 export default (props) => {
+    const [userData, setUserData] = useState({});
 
     useEffect (() => {
         if (userSession.isSignInPending()) {
           userSession.handlePendingSignIn().then((userData) => {
             window.history.replaceState({}, document.title, "/")
-            this.setState({ userData: userData})
-            userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false})
+             setUserData(userData);
+            userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false});
           });
         }
     });
