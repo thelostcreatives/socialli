@@ -1,29 +1,46 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {
   Person,
 } from 'blockstack';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
-export default class Profile extends Component {
-  constructor(props) {
-  	super(props);
-
-  	this.state = {
-  	  person: {
-  	  	name() {
+export default (props) => {
+//  constructor(props) {
+//  	super(props);
+//
+//  	this.state = {
+//  	  person: {
+//  	  	name() {
+//          return 'Anonymous';
+//        },
+//  	  	avatarUrl() {
+//  	  	  return avatarFallbackImage;
+//  	  	},
+//  	  },
+//  	};
+//  }
+    const [person, setPerson] = useState({
+        name() {
           return 'Anonymous';
         },
-  	  	avatarUrl() {
-  	  	  return avatarFallbackImage;
-  	  	},
-  	  },
-  	};
-  }
+        avatarUrl() {
+          return avatarFallbackImage;
+        },
+    });
 
-  render() {
-    const { handleSignOut, userSession } = this.props;
-    const { person } = this.state;
+    const { handleSignOut, userSession } = props;
+    useEffect(() => {
+        const { userSession } = props;
+        userSession.getFile("/hello.json", {decrypt: false})
+          .then((fileContents) => {
+              // get the contents of the file /hello.txt
+              console.log(JSON.parse(fileContents));
+          });
+
+        setPerson(new Person(userSession.loadUserData().profile));
+    })
+    //const { person } = this.state;
     return (
       !userSession.isSignInPending() ?
       <div className="panel-welcome" id="section-2">
@@ -42,17 +59,4 @@ export default class Profile extends Component {
         </p>
       </div> : null
     );
-  }
-
-  componentWillMount() {
-    const { userSession } = this.props;
-    userSession.getFile("/hello.json", {decrypt: false})
-      .then((fileContents) => {
-          // get the contents of the file /hello.txt
-          console.log(JSON.parse(fileContents));
-      });
-    this.setState({
-      person: new Person(userSession.loadUserData().profile),
-    });
-  }
 }
