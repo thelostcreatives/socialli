@@ -38,3 +38,6 @@ jspm_packages
 
 # Custom
 .DS_Store
+
+# Ignore .swp files
+*.swp
