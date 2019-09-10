@@ -39,7 +39,7 @@ export default (props) => {
           });
 
         setPerson(new Person(userSession.loadUserData().profile));
-    })
+    },[])
     //const { person } = this.state;
     return (
       !userSession.isSignInPending() ?

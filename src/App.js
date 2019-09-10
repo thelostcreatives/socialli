@@ -22,7 +22,7 @@ export default (props) => {
             userSession.putFile("/hello.json", JSON.stringify({data: "test"}), {encrypt: false});
           });
         }
-    });
+    }, []);
 
     return (
       <div className="site-wrapper">
