@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import {
   Person,
 } from 'blockstack';
@@ -7,7 +8,7 @@ import { handleSignOut } from '../actions';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
-export default (props) => {
+const Profile =  (props) => {
 
     const [person, setPerson] = useState({
         name() {
@@ -18,7 +19,7 @@ export default (props) => {
         },
     });
 
-    const { userSession }  = props;
+    const { handleSignOut, userSession }  = props;
     useEffect(() => {
         const { userSession } = props;
         userSession.getFile("/hello.json", {decrypt: false})
@@ -31,7 +32,6 @@ export default (props) => {
     },[])
     //const { person } = this.state;
     return (
-      !userSession.isSignInPending() ?
       <div className="panel-welcome" id="section-2">
         <div className="avatar-section">
           <img src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage } className="img-rounded avatar" id="avatar-image" alt=""/>
@@ -46,6 +46,14 @@ export default (props) => {
             Logout
           </button>
         </p>
-      </div> : null
+      </div> 
     );
 }
+
+const mstp = state => {
+    return {
+        userSession: state.auth.userSession
+    }
+}
+
+export default connect(mstp, {handleSignOut})(Profile);

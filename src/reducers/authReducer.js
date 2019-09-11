@@ -3,9 +3,18 @@ import * as actions from '../actions';
 const initialState = {}
 
 const branchTable = {
-    // [action]: (state, action) => {return {...state}}
+    [actions.SIGNIN]: (state, action) => {
+        return {...state}
+    },
+    [actions.SIGNOUT]: (state, action) => {
+        return {...state}
+    },
+    [actions.STOREUSERSESSION]: (state, action) => {
+        return {...state, userSession: action.payload}
+    }
+
+
 }
 export default (state = initialState, action) => {
-    //return action.type in branchTable ? branchTable[action.type](state, action) : state;
-    return state;
+    return action.type in branchTable ? branchTable[action.type](state, action) : state;
 }

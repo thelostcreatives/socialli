@@ -8,7 +8,6 @@ import {
 import Profile from './components/Profile.js';
 import Signin from './components/Signin.js';
 
-
 import { storeUserSession} from './actions';
 
 const appConfig = new AppConfig(
@@ -16,26 +15,35 @@ const appConfig = new AppConfig(
 )
 const userSession = new UserSession({ appConfig: appConfig })
 
-export default (props) => {
+const App = (props) => {
     const [userData, setUserData] = useState({});
+
+    props.storeUserSession(userSession);
 
     useEffect (() => {
         if (userSession.isSignInPending()) {
-          userSession.handlePendingSignIn().then((userData) => {
-            window.history.replaceState({}, document.title, "/")
-            setUserData(userData);
-            storeUserSession(userSession);
-          });
-        }
-    }, []);
+            userSession.handlePendingSignIn().then((userData) => {
+                window.history.replaceState({}, document.title, "/")
+                setUserData(userData);
+            });
+        } 
+    }, [props.userSession]);
     return (
       <div className="site-wrapper">
         <div className="site-wrapper-inner">
           { !userSession.isUserSignedIn() ?
-            <Signin userSession={userSession}/>
-            : <Profile userSession={userSession}/>
+            <Signin/>
+            : <Profile/>
           }
         </div>
       </div>
     );
 }
+
+const mstp = state => {
+    return {
+        userSession: state.auth.userSession
+    }
+}
+
+export default connect(mstp, {storeUserSession})(App);

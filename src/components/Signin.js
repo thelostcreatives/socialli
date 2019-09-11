@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { handleSignIn } from '../actions';
 
-export default (props) => {
+const SignIn = (props) => {
 
     return (
       <div className="panel-landing" id="section-1">
@@ -10,7 +12,7 @@ export default (props) => {
           <button
             className="btn btn-primary btn-lg"
             id="signin-button"
-              onClick={ (e) => handleSignIn(e, props.userSession)}
+              onClick={ (e) => props.handleSignIn(e, props.userSession)}
           >
             Sign In with Blockstack
           </button>
@@ -18,3 +20,11 @@ export default (props) => {
       </div>
     );
 }
+
+const mstp = state => {
+    return {
+        userSession: state.auth.userSession
+    }
+}
+
+export default connect(mstp, {handleSignIn})(SignIn);
