@@ -3,23 +3,12 @@ import {
   Person,
 } from 'blockstack';
 
+import { handleSignOut } from '../actions';
+
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
 export default (props) => {
-//  constructor(props) {
-//  	super(props);
-//
-//  	this.state = {
-//  	  person: {
-//  	  	name() {
-//          return 'Anonymous';
-//        },
-//  	  	avatarUrl() {
-//  	  	  return avatarFallbackImage;
-//  	  	},
-//  	  },
-//  	};
-//  }
+
     const [person, setPerson] = useState({
         name() {
           return 'Anonymous';
@@ -29,7 +18,7 @@ export default (props) => {
         },
     });
 
-    const { handleSignOut, userSession } = props;
+    const { userSession }  = props;
     useEffect(() => {
         const { userSession } = props;
         userSession.getFile("/hello.json", {decrypt: false})
@@ -52,7 +41,7 @@ export default (props) => {
           <button
             className="btn btn-primary btn-lg"
             id="signout-button"
-            onClick={ handleSignOut.bind(this) }
+            onClick={ (e) => handleSignOut(e, userSession) }
           >
             Logout
           </button>
