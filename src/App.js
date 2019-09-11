@@ -5,8 +5,9 @@ import {
   AppConfig
 } from 'blockstack';
 
-import Profile from './components/Profile.js';
-import Signin from './components/Signin.js';
+import Main from './components/Main';
+import Profile from './components/Profile';
+import Signin from './components/Signin';
 
 import { storeUserSession} from './actions';
 
@@ -33,7 +34,7 @@ const App = (props) => {
         <div className="site-wrapper-inner">
           { !userSession.isUserSignedIn() ?
             <Signin/>
-            : <Profile/>
+            : <Main/>
           }
         </div>
       </div>
