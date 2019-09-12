@@ -5,10 +5,7 @@ import {
   AppConfig
 } from 'blockstack';
 
-import Main from './components/Main';
-import Profile from './components/Profile';
-import Signin from './components/Signin';
-
+import { Main, Signin } from './components';
 import { storeUserSession} from './actions';
 
 const appConfig = new AppConfig(

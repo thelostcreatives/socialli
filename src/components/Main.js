@@ -1,8 +1,8 @@
 import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
 
-import UserFeed from './UserFeed';
-import Profile from './Profile';
+import { UserFeed, Profile } from './index';
+
 const Main = (props) => {
     //nav || Feed || Bookmarks?
     return(
