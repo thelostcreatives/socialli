@@ -42,3 +42,6 @@ jspm_packages
 # Ignore .swp and .swo files
 *.swp
 *.swo
+
+#ignore notes.md
+notes.md
