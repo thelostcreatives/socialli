@@ -45,3 +45,6 @@ jspm_packages
 
 #ignore notes.md
 notes.md
+
+#ignore .env file
+.env
