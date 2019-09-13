@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "blockstack": "^19.2.5",
+    "radiks": "^0.3.0-beta.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.1",
