@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { configure, User, getConfig } from 'radiks';
 import {
   UserSession,
   AppConfig
@@ -11,7 +12,13 @@ import { storeUserSession} from './actions';
 const appConfig = new AppConfig(
   ["store_write", "publish_data"],
 )
+
 const userSession = new UserSession({ appConfig: appConfig })
+
+configure({
+    apiServer: 'http://localhost:5000/',
+    userSession
+})
 
 const App = (props) => {
     const [userData, setUserData] = useState({});
@@ -19,12 +26,16 @@ const App = (props) => {
     props.storeUserSession(userSession);
 
     useEffect (() => {
-        if (userSession.isSignInPending()) {
-            userSession.handlePendingSignIn().then((userData) => {
-                window.history.replaceState({}, document.title, "/")
-                setUserData(userData);
-            });
-        } 
+        const isSigninPending = async (userSession) => {
+            if (userSession.isSignInPending()) {
+                await userSession.handlePendingSignIn().then((userData) => {
+                    window.history.replaceState({}, document.title, "/")
+                    setUserData(userData);
+                });
+                await User.createWithCurrentUser();
+            } 
+        }
+        isSigninPending(userSession);
     }, [props.userSession]);
     return (
       <div className="site-wrapper">
