@@ -1,0 +1,13 @@
+{
+  "name": "anylist-radiks-server",
+  "version": "1.0.0",
+  "description": "radiks server for anylist",
+  "main": "index.js",
+  "author": "Xander Jake de los Santos || xanderjakeq",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "radiks-server": "^0.2.3"
+  }
+}
