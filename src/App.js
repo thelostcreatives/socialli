@@ -8,6 +8,7 @@ import {
 
 import { Main, Signin } from './components';
 import { storeUserSession} from './actions';
+import { List } from './models';
 
 const appConfig = new AppConfig(
   ["store_write", "publish_data"],
@@ -28,7 +29,7 @@ const App = (props) => {
     useEffect (() => {
         const isSigninPending = async (userSession) => {
             if (userSession.isSignInPending()) {
-                await userSession.handlePendingSignIn().then((userData) => {
+                await userSession.handlePendingSignIn().then( async (userData) => {
                     window.history.replaceState({}, document.title, "/")
                     setUserData(userData);
                 });
