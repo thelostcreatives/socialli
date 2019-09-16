@@ -1,14 +1,17 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Person,
 } from 'blockstack';
 
 import { handleSignOut } from '../actions';
+import { List } from '../models';
+
+import ListPreview from './ListPreview';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
-const Profile =  (props) => {
+const Profile = (props) => {
 
     const [person, setPerson] = useState({
         name() {
@@ -19,14 +22,17 @@ const Profile =  (props) => {
         },
     });
 
+    const [lists, setLists] = useState([]);
+
     const { handleSignOut, userSession }  = props;
     useEffect(() => {
         const { userSession } = props;
-        userSession.getFile("/hello.json", {decrypt: false})
-          .then((fileContents) => {
-              // get the contents of the file /hello.txt
-              console.log(JSON.parse(fileContents));
-          });
+
+        List.fetchOwnList().then(data => {
+            setLists(data);
+        }).catch(err => {
+            console.log(err)
+        });
 
         setPerson(new Person(userSession.loadUserData().profile));
     },[])
@@ -47,10 +53,13 @@ const Profile =  (props) => {
           </button>
         </p>
         <div>
-            <li>Authored List</li>
-            <li>Authored List</li>
-            <li>Authored List</li>
-            <li>Authored List</li>
+            <ul>
+            {
+                lists.map(list => {
+                    return <ListPreview list = { list }>{list.attrs.title}</ListPreview>
+                })
+            }
+            </ul>
         </div>
       </div> 
     );
