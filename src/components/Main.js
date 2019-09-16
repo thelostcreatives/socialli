@@ -19,7 +19,7 @@ const Main = (props) => {
                 <div id = "main">
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
-                        <Route path = "/profile" component = {Profile}/>
+                        <Route exact path = "/profile" component = {Profile}/>
                     </Switch>
                 </div>
                 <div id = "aside">
