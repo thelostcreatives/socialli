@@ -7,7 +7,7 @@ import {
 import { handleSignOut } from '../actions';
 import { List } from '../models';
 
-import ListPreview from './ListPreview';
+import ListPreview from './minor_comps/ListPreview';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
