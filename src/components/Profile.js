@@ -56,7 +56,7 @@ const Profile = (props) => {
             <ul>
             {
                 lists.map(list => {
-                    return <ListPreview list = { list }>{list.attrs.title}</ListPreview>
+                    return <ListPreview key = {list._id} list = { list }>{list.attrs.title}</ListPreview>
                 })
             }
             </ul>
