@@ -3,10 +3,11 @@ import { List } from '../models';
 export const CREATING_LIST = "CREATING_LIST";
 export const SET_ACTIVE_LIST = "SET_ACTIVE_LIST";
 
-export const createList = async (title, description) => {
+export const createList = async (title, description, posts_type) => {
 	const newList = new List({
 		title,
-		description
+		description,
+		posts_type
 	})
 
 	const listdata = await newList.save();
