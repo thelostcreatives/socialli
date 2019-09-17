@@ -18,10 +18,6 @@ export class List extends Model {
 export class Post extends Model {
     static className = "Post";
     static schema = {
-        title: {
-            tpye: String,
-            decrypted: true
-        },
         listId: {
             type: String,
             decrypted: true
