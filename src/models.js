@@ -10,7 +10,8 @@ export class List extends Model {
         description: {
             type: String,
             decrypted: true
-        }
+        },
+        listType: String
     }
 }
 
