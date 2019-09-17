@@ -2,7 +2,7 @@ import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { UserFeed, Profile, Button, NewListForm, ListPage } from './index';
+import { UserFeed, Profile, Button, NewListForm, NewPostForm, ListPage } from './index';
 
 const Main = (props) => {
     return(
@@ -19,7 +19,8 @@ const Main = (props) => {
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
                         <Route exact path = "/profile" component = {Profile}/>
-                        <Route path = "/profile/:id" component = {ListPage}/>
+                        <Route exact path = "/profile/:id" component = {ListPage}/>
+                        <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
                         <Route path = "/newList" component = {NewListForm}/>
                     </Switch>
                 </div>
