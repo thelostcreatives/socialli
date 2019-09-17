@@ -14,7 +14,7 @@ const ListPage = (props) => {
 		if (!props.listData){
 			getListData().then(data => {
 				props.setActiveList(data);
-			})
+			});
 		}
 	}, [props.listData])
 
