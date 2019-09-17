@@ -22,7 +22,6 @@ export function handleSignOut(e, userSession) {
 }
 
 export function storeUserSession(userSession) {
-    console.log("Redux logger should log");
     return {
         type: STOREUSERSESSION,
         payload: userSession
