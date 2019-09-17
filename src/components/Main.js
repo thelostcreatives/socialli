@@ -5,8 +5,6 @@ import styled from 'styled-components';
 import { UserFeed, Profile, Button, NewListForm } from './index';
 
 const Main = (props) => {
-    //nav || Feed || Bookmarks?
-    console.log(props)
     return(
         <Router>
             <MainWrapper>
@@ -14,14 +12,14 @@ const Main = (props) => {
                     <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
                     <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
                     <NavLink exact to = "/profile" activeStyle = { NavActiveStyle }>Profile</NavLink>
-                    <Route exact path = "/profile" component = { () => <Button text = "New List" onClick = {() => props.history.replace(`/newList`)}/> }/>
-                    <Route exact path = "/profile/:id" component = { () => <Button text = "New Post" onClick = {() => console.log("Works")}/> }/>
+                    <Route exact path = "/profile" component = { (props) => <Button text = "New List" onClick = { () => props.history.push("/newList")}/> }/>
+                    <Route exact path = "/profile/:id" component = { (props) => <Button text = "New Post" onClick = { () => props.history.push(`${props.match.url}/newPost`)} /> }/>
                 </nav>
                 <div id = "main">
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
                         <Route exact path = "/profile" component = {Profile}/>
-                        <Route exact path = "/newList" component = {NewListForm}/>
+                        <Route path = "/newList" component = {NewListForm}/>
                     </Switch>
                 </div>
                 <div id = "aside">
