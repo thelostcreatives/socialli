@@ -32,12 +32,12 @@ const App = (props) => {
                 await userSession.handlePendingSignIn().then( async (userData) => {
                     window.history.replaceState({}, document.title, "/")
                     setUserData(userData);
-                });
-                await User.createWithCurrentUser();
-            } 
+								});
+								await User.createWithCurrentUser();
+            }
         }
         isSigninPending(userSession);
-    }, [props.userSession]);
+    }, []);
     return (
       <div className="site-wrapper">
         <div className="site-wrapper-inner">
