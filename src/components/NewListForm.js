@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { createList } from '../actions';
 
 const posts_types = [
@@ -33,7 +33,7 @@ const NewListForm = (props) => {
 				}
 			</select>
 			<button onClick = { async () => {
-				const newList = await createList(title, description, posts_type);
+				const newList = await props.createList(title, description, posts_type);
 				props.history.push(`profile/${newList._id}`)
 			 } }>Create</button>
 		</div>
@@ -41,4 +41,10 @@ const NewListForm = (props) => {
 	
 }
 
-export default withRouter(NewListForm);
+const mstp = (state) => {
+    return {
+
+    }
+}
+
+export default connect(mstp, {createList})(NewListForm);

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { createPost, setActiveList } from '../actions';
@@ -34,7 +33,7 @@ const NewPostForm = (props) => {
 			<input name = "body" type = "text" placeholder = "Say something" value = {body} onChange = {handleInput}/>
 			
 			<button onClick = { async () => {
-				await createPost(props.listData._id, body);
+				await props.createPost(props.listData._id, body);
 				props.history.push(`/profile/${props.listData._id}`)
 			 } }>Post</button>
 		</div>
@@ -47,4 +46,4 @@ const mstp = (state) => {
 	}
 }
 
-export default withRouter(connect(mstp, {setActiveList})(NewPostForm));
+export default connect(mstp, {createPost, setActiveList})(NewPostForm);
