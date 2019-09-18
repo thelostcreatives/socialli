@@ -1,8 +1,10 @@
 import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import { setActiveList } from '../actions';
 import { List, Post } from '../models';
+import PostComp from './Post';
 
 const ListPage = (props) => {
 
@@ -32,16 +34,16 @@ const ListPage = (props) => {
 	}, [])
 
 	return (
-		<div>
+		<ListPageWrapper>
 			<p>{props.listData? props.listData.attrs.description : null}</p>
 			<ul>
 				{
 					posts.map(post => {
-						return <li key = {post._id}>{post.attrs.content}</li>
+                        return <PostComp key = {post._id} post = {post} />
 					})
 				}
 			</ul>
-		</div>
+		</ListPageWrapper>
 	)
 }
 
@@ -52,3 +54,13 @@ const mstp = (state) => {
 }
 
 export default connect(mstp, {setActiveList})(ListPage);
+
+const ListPageWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    
+`;
+
+
