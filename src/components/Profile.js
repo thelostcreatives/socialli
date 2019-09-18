@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import {
   Person,
 } from 'blockstack';
@@ -38,30 +39,25 @@ const Profile = (props) => {
     },[])
     //const { person } = this.state;
     return (
-      <div className="panel-welcome" id="section-2">
-        <div className="avatar-section">
-          <img src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage } className="img-rounded avatar" id="avatar-image" alt=""/>
-        </div>
-        <h1><span id="heading-name">{ person.name() ? person.name() : 'Nameless Person' }</span></h1>
-        <p className="lead">
-          <button
-            className="btn btn-primary btn-lg"
-            id="signout-button"
-            onClick={ (e) => handleSignOut(e, userSession) }
-          >
+      <ProfileWrapper>
+        <div >
+          <img src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage } id = "avatar-image" alt=""/>
+            <button
+                onClick={ (e) => handleSignOut(e, userSession) }
+              >
             Logout
           </button>
-        </p>
-        <div>
-            <ul>
+        </div>
+        <h1><span>{ person.name() ? person.name() : 'Nameless Person' }</span></h1>
+          
+        <Grid>
             {
                 lists.map(list => {
                     return <ListPreview key = {list._id} list = { list }>{list.attrs.title}</ListPreview>
                 })
             }
-            </ul>
-        </div>
-      </div> 
+        </Grid>
+      </ProfileWrapper> 
     );
 }
 
@@ -72,3 +68,24 @@ const mstp = state => {
 }
 
 export default connect(mstp, {handleSignOut})(Profile);
+
+const ProfileWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    #avatar-image {
+        width: 100px;
+        border-radius: 50%;
+    }
+`;
+
+const Grid = styled.div`
+   display: flex;
+   width: 100%;
+   flex-wrap: wrap;
+   justify-content: center;
+`
+
+
+
+
