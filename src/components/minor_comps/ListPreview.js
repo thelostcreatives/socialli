@@ -24,5 +24,20 @@ const mstp = (props) => {
 export default connect(mstp, {setActiveList})(ListPreview);
 
 const ListPreviewWrapper = styled.div`
-	background: blue;
+    width: 100px;
+    height: 50px;
+    word-break: break-word;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    
+    text-align: center;
+
+    background: grey;
+    margin: 10px;
+
+    &:hover {
+        color: white;
+    }
 `;
