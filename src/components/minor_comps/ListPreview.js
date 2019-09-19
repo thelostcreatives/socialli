@@ -7,11 +7,11 @@ import { setActiveList } from '../../actions';
 
 const ListPreview = (props) => {
 	return (
-		<Link to = { `profile/${props.list._id}` }>
+		<StyledLink to = { `profile/${props.list._id}` }>
 			<ListPreviewWrapper onClick = { () => props.setActiveList(props.list)} >
 				{ props.list.attrs.title }
 			</ListPreviewWrapper>
-		</Link>
+		</StyledLink>
 	);
 }
 
@@ -23,19 +23,28 @@ const mstp = (props) => {
 
 export default connect(mstp, {setActiveList})(ListPreview);
 
+const StyledLink = styled(Link)`
+    text-decoration: none;
+`;
+
 const ListPreviewWrapper = styled.div`
-    width: 100px;
-    height: 50px;
+    width: 344px;
+    height: 93px;
     word-break: break-word;
 
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     
     text-align: center;
 
-    background: grey;
+    background: #D6D6D6B3;
+    border-radius: 10px;
     margin: 10px;
+
+    font-size: 25px;
+    font-family: 'Work Sans', sans-serif;
+    text-decoration: none !important;
 
     &:hover {
         color: white;
