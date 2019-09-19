@@ -35,14 +35,15 @@ const ListPage = (props) => {
 
 	return (
 		<ListPageWrapper>
+			<h1>{props.listData? props.listData.attrs.title : null}</h1>
 			<p>{props.listData? props.listData.attrs.description : null}</p>
-			<ul>
+			<div>
 				{
 					posts.map(post => {
                         return <PostComp key = {post._id} post = {post} />
 					})
 				}
-			</ul>
+			</div>
 		</ListPageWrapper>
 	)
 }
