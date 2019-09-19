@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "radiks server for anylist",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "author": "Xander Jake de los Santos || xanderjakeq",
   "license": "MIT",
   "dependencies": {
