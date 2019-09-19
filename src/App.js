@@ -17,7 +17,7 @@ const appConfig = new AppConfig(
 const userSession = new UserSession({ appConfig: appConfig })
 
 configure({
-    apiServer: 'http://localhost:5000',
+    apiServer: process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : 'http://localhost:5000',
     userSession
 })
 
