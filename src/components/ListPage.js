@@ -25,7 +25,8 @@ const ListPage = (props) => {
 	useEffect (() => {
 		const getPosts = async () => {
 			const data = await Post.fetchList({
-				listId: props.listData ? props.listData._id : props.match.params.id
+				listId: props.listData ? props.listData._id : props.match.params.id,
+				sort: '-createdAt'
 			});
 			setPosts(data)
 		}
