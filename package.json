@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && cp cors/_redirects build && cp cors/_headers build",
     "test": "react-scripts build",
     "eject": "react-scripts eject"
   },
