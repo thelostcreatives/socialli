@@ -5,5 +5,6 @@ export { default as UserFeed } from './UserFeed';
 export { default as NewListForm} from './NewListForm';
 export { default as NewPostForm} from './NewPostForm';
 export { default as ListPage } from './ListPage';
+export { default as PostComp } from './Post';
 
 export * from './minor_comps';
