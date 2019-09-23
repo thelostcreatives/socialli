@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 
-import { Post } from '../models';
+import { getPosts } from '../actions';
 import { PostComp } from './index';
 
 const UserFeed = (props) => {
 
-    const [posts, setPosts] = useState([]);
-
     useEffect(() => {
-        Post.fetchList({
-            sort: '-createdAt'
-        }).then(posts => {
-            setPosts(posts);
-        })
+        props.getPosts(props.posts.length, 1)
     }, [])
+
     return (
         <div>
-            USER FEED HERE
             {
-                posts.map(post => {
-                    return <PostComp post={post} />;
+                props.posts.map(post => {
+                    return <PostComp key = {post._id} post={post} />;
                 })
             }
+            <button onClick = {() => props.getPosts(props.posts.length, 5)}>load more</button>
         </div>
     )
 }
 
-export default UserFeed;
+const mstp = (state) => {
+    return {
+        posts: state.posts.feedPosts
+    }
+}
+
+export default connect(mstp, {getPosts})(UserFeed);
