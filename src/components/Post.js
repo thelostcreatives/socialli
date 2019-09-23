@@ -14,7 +14,9 @@ const Post = (props) => {
             </div>
             */}
             <div id = "icons-container">
-                icons here
+                {
+                    props.post.attrs.content? "icons here" : null
+                }
             </div>
             <div id = "content">
                 {props.post.attrs.content}
@@ -30,10 +32,14 @@ const PostWrapper = styled.div`
     flex-direction: column;
     width: 500px;
 
-    margin: 0 0 10px;
-    padding: 5px;
+    padding: 10px;
 
-    border: 1px solid black;
+    border: 1px solid #707070;
+    border-bottom: none;
+    // border-radius: 10px;
+
+    font-size: 16px;
+    font-family: 'Work Sans', sans-serif;
 
     #options-bar {
         display: flex;
