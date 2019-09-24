@@ -6,8 +6,8 @@ export const SIGNIN= "SIGNIN";
 export const SIGNOUT = "SIGNOUT";
 export const STOREUSERSESSION = "STOREUSERSESSION";
 
-export const CREATING_CUSTOM_USER = "CREATING_CUSTOM_USER";
-export const CUSTOM_USER_CREATED = "CUSTOM_USER_CREATED";
+export const GETTING_CUSTOM_USER = "GETTING_CUSTOM_USER";
+export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
 //export auth methods below
 export function handleSignIn(e, userSession) {
@@ -33,17 +33,19 @@ export function storeUserSession(userSession) {
     }
 }
 
-export const createCustomUser = ({profile, username}) => async (dispatch) => {
+export const getCustomUser = ({profile, username}) => async (dispatch) => {
     dispatch({
-        type: CREATING_CUSTOM_USER
-    })
+        type: GETTING_CUSTOM_USER
+    });
+
     const exists = await AnyListUser.fetchList({
         username
-    })    
+    });
 
-    console.log(exists)
+    let user;
+
     if (exists.length > 0) {
-        console.log("user already exists")
+        user = exists[0];
     } else {
         const newuser = new AnyListUser({
             name: profile.name,
@@ -52,10 +54,11 @@ export const createCustomUser = ({profile, username}) => async (dispatch) => {
         });
 
         const res = await newuser.save();
-        
-        dispatch({
-            type: CUSTOM_USER_CREATED,
-            payload: newuser
-        })
+        user = res;
     }
+
+    dispatch({
+        type: CUSTOM_USER_FOUND,
+        payload: user
+    });
 }

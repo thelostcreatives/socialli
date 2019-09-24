@@ -11,8 +11,17 @@ const branchTable = {
     },
     [actions.STOREUSERSESSION]: (state, action) => {
         return {...state, userSession: action.payload}
+    },
+    [actions.GETTING_CUSTOM_USER]: (state, actions) => {
+        return {...state, findingUser: true}
+    },
+    [actions.CUSTOM_USER_FOUND]: (state, actions) => {
+        return {
+            ...state,
+            findingUser: false,
+            anylistUser: actions.payload
+        }
     }
-
 
 }
 export default (state = initialState, action) => {

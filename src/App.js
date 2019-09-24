@@ -7,7 +7,7 @@ import {
 } from 'blockstack';
 
 import { Main, Signin } from './components';
-import { storeUserSession, createCustomUser } from './actions';
+import { storeUserSession, getCustomUser } from './actions';
 import { List } from './models';
 
 const appConfig = new AppConfig(
@@ -36,7 +36,7 @@ const App = (props) => {
                     data = userData;
                 });
                 await User.createWithCurrentUser();
-                props.createCustomUser(data)
+                props.getCustomUser(data)
             }
         }
         isSigninPending(userSession);
@@ -59,4 +59,4 @@ const mstp = state => {
     }
 }
 
-export default connect(mstp, {storeUserSession, createCustomUser})(App);
+export default connect(mstp, {storeUserSession, getCustomUser})(App);
