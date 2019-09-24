@@ -1,9 +1,8 @@
 import { Model, User } from 'radiks';
 
-export class AnyListUser extends User {
+export class AnyListUser extends Model {
     static className = 'AnyListUser';
     static schema = {
-        ...User.schema,
         name: {
             type: String,
             decrypted: true

@@ -52,14 +52,10 @@ export const createCustomUser = ({profile, username}) => async (dispatch) => {
         });
 
         const res = await newuser.save();
-
-        console.log(newuser)
-        console.log(res)
+        
         dispatch({
             type: CUSTOM_USER_CREATED,
             payload: newuser
         })
     }
-
-    
 }

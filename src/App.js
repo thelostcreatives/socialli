@@ -34,8 +34,8 @@ const App = (props) => {
                     window.history.replaceState({}, document.title, "/")
                     setUserData(userData);
                     data = userData;
-								});
-								await User.createWithCurrentUser();
+                });
+                await User.createWithCurrentUser();
                 props.createCustomUser(data)
             }
         }
