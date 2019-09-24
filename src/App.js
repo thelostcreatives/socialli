@@ -7,7 +7,7 @@ import {
 } from 'blockstack';
 
 import { Main, Signin } from './components';
-import { storeUserSession} from './actions';
+import { storeUserSession, createCustomUser } from './actions';
 import { List } from './models';
 
 const appConfig = new AppConfig(
@@ -29,11 +29,14 @@ const App = (props) => {
     useEffect (() => {
         const isSigninPending = async (userSession) => {
             if (userSession.isSignInPending()) {
+                let data;
                 await userSession.handlePendingSignIn().then( async (userData) => {
                     window.history.replaceState({}, document.title, "/")
                     setUserData(userData);
+                    data = userData;
 								});
 								await User.createWithCurrentUser();
+                props.createCustomUser(data)
             }
         }
         isSigninPending(userSession);
@@ -56,4 +59,4 @@ const mstp = state => {
     }
 }
 
-export default connect(mstp, {storeUserSession})(App);
+export default connect(mstp, {storeUserSession, createCustomUser})(App);
