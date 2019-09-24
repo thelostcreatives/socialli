@@ -28,14 +28,17 @@ const App = (props) => {
 
     useEffect (() => {
         const isSigninPending = async (userSession) => {
+            let data;
             if (userSession.isSignInPending()) {
-                let data;
                 await userSession.handlePendingSignIn().then( async (userData) => {
                     window.history.replaceState({}, document.title, "/")
                     setUserData(userData);
                     data = userData;
                 });
                 await User.createWithCurrentUser();
+                props.getCustomUser(data)
+            } else if (userSession.isUserSignedIn()) {
+                data = userSession.loadUserData();
                 props.getCustomUser(data)
             }
         }
