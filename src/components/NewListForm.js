@@ -33,7 +33,7 @@ const NewListForm = (props) => {
 				}
 			</select>
 			<button onClick = { async () => {
-				const newList = await props.createList(title, description, posts_type);
+				const newList = await props.createList(title, description, props.author, posts_type);
 				props.history.push(`profile/${newList._id}`)
 			 } }>Create</button>
 		</div>
@@ -43,7 +43,7 @@ const NewListForm = (props) => {
 
 const mstp = (state) => {
     return {
-
+        author: state.auth.anylistUser.attrs.username
     }
 }
 
