@@ -19,7 +19,8 @@ const Main = (props) => {
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
                         <Route exact path = "/profile" component = {Profile}/>
-                        <Route exact path = "/profile/:id" component = {ListPage}/>
+                        <Route exact path = "/profile/:id" render = {(props) => <ListPage {...props} isOwned = {true} />}/>
+                        <Route path = "/list/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
                         <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
                         <Route path = "/newList" component = {NewListForm}/>
                     </Switch>
