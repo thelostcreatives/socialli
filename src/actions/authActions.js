@@ -1,8 +1,13 @@
+import  { AnyListUser } from '../models';
+
 import { ERROR } from './index';
 
 export const SIGNIN= "SIGNIN";
 export const SIGNOUT = "SIGNOUT";
 export const STOREUSERSESSION = "STOREUSERSESSION";
+
+export const CREATING_CUSTOM_USER = "CREATING_CUSTOM_USER";
+export const CUSTOM_USER_CREATED = "CUSTOM_USER_CREATED";
 
 //export auth methods below
 export function handleSignIn(e, userSession) {
@@ -26,4 +31,35 @@ export function storeUserSession(userSession) {
         type: STOREUSERSESSION,
         payload: userSession
     }
+}
+
+export const createCustomUser = ({profile, username}) => async (dispatch) => {
+    dispatch({
+        type: CREATING_CUSTOM_USER
+    })
+    const exists = await AnyListUser.fetchList({
+        username
+    })    
+
+    console.log(exists)
+    if (exists.length > 0) {
+        console.log("user already exists")
+    } else {
+        const newuser = new AnyListUser({
+            name: profile.name,
+            username,
+            description: profile.description
+        });
+
+        const res = await newuser.save();
+
+        console.log(newuser)
+        console.log(res)
+        dispatch({
+            type: CUSTOM_USER_CREATED,
+            payload: newuser
+        })
+    }
+
+    
 }
