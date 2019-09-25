@@ -13,9 +13,9 @@ const UserFeed = (props) => {
     return (
         <div>
             {
-                props.posts.map(post => {
+                props.followedLists.length > 0 ? props.posts.map(post => {
                     return <PostComp key = {post._id} post={post} />;
-                })
+                }) : null
             }
             <button onClick = {() => props.getFeedPosts(props.followedLists, props.posts.length, 5)}>load more</button>
         </div>
