@@ -40,8 +40,10 @@ export const followList = (anylistUser, listId) => async (dispatch) => {
         type: ADDING_LIST_TO_FOLLOWS
     });
 
+    const follows = [...anylistUser.attrs.followedLists, listId];
+
     anylistUser.update({
-        followedLists: [...anylistUser.attrs.followedLists, listId]
+        followedLists: follows.filter((v, i, s) => s.indexOf(v) === i)
     });
 
     const updatedUser = await anylistUser.save();
