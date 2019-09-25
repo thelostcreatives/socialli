@@ -28,7 +28,7 @@ const branchTable = {
             anylistUser: actions.payload
         }
     },
-    [actions.LIST_ADDED_TO_FOLLOWS]: (state, actions) => {
+    [actions.USER_UPDATED]: (state, actions) => {
         return {
             ...state,
             anylistUser: actions.payload
