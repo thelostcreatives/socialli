@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { setActiveList, followList } from '../actions';
+import { setActiveList, followList, unfollowList } from '../actions';
 import { List, Post } from '../models';
 import PostComp from './Post';
 
@@ -17,7 +17,6 @@ const ListPage = (props) => {
 		}
         //if (!props.listData){
 			getListData().then(data => {
-				console.log("should send active list")
 				props.setActiveList(data);
 			});
         //}
@@ -42,7 +41,7 @@ const ListPage = (props) => {
             {
 				props.listData.attrs.signingKeyId !== props.anylistUser.attrs.signingKeyId  && !props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.followList(props.anylistUser, props.match.params.id)}>Follow</button> 
 				:
-				props.followedLists.includes(props.match.params.id) ? <button onClick = {() => console.log("Unfollow")}>Unfollow</button>
+				props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.unfollowList(props.anylistUser, props.match.params.id)}>Unfollow</button>
 				: null
             }
 			<p>{props.listData? props.listData.attrs.description : null}</p>
@@ -65,7 +64,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {setActiveList, followList})(ListPage);
+export default connect(mstp, {setActiveList, followList, unfollowList})(ListPage);
 
 const ListPageWrapper = styled.div`
     display: flex;
