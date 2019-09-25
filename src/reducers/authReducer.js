@@ -27,6 +27,12 @@ const branchTable = {
             findingUser: false,
             anylistUser: actions.payload
         }
+    },
+    [actions.LIST_ADDED_TO_FOLLOWS]: (state, actions) => {
+        return {
+            ...state,
+            anylistUser: actions.payload
+        }
     }
 
 }
