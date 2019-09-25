@@ -17,6 +17,7 @@ const ListPage = (props) => {
 		}
         //if (!props.listData){
 			getListData().then(data => {
+				console.log("should send active list")
 				props.setActiveList(data);
 			});
         //}
@@ -37,9 +38,9 @@ const ListPage = (props) => {
 
 	return (
 		<ListPageWrapper>
-			<h1>{props.listData? props.listData.attrs.title : null}</h1>
+			<h1>{props.listData ? props.listData.attrs.title : null}</h1>
             {
-				!props.isOwned && !props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.followList(props.anylistUser, props.match.params.id)}>Follow</button> 
+				props.listData.attrs.signingKeyId !== props.anylistUser.attrs.signingKeyId  && !props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.followList(props.anylistUser, props.match.params.id)}>Follow</button> 
 				:
 				props.followedLists.includes(props.match.params.id) ? <button onClick = {() => console.log("Unfollow")}>Unfollow</button>
 				: null
