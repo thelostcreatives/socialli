@@ -9,6 +9,8 @@ export const STOREUSERSESSION = "STOREUSERSESSION";
 export const GETTING_CUSTOM_USER = "GETTING_CUSTOM_USER";
 export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
+export const USER_UPDATED = "USER_UPDATED";
+
 //export auth methods below
 export function handleSignIn(e, userSession) {
     e.preventDefault();
