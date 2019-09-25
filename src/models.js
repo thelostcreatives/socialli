@@ -1,4 +1,27 @@
-import { Model } from 'radiks';
+import { Model, User } from 'radiks';
+
+export class AnyListUser extends Model {
+    static className = 'AnyListUser';
+    static schema = {
+        name: {
+            type: String,
+            decrypted: true
+        },
+        username: {
+            type: String,
+            decrypted: true
+        },
+        description: {
+            type: String,
+            decrypted: true
+        },
+        followedLists: Array,
+    }
+
+    static defaults = {
+        followedLists: []
+    }
+}
 
 export class List extends Model {
     static className = 'List';
@@ -11,7 +34,11 @@ export class List extends Model {
             type: String,
             decrypted: true
         },
-        listType: String
+        listType: String,
+        author: {
+            type: String,
+            decrypted: true
+        }
     }
 }
 

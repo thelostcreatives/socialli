@@ -1,6 +1,12 @@
 import * as actions from '../actions';
 
-const initialState = {}
+const initialState = {
+    anylistUser: {
+        attrs: {
+            followedLists: []
+        }
+    }
+}
 
 const branchTable = {
     [actions.SIGNIN]: (state, action) => {
@@ -11,8 +17,23 @@ const branchTable = {
     },
     [actions.STOREUSERSESSION]: (state, action) => {
         return {...state, userSession: action.payload}
+    },
+    [actions.GETTING_CUSTOM_USER]: (state, actions) => {
+        return {...state, findingUser: true}
+    },
+    [actions.CUSTOM_USER_FOUND]: (state, actions) => {
+        return {
+            ...state,
+            findingUser: false,
+            anylistUser: actions.payload
+        }
+    },
+    [actions.USER_UPDATED]: (state, actions) => {
+        return {
+            ...state,
+            anylistUser: actions.payload
+        }
     }
-
 
 }
 export default (state = initialState, action) => {

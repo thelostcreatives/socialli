@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { getFeedPosts } from '../actions';
+import { getPosts } from '../actions';
 import { PostComp } from './index';
 
-const UserFeed = (props) => {
+const Explore = (props) => {
 
     useEffect(() => {
-        props.getFeedPosts(props.followedLists, props.posts.length, 1)
+        props.getPosts(props.posts.length, 1)
     }, [])
 
     return (
@@ -17,16 +17,16 @@ const UserFeed = (props) => {
                     return <PostComp key = {post._id} post={post} />;
                 })
             }
-            <button onClick = {() => props.getFeedPosts(props.followedLists, props.posts.length, 5)}>load more</button>
+            <button onClick = {() => props.getPosts(props.posts.length, 5)}>load more</button>
         </div>
     )
 }
 
 const mstp = (state) => {
     return {
-        posts: state.posts.feedPosts,
+        posts: state.posts.listPosts,
         followedLists: state.auth.anylistUser.attrs.followedLists
     }
 }
 
-export default connect(mstp, {getFeedPosts})(UserFeed);
+export default connect(mstp, {getPosts})(Explore);

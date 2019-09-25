@@ -2,7 +2,7 @@ import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { UserFeed, Profile, Button, NewListForm, NewPostForm, ListPage } from './index';
+import { UserFeed, Explore, Profile, Button, NewListForm, NewPostForm, ListPage } from './index';
 
 const Main = (props) => {
     return(
@@ -10,6 +10,7 @@ const Main = (props) => {
             <MainWrapper>
                 <nav id = "nav">
                     <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
+                    <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
                     <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
                     <NavLink exact to = "/profile" activeStyle = { NavActiveStyle }>Profile</NavLink>
                     <Route exact path = "/profile" component = { (props) => <Button text = "New List" onClick = { () => props.history.push("/newList")}/> }/>
@@ -18,8 +19,10 @@ const Main = (props) => {
                 <div id = "main">
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
+                        <Route exact path = "/explore" component = {Explore}/>
                         <Route exact path = "/profile" component = {Profile}/>
-                        <Route exact path = "/profile/:id" component = {ListPage}/>
+                        <Route exact path = "/profile/:id" render = {(props) => <ListPage {...props} isOwned = {true} />}/>
+                        <Route path = "/list/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
                         <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
                         <Route path = "/newList" component = {NewListForm}/>
                     </Switch>

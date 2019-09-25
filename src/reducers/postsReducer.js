@@ -2,7 +2,7 @@ import * as actions from '../actions';
 
 const initialState = {
 	feedPosts: [],
-	listPosts: {},
+	listPosts: [],
 	isGettingPosts: false
 }
 
@@ -13,11 +13,18 @@ const branchTable = {
 			isGettingPosts: true
 		}
 	},
-	[actions.RECEIVED_POSTS]: (state, action) => {
+	[actions.RECEIVED_FEED_POSTS]: (state, action) => {
 		return {
 			...state,
 			isGettingPosts: false,
 			feedPosts: [...state.feedPosts, ...action.payload]
+		}
+	},
+	[actions.RECEIVED_POSTS]: (state, action) => {
+		return {
+			...state,
+			isGettingPosts: false,
+			listPosts: [...state.listPosts, ...action.payload]
 		}
 	},
 }

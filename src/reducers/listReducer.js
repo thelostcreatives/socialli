@@ -1,6 +1,12 @@
 import * as actions from '../actions';
 
-const initialState = {}
+const initialState = {
+	activeList: {
+		attrs: {
+			signingKeyId: null
+		}
+	}
+}
 
 const branchTable = {
 	[actions.SET_ACTIVE_LIST]: (state, action) => {
