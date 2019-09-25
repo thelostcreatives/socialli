@@ -1,18 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Post = (props) => {
     return (
         <PostWrapper>
-            {/*<div id = "options-bar">
+            <div id = "options-bar">
                 <div>
-                    <h1>
-                        List Title
-                    </h1>
+                    <Link to = {`/list/${props.post.attrs.listId}`}>
+                        <h1>
+                            List Title
+                        </h1>
+                    </Link>
                 </div>
                 
             </div>
-            */}
+            
             <div id = "icons-container">
                 {
                     props.post.attrs.content? "icons here" : null
