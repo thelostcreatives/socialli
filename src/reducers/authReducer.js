@@ -1,6 +1,12 @@
 import * as actions from '../actions';
 
-const initialState = {}
+const initialState = {
+    anylistUser: {
+        attrs: {
+            followedLists: []
+        }
+    }
+}
 
 const branchTable = {
     [actions.SIGNIN]: (state, action) => {
