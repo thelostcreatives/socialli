@@ -3,14 +3,23 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const Post = (props) => {
+    const { post } = props;
+
+    const { listId, metadata, content } = post.attrs;
+    
+
     return (
         <PostWrapper>
             <div id = "options-bar">
                 <div>
-                    <Link to = {`/list/${props.post.attrs.listId}`}>
-                        <h1>
-                            List Title
-                        </h1>
+                    <Link to = {`/list/${listId}`}>
+                        <h4>
+                            {metadata ? metadata.listTitle : listId}
+                        </h4>
+                        
+                    </Link>
+                    <Link to = {`/`}>
+                        {metadata ? metadata.listAuthor : null}
                     </Link>
                 </div>
                 
@@ -18,11 +27,11 @@ const Post = (props) => {
             
             <div id = "icons-container">
                 {
-                    props.post.attrs.content? "icons here" : null
+                    content? "icons here" : null
                 }
             </div>
             <div id = "content">
-                {props.post.attrs.content}
+                {content}
             </div>
         </PostWrapper>
     )
