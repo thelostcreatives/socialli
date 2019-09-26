@@ -6,18 +6,20 @@ import { PostComp } from './index';
 
 const UserFeed = (props) => {
 
+    const { getFeedPosts, followedLists, posts } = props;
+
     useEffect(() => {
-        props.getFeedPosts(props.followedLists, props.posts.length, 1)
-    }, [])
+        getFeedPosts(followedLists, posts.length, 1);
+    }, [followedLists]);
 
     return (
         <div>
             {
-                props.followedLists.length > 0 ? props.posts.map(post => {
+                followedLists.length > 0 ? posts.map(post => {
                     return <PostComp key = {post._id} post={post} />;
                 }) : null
             }
-            <button onClick = {() => props.getFeedPosts(props.followedLists, props.posts.length, 5)}>load more</button>
+            <button onClick = {() => getFeedPosts(followedLists, posts.length, 5)}>load more</button>
         </div>
     )
 }
