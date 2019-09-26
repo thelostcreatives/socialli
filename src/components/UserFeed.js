@@ -9,7 +9,9 @@ const UserFeed = (props) => {
     const { getFeedPosts, followedLists, posts } = props;
 
     useEffect(() => {
-        getFeedPosts(followedLists, posts.length, 1);
+        if (posts.length === 0) {
+            getFeedPosts(followedLists, posts.length, 20);
+        }
     }, [followedLists]);
 
     return (
