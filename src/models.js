@@ -49,6 +49,10 @@ export class Post extends Model {
             type: String,
             decrypted: true
         },
+        metadata: {
+            type: Object,
+            decrypted: true
+        },
         content: {
             type: String,
             decrypted: true

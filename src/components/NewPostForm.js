@@ -5,20 +5,30 @@ import { createPost, setActiveList } from '../actions';
 import { List } from '../models';
 
 const NewPostForm = (props) => {
+	const { 
+		createPost,
+		setActiveList,
+		listData,
+		match,
+		history 
+	} = props;
+
+	const { author, title } = listData;
+
 	const [body, setBody] = useState("");
 	const [media, setMedia] = useState("");
 
 	useEffect (() => {
 		const getListData = async () => {
-			const data = await List.findById(`${props.match.params.id}`);
+			const data = await List.findById(`${match.params.id}`);
 			return data;
 		}
-		if (!props.listData){
+		if (listData._id !== match.params.id) {
 			getListData().then(data => {
-				props.setActiveList(data);
+				setActiveList(data);
 			});
 		}
-	}, [props.listData])
+	}, [listData])
 
 	const handleInput = (e) => {
 		const nameToSetter = {
@@ -28,21 +38,29 @@ const NewPostForm = (props) => {
 		nameToSetter[e.target.name](e.target.value);
 	}
 
+	const handlePost = async () => {
+		await createPost(
+			listData._id,
+			{
+				listAuthor: author,
+				listTitle: title
+			},
+			body
+		);
+		history.push(`/profile/${listData._id}`);
+	}
+
 	return (
 		<div>
 			<input name = "body" type = "text" placeholder = "Say something" value = {body} onChange = {handleInput}/>
-			
-			<button onClick = { async () => {
-				await props.createPost(props.listData._id, body);
-				props.history.push(`/profile/${props.listData._id}`)
-			 } }>Post</button>
+			<button onClick = {handlePost}>Post</button>
 		</div>
-	)
+	);
 }
 
 const mstp = (state) => {
 	return {
-		listData: state.lists.activeList
+		listData: state.lists.activeList.attrs
 	}
 }
 

@@ -9,13 +9,14 @@ export const RECEIVED_POSTS = "RECEIVED_POSTS";
 export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
 
-export const createPost = (listId, content) => async (dispatch) => {
+export const createPost = (listId, metadata, content) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
     });
 
 	const newPost = new Post({
 		listId,
+		metadata,
 		content
 	});
 
