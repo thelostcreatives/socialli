@@ -49,3 +49,5 @@ notes.md
 
 #ignore .env file
 .env
+
+.vscode
