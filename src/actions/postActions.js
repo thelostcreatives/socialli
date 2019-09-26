@@ -53,7 +53,7 @@ export const getPosts = (offset, limit, listId) => async (dispatch) => {
 	dispatch({
 		type: RECEIVED_POSTS,
 		payload: newPosts
-	})
+	});
 }
 
 export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) => {
@@ -61,15 +61,22 @@ export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) =
 		type: GETTING_FEED_POSTS 
 	}); 
 
-	const newPosts = await Post.fetchList({
-		offset,
-		limit,
-		listId: followedLists,
-		sort: '-createdAt'
-	});
+	if (followedLists.length > 0) {
+		const newPosts = await Post.fetchList({
+			offset,
+			limit,
+			listId: followedLists,
+			sort: '-createdAt'
+		});
 
-	dispatch({
-		type: RECEIVED_FEED_POSTS,
-		payload: newPosts
-	});
+		dispatch({
+			type: RECEIVED_FEED_POSTS,
+			payload: newPosts
+		});
+	} else {
+		dispatch({
+			type: RECEIVED_FEED_POSTS,
+			payload: []
+		});
+	}
 }
