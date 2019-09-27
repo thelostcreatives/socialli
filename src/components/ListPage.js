@@ -48,7 +48,7 @@ const ListPage = (props) => {
 			<div>
 				{
 					posts.map(post => {
-                        return <PostComp key = {post._id} post = {post} />
+                        return <PostComp key = {post._id} preview = {true} post = {post} />
 					})
 				}
 			</div>

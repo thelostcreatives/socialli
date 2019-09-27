@@ -1,15 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const Post = (props) => {
-    const { post } = props;
+    const { preview, post } = props;
 
     const { listId, metadata, content } = post.attrs;
     
 
     return (
-        <PostWrapper>
+        <PostWrapper preview = {preview}>
             <div id = "post-header">
                 <Link to = {`/list/${listId}`}>
                     <h4 className = "list-title">
@@ -79,6 +79,9 @@ const PostWrapper = styled.div`
         }
     }
 
-    
+    ${props => props.preview && css`
+        max-height: 150px;
+        overflow: hidden;
+    `}
 
 `;
