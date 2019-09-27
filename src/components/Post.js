@@ -10,19 +10,16 @@ const Post = (props) => {
 
     return (
         <PostWrapper>
-            <div id = "options-bar">
-                <div>
-                    <Link to = {`/list/${listId}`}>
-                        <h4>
-                            {metadata ? metadata.listTitle : listId}
-                        </h4>
-                        
-                    </Link>
-                    <Link to = {`/`}>
-                        {metadata ? metadata.listAuthor : null}
-                    </Link>
-                </div>
-                
+            <div id = "post-header">
+                <Link to = {`/list/${listId}`}>
+                    <h4 className = "list-title">
+                        {metadata ? metadata.listTitle : listId}
+                    </h4>
+                    
+                </Link>
+                <Link to = {`/${metadata.listAuthor}`} className = "author">
+                    {metadata ? `@${metadata.listAuthor}` : null}
+                </Link>
             </div>
             
             <div id = "icons-container">
@@ -48,7 +45,6 @@ const PostWrapper = styled.div`
 
     border: 1px solid #707070;
     border-bottom: none;
-    // border-radius: 10px;
 
     font-size: 16px;
     font-family: 'Work Sans', sans-serif;
@@ -68,4 +64,21 @@ const PostWrapper = styled.div`
         font-weight: 400;
         line-height: 1.38;
     }
+
+    #post-header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        
+        .list-title {
+            margin: 10px 0;
+        }
+        .author {
+            font-size: 13px;
+            margin-left: 10px;
+        }
+    }
+
+    
+
 `;
