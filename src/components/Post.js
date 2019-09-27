@@ -1,16 +1,17 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 const Post = (props) => {
-    const { preview, post } = props;
+    const { preview, post, history } = props;
 
     const { listId, metadata, content } = post.attrs;
     
+    console.log(props)
 
     return (
         <PostWrapper preview = {preview ? preview : true}>
-            <div id = "preview-overlay"/>
+            <div id = "preview-overlay" onClick = {() => history.push(`/post/${post._id}`)}/>
             <div id = "post-header">
                 <Link to = {`/list/${listId}`}>
                     <h4 className = "list-title">
@@ -35,7 +36,7 @@ const Post = (props) => {
     )
 }
 
-export default Post;
+export default withRouter(Post);
 
 const PostWrapper = styled.div`
     display: flex;
