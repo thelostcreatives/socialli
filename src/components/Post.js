@@ -9,7 +9,8 @@ const Post = (props) => {
     
 
     return (
-        <PostWrapper preview = {preview}>
+        <PostWrapper preview = {preview ? preview : true}>
+            <div id = "preview-overlay"/>
             <div id = "post-header">
                 <Link to = {`/list/${listId}`}>
                     <h4 className = "list-title">
@@ -17,7 +18,7 @@ const Post = (props) => {
                     </h4>
                     
                 </Link>
-                <Link to = {`/${metadata.listAuthor}`} className = "author">
+                <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author">
                     {metadata ? `@${metadata.listAuthor}` : null}
                 </Link>
             </div>
@@ -39,8 +40,9 @@ export default Post;
 const PostWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    width: 500px;
+    position: relative;
 
+    width: 500px;
     padding: 10px;
 
     border: 1px solid #707070;
@@ -79,9 +81,26 @@ const PostWrapper = styled.div`
         }
     }
 
+    #post-overlay {
+        display: none;
+    }
+
+
     ${props => props.preview && css`
         max-height: 150px;
         overflow: hidden;
-    `}
+        #preview-overlay {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            &:hover {
+                cursor: pointer;
+                background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,212,255,0) 100%);
+            }
+            width: 100%;
+            height: 100%;
 
+        }
+    `}
 `;
