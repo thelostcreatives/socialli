@@ -17,14 +17,14 @@ const branchTable = {
 		return {
 			...state,
 			isGettingPosts: false,
-			feedPosts: [...state.feedPosts, ...action.payload]
+			feedPosts: [...state.feedPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i)
 		}
 	},
 	[actions.RECEIVED_POSTS]: (state, action) => {
 		return {
 			...state,
 			isGettingPosts: false,
-			listPosts: [...state.listPosts, ...action.payload]
+			listPosts: [...state.listPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i)
 		}
 	},
 	[actions.SET_EXPANDED_POST]: (state, action) => {
