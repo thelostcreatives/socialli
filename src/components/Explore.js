@@ -14,7 +14,7 @@ const Explore = (props) => {
         <div>
             {
                 props.posts.map(post => {
-                    return <PostComp key = {post._id} post={post} />;
+                    return <PostComp key = {post._id} post={post} preview = {true}/>;
                 })
             }
             <button onClick = {() => props.getPosts(props.posts.length, 5)}>load more</button>
