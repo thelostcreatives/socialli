@@ -54,7 +54,7 @@ export class Post extends Model {
             decrypted: true
         },
         content: {
-            type: String,
+            type: Object,
             decrypted: true
         }
     }

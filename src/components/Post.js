@@ -1,17 +1,25 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { connect } from 'react-redux';
+
+import { setExpandedPost } from '../actions';
 
 const Post = (props) => {
-    const { preview, post, history } = props;
+    const { preview, post, history, expandedPost } = props;
 
-    const { listId, metadata, content } = post.attrs;
-    
-    console.log(props)
+    const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
+
+    // const editorContent = editorState.createWithContent(content);
+    const handlePreviewClick = () => {
+        props.setExpandedPost(post);
+        history.push(`/post/${post._id}`);
+    }
 
     return (
-        <PostWrapper preview = {preview ? preview : true}>
-            <div id = "preview-overlay" onClick = {() => history.push(`/post/${post._id}`)}/>
+        <PostWrapper preview = {preview}>
+            <div id = "preview-overlay" onClick = {handlePreviewClick}/>
             <div id = "post-header">
                 <Link to = {`/list/${listId}`}>
                     <h4 className = "list-title">
@@ -29,14 +37,31 @@ const Post = (props) => {
                     content? "icons here" : null
                 }
             </div>
-            <div id = "content">
-                {content}
-            </div>
+            {
+                typeof(content) === 'string' ? 
+                <div id = "content">
+                    {content}
+                </div> 
+                :
+                <Editor
+                    editorState = {EditorState.createWithContent(convertFromRaw(content))}
+                    readOnly = {true}
+                />
+            }
+            
         </PostWrapper>
     )
 }
 
-export default withRouter(Post);
+const mstp = (state) => {
+    return {
+        expandedPost: state.posts.expandedPost
+    }
+}
+
+export default withRouter(
+    connect(mstp, {setExpandedPost})(Post)
+);
 
 const PostWrapper = styled.div`
     display: flex;
@@ -46,8 +71,7 @@ const PostWrapper = styled.div`
     width: 500px;
     padding: 10px;
 
-    border: 1px solid #707070;
-    border-bottom: none;
+    border: none;
 
     font-size: 16px;
     font-family: 'Work Sans', sans-serif;
@@ -87,12 +111,15 @@ const PostWrapper = styled.div`
     }
 
 
-    ${props => props.preview && css`
+    ${props => props.preview === true && css`
         max-height: 150px;
         overflow: hidden;
+        border: 1px solid #707070;
+        border-bottom: none;
         #preview-overlay {
             display: block;
             position: absolute;
+            z-index: 11;
             top: 0;
             left: 0;
             &:hover {

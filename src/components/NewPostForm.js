@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
+import { Editor, EditorState, convertToRaw } from 'draft-js';
+import styled from 'styled-components';
 
 import { createPost, setActiveList } from '../actions';
 import { List } from '../models';
@@ -15,8 +17,15 @@ const NewPostForm = (props) => {
 
 	const { author, title } = listData;
 
-	const [body, setBody] = useState("");
 	const [media, setMedia] = useState("");
+
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+	const editor = useRef(null);
+
+	const focusEditor = () => {
+		editor.current.focus();
+	}
 
 	useEffect (() => {
 		const getListData = async () => {
@@ -28,15 +37,11 @@ const NewPostForm = (props) => {
 				setActiveList(data);
 			});
 		}
-	}, [listData])
+	}, [listData]);
 
-	const handleInput = (e) => {
-		const nameToSetter = {
-			body: setBody,
-			media:	setMedia 
-		}
-		nameToSetter[e.target.name](e.target.value);
-	}
+	useEffect (() => {
+		focusEditor();
+	}, []);
 
 	const handlePost = async () => {
 		await createPost(
@@ -45,16 +50,24 @@ const NewPostForm = (props) => {
 				listAuthor: author,
 				listTitle: title
 			},
-			body
+			convertToRaw(editorState.getCurrentContent())
 		);
 		history.push(`/profile/${listData._id}`);
 	}
 
 	return (
-		<div>
-			<input name = "body" type = "text" placeholder = "Say something" value = {body} onChange = {handleInput}/>
+		<NewPostFormWrapper onClick = {focusEditor}>
+			<Editor
+				ref = {editor}
+				editorState = {editorState}
+				onChange = {editorState => setEditorState(editorState)}
+				placeholder = {"Share your story..."}
+			/>
 			<button onClick = {handlePost}>Post</button>
-		</div>
+		</NewPostFormWrapper>
+		// <div>
+		// 	<input name = "body" type = "text" placeholder = "Say something" value = {body} onChange = {handleInput}/>
+		// </div>
 	);
 }
 
@@ -65,3 +78,7 @@ const mstp = (state) => {
 }
 
 export default connect(mstp, {createPost, setActiveList})(NewPostForm);
+
+const NewPostFormWrapper = styled.div`
+    font-family: 'Work Sans', sans-serif;
+`;
