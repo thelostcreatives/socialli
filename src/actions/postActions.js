@@ -9,6 +9,8 @@ export const RECEIVED_POSTS = "RECEIVED_POSTS";
 export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
 
+export const SET_EXPANDED_POST = "SET_EXPANDED_POST";
+
 export const createPost = (listId, metadata, content) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
@@ -79,5 +81,12 @@ export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) =
 			type: RECEIVED_FEED_POSTS,
 			payload: []
 		});
+	}
+}
+
+export const setExpandedPost = (post) => {
+	return {
+		type: SET_EXPANDED_POST,
+		payload: post
 	}
 }

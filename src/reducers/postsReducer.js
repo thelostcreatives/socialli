@@ -27,6 +27,12 @@ const branchTable = {
 			listPosts: [...state.listPosts, ...action.payload]
 		}
 	},
+	[actions.SET_EXPANDED_POST]: (state, action) => {
+		return {
+			...state,
+			expandedPost: action.payload
+		}
+	}
 }
 
 export default (state = initialState, action) => {
