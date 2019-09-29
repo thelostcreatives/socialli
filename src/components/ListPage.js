@@ -1,57 +1,60 @@
 import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroller';
 
-import { setActiveList, followList, unfollowList } from '../actions';
-import { List, Post } from '../models';
+import { setActiveList, followList, unfollowList, getPosts } from '../actions';
+import { List } from '../models';
 import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const [posts, setPosts] = useState([]);
+	const { hasMore, listPosts, getPosts, setActiveList, unfollowList, match, listData, anylistUser, followedLists} = props;
+
+	const posts = listPosts[match.params.id] ? listPosts[match.params.id] : [];
 
 	useEffect (() => {
 		const getListData = async () => {
-			const data = await List.findById(`${props.match.params.id}`);
+			const data = await List.findById(`${match.params.id}`);
 			return data;
 		}
-        //if (!props.listData){
-			getListData().then(data => {
-				props.setActiveList(data);
-			});
-        //}
+		getListData().then(data => {
+			setActiveList(data);
+		});
 	}, [])
 
 	useEffect (() => {
-		const getPosts = async () => {
-			const data = await Post.fetchList({
-                //listId: props.listData ? props.listData._id : props.match.params.id,
-				listId: props.match.params.id,
-				sort: '-createdAt'
-			});
-			setPosts(data)
+		if (posts.length === 0) {
+			getPosts(posts.length, 5, match.params.id);
 		}
-
-		getPosts();
 	}, [])
+
+	const loadMore = () => {
+		getPosts(posts.length, 5, match.params.id);
+	}
 
 	return (
 		<ListPageWrapper>
-			<h1>{props.listData ? props.listData.attrs.title : null}</h1>
+			<h1>{listData ? listData.attrs.title : null}</h1>
             {
-				props.listData.attrs.signingKeyId !== props.anylistUser.attrs.signingKeyId  && !props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.followList(props.anylistUser, props.match.params.id)}>Follow</button> 
+				listData.attrs.signingKeyId !== anylistUser.attrs.signingKeyId  && !followedLists.includes(match.params.id) ? <button onClick = {() => followList(anylistUser, match.params.id)}>Follow</button> 
 				:
-				props.followedLists.includes(props.match.params.id) ? <button onClick = {() => props.unfollowList(props.anylistUser, props.match.params.id)}>Unfollow</button>
+				followedLists.includes(match.params.id) ? <button onClick = {() => unfollowList(anylistUser, match.params.id)}>Unfollow</button>
 				: null
             }
-			<p>{props.listData? props.listData.attrs.description : null}</p>
-			<div>
+			<p>{listData? listData.attrs.description : null}</p>
+			<InfiniteScroll
+				pageStart = {0}
+				loadMore = {loadMore}
+				hasMore = {hasMore}
+				loader = {<div className="loader" key={0}>Loading ...</div>}
+			>
 				{
 					posts.map(post => {
-                        return <PostComp key = {post._id} post = {post} />
+                        return <PostComp key = {post._id} preview = {true} post = {post} />
 					})
 				}
-			</div>
+			</InfiniteScroll>
 		</ListPageWrapper>
 	)
 }
@@ -60,11 +63,13 @@ const mstp = (state) => {
 	return {
         listData: state.lists.activeList,
         anylistUser: state.auth.anylistUser,
-        followedLists: state.auth.anylistUser.attrs.followedLists
+		followedLists: state.auth.anylistUser.attrs.followedLists,
+		listPosts: state.posts.lists,
+		hasMore: state.posts.listHasMore
 	}
 }
 
-export default connect(mstp, {setActiveList, followList, unfollowList})(ListPage);
+export default connect(mstp, {setActiveList, followList, unfollowList, getPosts})(ListPage);
 
 const ListPageWrapper = styled.div`
     display: flex;

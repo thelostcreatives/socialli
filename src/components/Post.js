@@ -1,45 +1,104 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
+import { Link, withRouter } from 'react-router-dom';
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { connect } from 'react-redux';
+import { Link2 } from 'react-feather';
+import ClipBoard from 'clipboard';
+import Tippy from '@tippy.js/react';
+import 'tippy.js/dist/tippy.css';
+
+import { setExpandedPost } from '../actions';
+import { Post as PostModel} from '../models';
 
 const Post = (props) => {
+
+    const { preview, post, match, history, expandedPost, setExpandedPost } = props;
+    
+    const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
+
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+
+    new ClipBoard('.postLink');
+
+    useEffect (() => {
+        if (!preview) {
+            if (!expandedPost.attrs._id) {
+                PostModel.findById(match.params.id).then(post => {
+                    setExpandedPost(post)
+                })
+            } else {
+                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)))
+            }
+        }
+    }, [expandedPost])
+
+    const handlePreviewClick = () => {
+        if (window.getSelection().toString().length === 0) {
+            props.setExpandedPost(post);
+            history.push(`/post/${post._id}`);
+        }
+    }
+
+    const stopPropagation = (e) => e.stopPropagation();
+
     return (
-        <PostWrapper>
-            <div id = "options-bar">
-                <div>
-                    <Link to = {`/list/${props.post.attrs.listId}`}>
-                        <h1>
-                            List Title
-                        </h1>
-                    </Link>
-                </div>
-                
+        <PostWrapper preview = {preview} onClick = {preview ? handlePreviewClick : null}>
+            <div id = "post-header">
+                <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
+                    <h4 className = "list-title">
+                        {metadata ? metadata.listTitle : listId}
+                    </h4>
+                </Link>
+                <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
+                    {metadata ? `@${metadata.listAuthor}` : null}
+                </Link>
             </div>
             
-            <div id = "icons-container">
-                {
-                    props.post.attrs.content? "icons here" : null
-                }
-            </div>
-            <div id = "content">
-                {props.post.attrs.content}
-            </div>
+            {
+                typeof(content) === 'string' ? 
+                <div id = "content">
+                    {content}
+                </div> 
+                :
+                <Editor
+                    editorState = {editorState}
+                    readOnly = {true}
+                />
+            }
+            {preview ? null :
+                <div id = "icons-container">
+                    <Tippy content = "copied link" trigger = "click">
+                        <div>
+                            <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
+                        </div>
+                    </Tippy>
+                </div>
+            }
+            
         </PostWrapper>
     )
 }
 
-export default Post;
+const mstp = (state) => {
+    return {
+        expandedPost: state.posts.expandedPost
+    }
+}
+
+export default withRouter(
+    connect(mstp, {setExpandedPost})(Post)
+);
 
 const PostWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    width: 500px;
+    position: relative;
 
+    width: 500px;
     padding: 10px;
 
-    border: 1px solid #707070;
-    border-bottom: none;
-    // border-radius: 10px;
+    border: none;
 
     font-size: 16px;
     font-family: 'Work Sans', sans-serif;
@@ -59,4 +118,51 @@ const PostWrapper = styled.div`
         font-weight: 400;
         line-height: 1.38;
     }
+
+    #post-header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        
+        .list-title {
+            margin: 10px 0;
+        }
+        .author {
+            font-size: 13px;
+            margin-left: 10px;
+        }
+    }
+
+    .postLink {
+        color: grey;
+        &:hover {
+            color: black;
+            cursor: pointer;
+        }
+    }
+
+    ${props => props.preview === true && css`
+        max-height: 150px;
+        overflow: hidden;
+        margin: 20px 0;
+        #preview-overlay {
+            display: block;
+            position: absolute;
+            z-index: 11;
+            top: 0;
+            left: 0;
+            &:hover {
+                cursor: pointer;
+                background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,212,255,0) 100%);
+            }
+            width: 100%;
+            height: 100%;
+
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: #f7f7f7;
+        }
+    `}
 `;

@@ -2,7 +2,7 @@ import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { UserFeed, Explore, Profile, Button, NewListForm, NewPostForm, ListPage } from './index';
+import { UserFeed, Explore, Profile, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
 
 const Main = (props) => {
     return(
@@ -25,6 +25,7 @@ const Main = (props) => {
                         <Route path = "/list/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
                         <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
                         <Route path = "/newList" component = {NewListForm}/>
+                        <Route path = "/post/:id" render = {(props) => <PostComp {...props} preview = {false}/>}/>
                     </Switch>
                 </div>
                 <div id = "aside">
@@ -63,6 +64,8 @@ const MainWrapper = styled.div`
     }
     #main {
         grid-area: main;
+        display: flex;
+        justify-content: center;
     }
     #aside {
         grid-area: side;
