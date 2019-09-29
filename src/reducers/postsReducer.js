@@ -25,18 +25,42 @@ const branchTable = {
 		if (action.payload.length === 0) {
 			hasMore = false;
 		}
+
+
+		const hash = {};
 		return {
 			...state,
 			isGettingPosts: false,
-			feedPosts: [...state.feedPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i),
+			feedPosts: [...state.feedPosts, ...action.payload].filter((v, i, s) => {
+				if (!Object.keys(hash).includes(v._id)){
+					hash[v._id] = 0;
+					return true;
+				} else {
+					return false;
+				}
+			}),
 			feedHasMore: hasMore
 		}
 	},
 	[actions.RECEIVED_POSTS]: (state, action) => {
+		let hasMore = true;
+		if (action.payload.length === 0) {
+			hasMore = false;
+		}
+
+		const hash = {};
 		return {
 			...state,
 			isGettingPosts: false,
-			listPosts: [...state.listPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i)
+			listPosts: [...state.listPosts, ...action.payload].filter((v, i, s) => {
+				if (!Object.keys(hash).includes(v._id)){
+					hash[v._id] = 0;
+					return true;
+				} else {
+					return false;
+				}
+			}),
+			hasMore
 		}
 	},
 	[actions.SET_EXPANDED_POST]: (state, action) => {
