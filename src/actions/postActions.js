@@ -5,6 +5,7 @@ export const POST_CREATED = "POST_CREATED";
 
 export const GETTING_POSTS = "GETTING_POSTS";
 export const RECEIVED_POSTS = "RECEIVED_POSTS";
+export const RECEIVED_LIST_POSTS = "RECEIVED_LIST_POSTS";
 
 export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
@@ -45,18 +46,22 @@ export const getPosts = (offset, limit, listId) => async (dispatch) => {
 			listId,
 			sort: '-createdAt'
 		});
+		dispatch({
+			type: RECEIVED_LIST_POSTS,
+			payload: newPosts,
+			listId
+		});
 	} else {
 		newPosts = await Post.fetchList({
 			offset,
 			limit,
 			sort: '-createdAt'
 		});
+		dispatch({
+			type: RECEIVED_POSTS,
+			payload: newPosts
+		});
 	}
-
-	dispatch({
-		type: RECEIVED_POSTS,
-		payload: newPosts
-	});
 }
 
 export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) => {
