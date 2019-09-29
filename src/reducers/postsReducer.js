@@ -4,6 +4,7 @@ import * as actions from '../actions';
 const initialState = {
 	feedPosts: [],
 	listPosts: [],
+	lists: {},
 	isGettingPosts: false,
 	expandedPost: {
 		attrs: {
@@ -61,6 +62,34 @@ const branchTable = {
 				}
 			}),
 			hasMore
+		}
+	},
+	[actions.RECEIVED_LIST_POSTS]: (state, action) => {
+		let hasMore = true;
+		if (action.payload.length === 0) {
+			hasMore = false;
+		}
+
+		const hash = {};
+
+		if (!state.lists[action.listId]) {
+			state.lists[action.listId] = [];
+		}
+		return {
+			...state,
+			isGettingPosts: false,
+			lists: {
+				...state.lists, 
+				[action.listId]: [...state.lists[action.listId], ...action.payload].filter((v, i, s) => {
+					if (!Object.keys(hash).includes(v._id)){
+						hash[v._id] = 0;
+						return true;
+					} else {
+						return false;
+					}
+				})
+			},
+			listHasMore: hasMore
 		}
 	},
 	[actions.SET_EXPANDED_POST]: (state, action) => {
