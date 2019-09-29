@@ -3,6 +3,10 @@ import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import { connect } from 'react-redux';
+import { Link2 } from 'react-feather';
+import ClipBoard from 'clipboard';
+import Tippy from '@tippy.js/react';
+import 'tippy.js/dist/tippy.css';
 
 import { setExpandedPost } from '../actions';
 import { Post as PostModel} from '../models';
@@ -14,6 +18,8 @@ const Post = (props) => {
     const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+
+    new ClipBoard('.postLink');
 
     useEffect (() => {
         if (!preview) {
@@ -49,11 +55,6 @@ const Post = (props) => {
                 </Link>
             </div>
             
-            <div id = "icons-container">
-                {
-                    content? "icons here" : null
-                }
-            </div>
             {
                 typeof(content) === 'string' ? 
                 <div id = "content">
@@ -64,6 +65,15 @@ const Post = (props) => {
                     editorState = {editorState}
                     readOnly = {true}
                 />
+            }
+            {preview ? null :
+                <div id = "icons-container">
+                    <Tippy content = "copied link" trigger = "click">
+                        <div>
+                            <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
+                        </div>
+                    </Tippy>
+                </div>
             }
             
         </PostWrapper>
@@ -123,8 +133,12 @@ const PostWrapper = styled.div`
         }
     }
 
-    #post-overlay {
-        display: none;
+    .postLink {
+        color: grey;
+        &:hover {
+            color: black;
+            cursor: pointer;
+        }
     }
 
     ${props => props.preview === true && css`
