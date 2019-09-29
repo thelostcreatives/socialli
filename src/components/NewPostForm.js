@@ -129,7 +129,10 @@ const OptionsBar = styled.div`
 	}
 `;
 
-const Button = styled.div`
+const Button = styled.button`
+	border: 1px solid ${props => props.bgColor ? props.bgColor : "#599bb3"};
+	margin: 5px;
+	outline: none;
 	background-color: ${props => props.bgColor ? props.bgColor : "#599bb3"} ;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -151,5 +154,8 @@ const Button = styled.div`
 	&:active {
 		position: relative;
 		top: 1px;
+	}
+	&:focus {
+		border-color: black;
 	}
 `;
