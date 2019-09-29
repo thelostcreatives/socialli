@@ -63,11 +63,10 @@ const NewPostForm = (props) => {
 				onChange = {editorState => setEditorState(editorState)}
 				placeholder = {"Share your story..."}
 			/>
-			<button onClick = {handlePost}>Post</button>
+			<OptionsBar>
+				<Button onClick = {handlePost}>Post</Button>
+			</OptionsBar>
 		</NewPostFormWrapper>
-		// <div>
-		// 	<input name = "body" type = "text" placeholder = "Say something" value = {body} onChange = {handleInput}/>
-		// </div>
 	);
 }
 
@@ -80,5 +79,49 @@ const mstp = (state) => {
 export default connect(mstp, {createPost, setActiveList})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
-    font-family: 'Work Sans', sans-serif;
+	font-family: 'Work Sans', sans-serif;
+	
+	width: 500px;
+	-webkit-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
+	-moz-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
+	box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
+
+	padding: 10px;
+	border-radius: 10px;
+	.DraftEditor-root{
+		min-height: 100px;
+	}
+	
+	
+
+`;
+
+const OptionsBar = styled.div`
+	display: flex;
+	justify-content: flex-end;
+`;
+
+const Button = styled.div`
+	background-color: #599bb3;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 5px;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+
+	-webkit-font-smoothing: antialiased;
+	font-size: 12px;
+	line-height: 22px;
+	letter-spacing: 1px;
+	font-weight: medium;
+	padding: 0px 16px;
+	text-decoration: none;
+	&:hover {
+		background-color: #408c99;
+	}
+	&:active {
+		position: relative;
+		top: 1px;
+	}
 `;
