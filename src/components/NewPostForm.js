@@ -46,15 +46,20 @@ const NewPostForm = (props) => {
 	}, []);
 
 	const handlePost = async () => {
-		await createPost(
-			listData._id,
-			{
-				listAuthor: author,
-				listTitle: title
-			},
-			convertToRaw(editorState.getCurrentContent())
-		);
-		history.push(`/profile/${listData._id}`);
+		const contentState = editorState.getCurrentContent(); 
+		if (contentState.hasText()) {
+			await createPost(
+				listData._id,
+				{
+					listAuthor: author,
+					listTitle: title
+				},
+				convertToRaw()
+			);
+			history.push(`/profile/${listData._id}`);
+		} else {
+			console.log("Tell us stories meyn");
+		}
 	}
 
 	const toggleEmojiPicker = () => {
