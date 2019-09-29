@@ -1,19 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import { connect } from 'react-redux';
 
 import { setExpandedPost } from '../actions';
+import { Post as PostModel} from '../models';
 
 const Post = (props) => {
-    const { preview, post, history, expandedPost } = props;
 
+    const { preview, post, match, history, expandedPost, setExpandedPost } = props;
+    
     const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
 
-    const [editorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 
-    // const editorContent = editorState.createWithContent(content);
+    useEffect (() => {
+        if (!preview) {
+            if (!expandedPost.attrs._id) {
+                PostModel.findById(match.params.id).then(post => {
+                    setExpandedPost(post)
+                })
+            } else {
+                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)))
+            }
+        }
+    }, [expandedPost])
+
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
             props.setExpandedPost(post);
@@ -25,13 +38,11 @@ const Post = (props) => {
 
     return (
         <PostWrapper preview = {preview} onClick = {preview ? handlePreviewClick : null}>
-            {/* <div id = "preview-overlay" onClick = {handlePreviewClick}/> */}
             <div id = "post-header">
                 <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
                     <h4 className = "list-title">
                         {metadata ? metadata.listTitle : listId}
                     </h4>
-                    
                 </Link>
                 <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
                     {metadata ? `@${metadata.listAuthor}` : null}
@@ -49,13 +60,10 @@ const Post = (props) => {
                     {content}
                 </div> 
                 :
-                <div >
-                    <Editor
-                        editorState = {editorState}
-                        readOnly = {true}
-                    />
-                </div>
-                
+                <Editor
+                    editorState = {editorState}
+                    readOnly = {true}
+                />
             }
             
         </PostWrapper>
@@ -118,7 +126,6 @@ const PostWrapper = styled.div`
     #post-overlay {
         display: none;
     }
-
 
     ${props => props.preview === true && css`
         max-height: 150px;
