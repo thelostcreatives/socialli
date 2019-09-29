@@ -54,7 +54,7 @@ const NewPostForm = (props) => {
 					listAuthor: author,
 					listTitle: title
 				},
-				convertToRaw()
+				convertToRaw(contentState)
 			);
 			history.push(`/profile/${listData._id}`);
 		} else {
