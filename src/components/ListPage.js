@@ -2,37 +2,30 @@ import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { setActiveList, followList, unfollowList } from '../actions';
-import { List, Post } from '../models';
+import { setActiveList, followList, unfollowList, getPosts } from '../actions';
+import { List } from '../models';
 import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const [posts, setPosts] = useState([]);
+	const { listPosts } = props;
+
+	const posts = listPosts[props.match.params.id] ? listPosts[props.match.params.id] : [];
 
 	useEffect (() => {
 		const getListData = async () => {
 			const data = await List.findById(`${props.match.params.id}`);
 			return data;
 		}
-        //if (!props.listData){
-			getListData().then(data => {
-				props.setActiveList(data);
-			});
-        //}
+		getListData().then(data => {
+			props.setActiveList(data);
+		});
 	}, [])
 
 	useEffect (() => {
-		const getPosts = async () => {
-			const data = await Post.fetchList({
-                //listId: props.listData ? props.listData._id : props.match.params.id,
-				listId: props.match.params.id,
-				sort: '-createdAt'
-			});
-			setPosts(data)
+		if (posts.length === 0) {
+			props.getPosts(posts.length, 5, props.match.params.id);
 		}
-
-		getPosts();
 	}, [])
 
 	return (
@@ -60,11 +53,12 @@ const mstp = (state) => {
 	return {
         listData: state.lists.activeList,
         anylistUser: state.auth.anylistUser,
-        followedLists: state.auth.anylistUser.attrs.followedLists
+		followedLists: state.auth.anylistUser.attrs.followedLists,
+		listPosts: state.posts.lists
 	}
 }
 
-export default connect(mstp, {setActiveList, followList, unfollowList})(ListPage);
+export default connect(mstp, {setActiveList, followList, unfollowList, getPosts})(ListPage);
 
 const ListPageWrapper = styled.div`
     display: flex;
