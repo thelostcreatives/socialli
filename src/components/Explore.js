@@ -1,31 +1,45 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { getPosts } from '../actions';
 import { PostComp } from './index';
 
 const Explore = (props) => {
 
+    const { getPosts, posts, hasMore } = props;
+
     useEffect(() => {
-        props.getPosts(props.posts.length, 1)
+        if (posts.length === 0) {
+            getPosts(props.posts.length, 5)
+        }
     }, [])
 
+    const loadMore = () => {
+        getPosts(props.posts.length, 5);
+    }
+
     return (
-        <div>
+        <InfiniteScroll
+            pageStart = {0}
+            loadMore = {loadMore}
+            hasMore = {hasMore}
+            loader = {<div className="loader" key={0}>Loading ...</div>}
+        >
             {
                 props.posts.map(post => {
                     return <PostComp key = {post._id} post={post} preview = {true}/>;
                 })
             }
-            <button onClick = {() => props.getPosts(props.posts.length, 5)}>load more</button>
-        </div>
+        </InfiniteScroll>
     )
 }
 
 const mstp = (state) => {
     return {
         posts: state.posts.listPosts,
-        followedLists: state.auth.anylistUser.attrs.followedLists
+        followedLists: state.auth.anylistUser.attrs.followedLists,
+        hasMore: state.posts.hasMore
     }
 }
 
