@@ -82,7 +82,7 @@ const NewPostForm = (props) => {
 				onChange = {editorState => setEditorState(editorState)}
 				placeholder = {"Share your story..."}
 			/>
-			<OptionsBar>
+			<OptionsBar onClick = {e => e.stopPropagation()}>
 				<Button onClick = {toggleEmojiPicker} bgColor = "grey">Emoji</Button>
 				<Button onClick = {handlePost}>Post</Button>
 				{ isEmojiPickerVisible ? 
