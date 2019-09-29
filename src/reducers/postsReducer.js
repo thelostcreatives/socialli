@@ -92,6 +92,18 @@ const branchTable = {
 			listHasMore: hasMore
 		}
 	},
+	[actions.POST_CREATED]: (state, action) => {
+		if (!state.lists[action.listId]) {
+			state.lists[action.listId] = [];
+		}
+		return {
+			...state,
+			lists: {
+				...state.lists, 
+				[action.listId]: [action.payload, ...state.lists[action.listId]]
+			}
+		}
+	},
 	[actions.SET_EXPANDED_POST]: (state, action) => {
 		return {
 			...state,

@@ -26,7 +26,9 @@ export const createPost = (listId, metadata, content) => async (dispatch) => {
 	const post = await newPost.save();
 
     dispatch({
-        type: POST_CREATED 
+		type: POST_CREATED,
+		payload: post,
+		listId
     });
 
 	return post;
