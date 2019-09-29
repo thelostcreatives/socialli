@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
@@ -11,23 +11,29 @@ const Post = (props) => {
 
     const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
 
+    const [editorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+
     // const editorContent = editorState.createWithContent(content);
     const handlePreviewClick = () => {
-        props.setExpandedPost(post);
-        history.push(`/post/${post._id}`);
+        if (window.getSelection().toString().length === 0) {
+            props.setExpandedPost(post);
+            history.push(`/post/${post._id}`);
+        }
     }
 
+    const stopPropagation = (e) => e.stopPropagation();
+
     return (
-        <PostWrapper preview = {preview}>
-            <div id = "preview-overlay" onClick = {handlePreviewClick}/>
+        <PostWrapper preview = {preview} onClick = {preview ? handlePreviewClick : null}>
+            {/* <div id = "preview-overlay" onClick = {handlePreviewClick}/> */}
             <div id = "post-header">
-                <Link to = {`/list/${listId}`}>
+                <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
                     <h4 className = "list-title">
                         {metadata ? metadata.listTitle : listId}
                     </h4>
                     
                 </Link>
-                <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author">
+                <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
                     {metadata ? `@${metadata.listAuthor}` : null}
                 </Link>
             </div>
@@ -43,10 +49,13 @@ const Post = (props) => {
                     {content}
                 </div> 
                 :
-                <Editor
-                    editorState = {EditorState.createWithContent(convertFromRaw(content))}
-                    readOnly = {true}
-                />
+                <div >
+                    <Editor
+                        editorState = {editorState}
+                        readOnly = {true}
+                    />
+                </div>
+                
             }
             
         </PostWrapper>
@@ -114,8 +123,7 @@ const PostWrapper = styled.div`
     ${props => props.preview === true && css`
         max-height: 150px;
         overflow: hidden;
-        border: 1px solid #707070;
-        border-bottom: none;
+        margin: 20px 0;
         #preview-overlay {
             display: block;
             position: absolute;
@@ -129,6 +137,11 @@ const PostWrapper = styled.div`
             width: 100%;
             height: 100%;
 
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: #f7f7f7;
         }
     `}
 `;
