@@ -21,10 +21,15 @@ const branchTable = {
 		}
 	},
 	[actions.RECEIVED_FEED_POSTS]: (state, action) => {
+		let hasMore = true;
+		if (action.payload.length === 0) {
+			hasMore = false;
+		}
 		return {
 			...state,
 			isGettingPosts: false,
-			feedPosts: [...state.feedPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i)
+			feedPosts: [...state.feedPosts, ...action.payload].filter((v, i, s) => s.indexOf(v) === i),
+			feedHasMore: hasMore
 		}
 	},
 	[actions.RECEIVED_POSTS]: (state, action) => {
