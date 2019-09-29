@@ -64,6 +64,8 @@ const MainWrapper = styled.div`
     }
     #main {
         grid-area: main;
+        display: flex;
+        justify-content: center;
     }
     #aside {
         grid-area: side;
