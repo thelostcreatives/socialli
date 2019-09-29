@@ -1,9 +1,16 @@
+import { EditorState, convertToRaw } from 'draft-js';
 import * as actions from '../actions';
 
 const initialState = {
 	feedPosts: [],
 	listPosts: [],
-	isGettingPosts: false
+	isGettingPosts: false,
+	expandedPost: {
+		attrs: {
+			_id: null,
+			content: convertToRaw(EditorState.createEmpty().getCurrentContent())
+		}
+	}
 }
 
 const branchTable = {
