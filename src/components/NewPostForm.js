@@ -107,6 +107,7 @@ const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
 	
 	width: 500px;
+    height: fit-content;
 	-webkit-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 	-moz-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 	box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
@@ -129,7 +130,7 @@ const OptionsBar = styled.div`
 	}
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
 	border: 1px solid ${props => props.bgColor ? props.bgColor : "#599bb3"};
 	margin: 5px;
 	outline: none;
