@@ -15,8 +15,13 @@ const Profile = (props) => {
 
 	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match  } = props;
 
-	const { username, name, description } = isOwned ? user.attrs : activeProfile.attrs;
+	let { username, name, description, other } = isOwned ? user.attrs : activeProfile.attrs;
 
+	if ( !other ) {
+		other = {
+			avatarUrl: avatarFallbackImage
+		}
+	}
 	const [person, setPerson] = useState({
 		name() {
 			return 'Anonymous';
@@ -41,7 +46,6 @@ const Profile = (props) => {
 	}, [])
 
 	useEffect(() => {
-		// const { } = props;
 
 		if (isOwned) {
 			List.fetchOwnList().then(data => {
@@ -66,8 +70,7 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage } id = "avatar-image" alt=""/>
-					{/* <h1><span>{ person.name() ? person.name() : 'Nameless Person' }</span></h1> */}
+					<img src={ typeof(other.avatarUrl) !== "undefined" ? other.avatarUrl : avatarFallbackImage } id = "avatar-image" alt=""/>
 					<h1 id = "name">{ name }</h1>
 					<h2 id = "username">{ username }</h2>
 					<p id = "description">{ description }</p>
@@ -91,7 +94,7 @@ const Profile = (props) => {
 			<Grid>
 				{
 					lists.map(list => {
-						return <ListPreview key = {list._id} list = { list }>{list.attrs.title}</ListPreview>
+						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned}>{list.attrs.title}</ListPreview>
 					})
 				}
 			</Grid>
