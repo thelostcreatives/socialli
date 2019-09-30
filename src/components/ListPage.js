@@ -9,7 +9,7 @@ import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const { hasMore, listPosts, getPosts, setActiveList, unfollowList, match, listData, anylistUser, followedLists} = props;
+	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, listData, anylistUser, followedLists} = props;
 
 	const posts = listPosts[match.params.id] ? listPosts[match.params.id] : [];
 
@@ -63,7 +63,7 @@ const mstp = (state) => {
 	return {
         listData: state.lists.activeList,
         anylistUser: state.auth.anylistUser,
-		followedLists: state.auth.anylistUser.attrs.followedLists,
+		followedLists: state.auth.anylistUser.attrs.followedLists ? state.auth.anylistUser.attrs.followedLists : [],
 		listPosts: state.posts.lists,
 		hasMore: state.posts.listHasMore
 	}
