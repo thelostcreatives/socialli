@@ -61,7 +61,21 @@ const MainWrapper = styled.div`
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+
+        font-family: 'Work Sans', sans-serif;
+        font-size: 25px;
+        a {
+            text-decoration: none;
+            color: black;
+            padding: 10px;
+            width: 100%;
+            &:hover {
+                background: #f7f7f7;
+                cursor: pointer;
+            }
+        }
     }
+
     #main {
         grid-area: main;
         display: flex;
@@ -73,6 +87,6 @@ const MainWrapper = styled.div`
 `;
 
 const NavActiveStyle = {
-    color: "blue",
-    fontWeight: "bold"
+    color: "black",
+    fontWeight: "bold",
 }
