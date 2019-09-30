@@ -13,13 +13,15 @@ import { Post as PostModel} from '../models';
 
 const Post = (props) => {
 
-    const { preview, post, match, history, expandedPost, setExpandedPost } = props;
+    const { preview, post, match, history, expandedPost, setExpandedPost, userSigningKeyId } = props;
     
-    const { listId, metadata, content } = post ? post.attrs: expandedPost.attrs;
+    const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 
     new ClipBoard('.postLink');
+
+    console.log(userSigningKeyId === signingKeyId)
 
     useEffect (() => {
         if (!preview) {
@@ -73,6 +75,14 @@ const Post = (props) => {
                             <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
                         </div>
                     </Tippy>
+                    {
+                        userSigningKeyId === signingKeyId ? 
+                        <div>
+                            edit/delete icons here
+                        </div>
+                        :
+                        null
+                    }
                 </div>
             }
             
@@ -82,6 +92,7 @@ const Post = (props) => {
 
 const mstp = (state) => {
     return {
+        userSigningKeyId: state.auth.anylistUser.attrs.signingKeyId, 
         expandedPost: state.posts.expandedPost
     }
 }

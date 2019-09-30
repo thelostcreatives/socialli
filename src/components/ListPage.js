@@ -70,7 +70,7 @@ const ListPage = (props) => {
 			>
 				{
 					posts.map(post => {
-                        return <PostComp key = {post._id} preview = {true} post = {post} />
+                        return <PostComp key = {post._id} preview = {true} post = {post} isOwned = {isOwned}/>
 					})
 				}
 			</InfiniteScroll>
