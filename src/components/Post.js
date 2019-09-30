@@ -110,7 +110,12 @@ const PostWrapper = styled.div`
     }
 
     #icons-container {
-        align-self: flex-end;
+        border-top: 1px solid #d2d6d7;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-self: center;
+        margin-top: 10px;
     }
 
     #content {
