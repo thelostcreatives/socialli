@@ -1,4 +1,4 @@
-import { Model, User } from 'radiks';
+import { Model } from 'radiks';
 
 export class AnyListUser extends Model {
     static className = 'AnyListUser';
@@ -16,10 +16,15 @@ export class AnyListUser extends Model {
             decrypted: true
         },
         followedLists: Array,
+        other: {
+            type: Object,
+            decrypted: true
+        }
     }
 
     static defaults = {
-        followedLists: []
+        followedLists: [],
+        other: {}
     }
 }
 
@@ -38,7 +43,15 @@ export class List extends Model {
         author: {
             type: String,
             decrypted: true
+        },
+        other: {
+            type: Object,
+            decrypted: true
         }
+    }
+
+    static defaults = {
+        other: {}
     }
 }
 
@@ -56,6 +69,14 @@ export class Post extends Model {
         content: {
             type: Object,
             decrypted: true
+        },
+        other: {
+            type: Object,
+            decrypted: true
         }
+    }
+
+    static defaults = {
+        other: {}
     }
 }
