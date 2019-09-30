@@ -20,7 +20,7 @@ const StyledButton = styled.button`
 	display: inline-block;
 	cursor: pointer;
     color: #ffffff;
-    width: 100%;
+    width: max-content;
 
 	-webkit-font-smoothing: antialiased;
 	font-size: 12px;
