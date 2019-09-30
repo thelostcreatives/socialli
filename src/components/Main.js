@@ -22,12 +22,13 @@ const Main = (props) => {
                         <Route exact path = "/explore" component = {Explore}/>
                         <Route exact path = "/follows" render = {(props) => (<div></div>)}/>
                         <Route exact path = "/profile" render = {(props) => <Profile {...props} isOwned = {true}/>}/>
+                        <Route path = "/newList" component = {NewListForm}/>
                         <Route exact path = "/:id" render = {(props) => <Profile {...props} isOwned = {false}/>}/>
                         <Route exact path = "/profile/:id" render = {(props) => <ListPage {...props} isOwned = {true} />}/>
                         <Route path = "/list/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
                         <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
-                        <Route path = "/newList" component = {NewListForm}/>
-                        <Route path = "/post/:id" render = {(props) => <PostComp {...props} preview = {false}/>}/>
+                        <Route path = "profile/post/:id" render = {(props) => <PostComp {...props} isOwned = {true} preview = {false}/>}/>
+                        <Route path = "/post/:id" render = {(props) => <PostComp {...props} isOwned = {false} preview = {false}/>}/>
                     </Switch>
                 </div>
                 <div id = "aside">
