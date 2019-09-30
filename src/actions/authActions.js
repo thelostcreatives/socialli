@@ -11,6 +11,8 @@ export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
 export const USER_UPDATED = "USER_UPDATED";
 
+export const SET_ACTIVE_PROFILE = "SET_ACTIVE_PROFILE";
+
 //export auth methods below
 export function handleSignIn(e, userSession) {
     e.preventDefault();
@@ -63,4 +65,11 @@ export const getCustomUser = ({profile, username}) => async (dispatch) => {
         type: CUSTOM_USER_FOUND,
         payload: user
     });
+}
+
+export const setActiveProfile = (AnyListUser) => {
+    return {
+        type: SET_ACTIVE_PROFILE,
+        payload: AnyListUser
+    }
 }

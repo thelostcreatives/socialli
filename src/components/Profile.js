@@ -6,16 +6,16 @@ import {
 } from 'blockstack';
 
 import { ListPreview, Button  } from './index';
-import { handleSignOut } from '../actions';
-import { List } from '../models';
+import { handleSignOut, setActiveProfile } from '../actions';
+import { AnyListUser, List } from '../models';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
 const Profile = (props) => {
 
-	const { user } = props;
+	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match  } = props;
 
-	const { username, name, description } = user.attrs;
+	const { username, name, description } = isOwned ? user.attrs : activeProfile.attrs;
 
 	const [person, setPerson] = useState({
 		name() {
@@ -28,15 +28,36 @@ const Profile = (props) => {
 
 	const [lists, setLists] = useState([]);
 
-	const { handleSignOut, userSession }  = props;
 	useEffect(() => {
-		const { userSession } = props;
+		if (!isOwned) {
+			AnyListUser.fetchList({
+				username: match.params.id
+			}).then(anylistUser => {
+				setActiveProfile(anylistUser[0]);
+			}).catch(err => {
+				console.log(err);
+			});
+		}
+	}, [])
 
-		List.fetchOwnList().then(data => {
+	useEffect(() => {
+		// const { } = props;
+
+		if (isOwned) {
+			List.fetchOwnList().then(data => {
 				setLists(data);
-		}).catch(err => {
+			}).catch(err => {
 				console.log(err)
-		});
+			});
+		} else {
+			List.fetchList({
+				author: match.params.id
+			}).then(data => {
+				setLists(data);
+			}).catch(err => {
+				console.log(err)
+			});
+		}
 
 		setPerson(new Person(userSession.loadUserData().profile));
 	},[])
@@ -53,10 +74,16 @@ const Profile = (props) => {
 				</div>
 
 				<div className="icons-container">
-					<Button
-						onClick = { (e) => handleSignOut(e, userSession) }
-						text = "Log Out"
-					/>
+					{isOwned ? 
+						<div>
+							<Button
+								onClick = { (e) => handleSignOut(e, userSession) }
+								text = "Log Out"
+							/>
+						</div>
+						: 
+						null
+					}
 				</div>
 				
 			</Header>
@@ -73,13 +100,14 @@ const Profile = (props) => {
 }
 
 const mstp = state => {
-		return {
-				userSession: state.auth.userSession,
-				user: state.auth.anylistUser
-		}
+	return {
+		userSession: state.auth.userSession,
+		user: state.auth.anylistUser,
+		activeProfile: state.auth.activeProfile
+	}
 }
 
-export default connect(mstp, {handleSignOut})(Profile);
+export default connect(mstp, {handleSignOut, setActiveProfile})(Profile);
 
 const ProfileWrapper = styled.div`
 	display: flex;

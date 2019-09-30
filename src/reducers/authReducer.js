@@ -5,6 +5,11 @@ const initialState = {
         attrs: {
             followedLists: []
         }
+    },
+    activeProfile: {
+        attrs: {
+
+        }
     }
 }
 
@@ -32,6 +37,12 @@ const branchTable = {
         return {
             ...state,
             anylistUser: actions.payload
+        }
+    },
+    [actions.SET_ACTIVE_PROFILE]: (state, actions) => {
+        return {
+            ...state,
+            activeProfile: actions.payload
         }
     }
 
