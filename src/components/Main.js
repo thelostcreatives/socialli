@@ -29,7 +29,6 @@ const Main = (props) => {
                     </Switch>
                 </div>
                 <div id = "aside">
-                    BOOKMARKS?
                 </div>
                 
             </MainWrapper>
