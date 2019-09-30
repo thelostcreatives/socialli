@@ -123,7 +123,7 @@ const ProfileWrapper = styled.div`
 	}
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
 	width: 500px;
 	font-family: 'Work Sans', sans-serif;
 
