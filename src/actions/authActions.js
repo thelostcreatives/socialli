@@ -9,6 +9,7 @@ export const STOREUSERSESSION = "STOREUSERSESSION";
 export const GETTING_CUSTOM_USER = "GETTING_CUSTOM_USER";
 export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
+export const UPDATING_USER = "UPDATING_USER";
 export const USER_UPDATED = "USER_UPDATED";
 
 export const SET_ACTIVE_PROFILE = "SET_ACTIVE_PROFILE";
@@ -72,4 +73,21 @@ export const setActiveProfile = (AnyListUser) => {
         type: SET_ACTIVE_PROFILE,
         payload: AnyListUser
     }
+}
+
+export const updateUser = (AnyListUser, updates) => async (dispatch) => {
+    dispatch({
+        type: UPDATING_USER
+    });
+
+    console.log(updates)
+
+    AnyListUser.update(updates);
+
+    const updatedUser = await AnyListUser.save();
+
+    dispatch({
+        type: USER_UPDATED,
+        payload: updatedUser
+    })
 }

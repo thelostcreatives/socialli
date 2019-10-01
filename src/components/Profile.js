@@ -6,14 +6,14 @@ import {
 } from 'blockstack';
 
 import { ListPreview, Button  } from './index';
-import { handleSignOut, setActiveProfile } from '../actions';
+import { handleSignOut, setActiveProfile, updateUser } from '../actions';
 import { AnyListUser, List } from '../models';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
 const Profile = (props) => {
 
-	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match  } = props;
+	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match, updateUser  } = props;
 
 	let { username, name, description, other } = isOwned ? user.attrs : activeProfile.attrs;
 
@@ -32,6 +32,8 @@ const Profile = (props) => {
 	});
 
 	const [lists, setLists] = useState([]);
+	const [isEditing, setIsEditing] = useState(false);
+	const [profileData, setProfileData] = useState({})
 
 	useEffect(() => {
 		if (!isOwned) {
@@ -43,7 +45,11 @@ const Profile = (props) => {
 				console.log(err);
 			});
 		}
-	}, [])
+	}, []);
+
+	useEffect (() => {
+		setProfileData({username, name, description, other})
+	}, [user]);
 
 	useEffect(() => {
 
@@ -64,21 +70,72 @@ const Profile = (props) => {
 		}
 
 		setPerson(new Person(userSession.loadUserData().profile));
-	},[])
+	},[]);
+
+	const handleInputChange = (e) => {
+		const target = e.target;
+		let value = target.value;
+		let name = target.name;
+
+		const dataInOther = ["avatarUrl"]
+
+		if (dataInOther.includes(name)) {
+			const otherData = name;
+			name = "other";
+			value = {
+				...profileData.other,
+				[otherData]: value
+			}
+		}
+
+
+		setProfileData({
+			...profileData,
+			[name] : value
+		});
+	}
 
 	return (
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
 					<img src={ typeof(other.avatarUrl) !== "undefined" ? other.avatarUrl : avatarFallbackImage } id = "avatar-image" alt=""/>
-					<h1 id = "name">{ name }</h1>
-					<h2 id = "username">{ username }</h2>
-					<p id = "description">{ description }</p>
+					{
+						isEditing ? 
+						<div className = "profile-inputs">
+							<label htmlFor = "avatarUrl">Avatar
+							<input type = "text" placeholder = "Avatar url" value = {profileData.other.avatarUrl ? profileData.other.avatarUrl : ""} name = "avatarUrl" onChange = {handleInputChange}/>
+						</label>
+							<label htmlFor = "name">Name</label>
+							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name} name = "name" onChange = {handleInputChange}/>
+							<label htmlFor = "description">Description</label>
+							<textarea className = "description" type = "text" placeholder = "Tell people about yourself" value = {profileData.description} name = "description" onChange = {handleInputChange}/>
+						</div>
+						:
+						<div>
+							<h1 id = "name">{ name }</h1>
+							<h2 id = "username">{ username }</h2>
+							<p id = "description">{ description }</p>
+						</div>
+					}
 				</div>
 
 				<div className="icons-container">
+					
+
 					{isOwned ? 
 						<div>
+							{
+								isEditing ?
+								<Button onClick = {() => {
+									setIsEditing(false);
+									updateUser(user, profileData);
+								}} text = "Update"/>
+								:
+								<Button onClick = {() => {
+									setIsEditing(true);
+								}} text = "Edit"/>
+							}
 							<Button
 								onClick = { (e) => handleSignOut(e, userSession) }
 								text = "Log Out"
@@ -110,7 +167,7 @@ const mstp = state => {
 	}
 }
 
-export default connect(mstp, {handleSignOut, setActiveProfile})(Profile);
+export default connect(mstp, {handleSignOut, setActiveProfile, updateUser})(Profile);
 
 const ProfileWrapper = styled.div`
 	display: flex;
@@ -149,6 +206,35 @@ export const Header = styled.div`
         align-self: center;
 		margin-top: 10px;
 		padding: 5px;
+	}
+
+	.profile-inputs {
+		display: flex;
+		flex-direction: column;
+
+		label {
+			font-weight: bold;
+			margin-top: 10px;
+		}
+		
+		input {
+			border: 1px solid #d2d6d7;
+			padding: 5px;
+			font-family: inherit;
+			font-size: 15px;
+			width: 100%;
+		}
+
+		.description {
+			border: 1px solid #d2d6d7;
+			padding: 5px;
+			font-family: inherit;
+			font-size: 15px;
+			max-width: 100%;
+			min-width: 100%;
+			padding: 5px
+			height: 100px;
+		}
 	}
 	
 `;
