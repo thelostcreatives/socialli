@@ -109,6 +109,12 @@ const branchTable = {
 			...state,
 			expandedPost: action.payload
 		}
+	},
+	[actions.POST_UPDATED]: (state, action) => {
+		return {
+			...state,
+			expandedPost: action.payload
+		}
 	}
 }
 

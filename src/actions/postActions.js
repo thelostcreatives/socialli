@@ -7,6 +7,9 @@ export const GETTING_POSTS = "GETTING_POSTS";
 export const RECEIVED_POSTS = "RECEIVED_POSTS";
 export const RECEIVED_LIST_POSTS = "RECEIVED_LIST_POSTS";
 
+export const UPDATING_POST = "UPDATING_POST";
+export const POST_UPDATED = "POST_UPDATED";
+
 export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
 
@@ -96,4 +99,21 @@ export const setExpandedPost = (post) => {
 		type: SET_EXPANDED_POST,
 		payload: post
 	}
+}
+
+export const updatePost = (post, content) => async (dispatch)=> {
+	dispatch({
+		type: UPDATING_POST
+	});
+
+	post.update({
+		content
+	});
+
+	const updatedPost = await post.save();
+
+	dispatch({
+		type: POST_UPDATED,
+		payload: updatedPost
+	});
 }

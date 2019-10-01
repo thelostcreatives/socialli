@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
-import { Link2 } from 'react-feather';
+import { Link2, Edit, XSquare } from 'react-feather';
 import ClipBoard from 'clipboard';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
-import { setExpandedPost } from '../actions';
+import { Button } from './index';
+import { setExpandedPost, updatePost } from '../actions';
 import { Post as PostModel} from '../models';
 
 const Post = (props) => {
 
-    const { preview, post, match, history, expandedPost, setExpandedPost, userSigningKeyId } = props;
+    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, userSigningKeyId } = props;
     
     const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+    const [isEditing, setIsEditing] = useState(false);
 
     new ClipBoard('.postLink');
-
-    console.log(userSigningKeyId === signingKeyId)
 
     useEffect (() => {
         if (!preview) {
@@ -42,6 +42,21 @@ const Post = (props) => {
         }
     }
 
+    const handleUpdateClick = () => {
+        const contentState = editorState.getCurrentContent(); 
+        updatePost(
+            expandedPost,
+            convertToRaw(contentState)
+        );
+        setIsEditing(false);
+    }
+
+    const editor = useRef(null);
+
+	const focusEditor = () => {
+		editor.current.focus();
+	}
+
     const stopPropagation = (e) => e.stopPropagation();
 
     return (
@@ -57,17 +72,13 @@ const Post = (props) => {
                 </Link>
             </div>
             
-            {
-                typeof(content) === 'string' ? 
-                <div id = "content">
-                    {content}
-                </div> 
-                :
-                <Editor
-                    editorState = {editorState}
-                    readOnly = {true}
-                />
-            }
+            <Editor
+                ref = {editor}
+                editorState = {editorState}
+                onChange = {editorState => setEditorState(editorState)}
+                readOnly = {!isEditing}
+            />
+
             {preview ? null :
                 <div id = "icons-container">
                     <Tippy content = "copied link" trigger = "click">
@@ -78,7 +89,15 @@ const Post = (props) => {
                     {
                         userSigningKeyId === signingKeyId ? 
                         <div>
-                            edit/delete icons here
+                            {
+                                !isEditing ?
+                                <Button onClick = { () => {
+                                    setIsEditing(true);
+                                    focusEditor();
+                                }} text = "Edit" />
+                                :
+                                <Button onClick = {handleUpdateClick} text = "Update"/>
+                            }
                         </div>
                         :
                         null
@@ -98,7 +117,7 @@ const mstp = (state) => {
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost})(Post)
+    connect(mstp, {setExpandedPost, updatePost})(Post)
 );
 
 const PostWrapper = styled.div`
@@ -124,6 +143,7 @@ const PostWrapper = styled.div`
         border-top: 1px solid #d2d6d7;
         width: 100%;
         display: flex;
+        align-items: center;
         justify-content: flex-end;
         align-self: center;
         margin-top: 10px;
