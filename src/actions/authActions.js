@@ -80,8 +80,6 @@ export const updateUser = (AnyListUser, updates) => async (dispatch) => {
         type: UPDATING_USER
     });
 
-    console.log(updates)
-
     AnyListUser.update(updates);
 
     const updatedUser = await AnyListUser.save();

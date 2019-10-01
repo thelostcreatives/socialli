@@ -13,6 +13,12 @@ const branchTable = {
 		return {
 			...state, activeList: action.payload
 		}
+	},
+	[actions.LIST_UPDATED]: (state, action) => {
+		console.log(action.payload)
+		return {
+			...state, activeList: action.payload
+		}
 	}
 }
 

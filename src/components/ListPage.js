@@ -5,17 +5,28 @@ import InfiniteScroll from 'react-infinite-scroller';
 
 import { Button } from './index';
 import { Header } from './Profile';
-import { setActiveList, followList, unfollowList, getPosts } from '../actions';
+import { setActiveList, followList, unfollowList, getPosts, updateList } from '../actions';
 import { List } from '../models';
 import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, listData, anylistUser, followedLists, isOwned} = props;
+	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, listData, anylistUser, followedLists, isOwned, updateList} = props;
 
 	const posts = listPosts[match.params.id] ? listPosts[match.params.id] : [];
 
-	const { title, author, description } = listData.attrs;
+	const { title, author, description, other } = listData.attrs;
+
+	const [isEditing, setIsEditing] = useState(false);
+	const [listPageData, setListPageData] = useState({});
+
+	useEffect (() => {
+		setListPageData({
+			title,
+			description,
+			other
+		})
+	}, [listData])
 
 	useEffect (() => {
 		const getListData = async () => {
@@ -37,18 +48,62 @@ const ListPage = (props) => {
 		getPosts(posts.length, 5, match.params.id);
 	}
 
+	const handleInputChange = (e) => {
+		const target = e.target;
+		let value = target.value;
+		let name = target.name;
+
+		const dataInOther = []
+
+		if (dataInOther.includes(name)) {
+			const otherData = name;
+			name = "other";
+			value = {
+				...listPageData.other,
+				[otherData]: value
+			}
+		}
+
+		setListPageData({
+			...listPageData,
+			[name] : value
+		});
+	}
+
 	return (
 		<ListPageWrapper>
 			<Header>
-				<h1 id = "name">{listData ? title : null}</h1>
-				<h2 id = "username">{ author }</h2>
-				<p>{listData? description : null}</p>
+				
+				{
+					!isEditing ?
+					<div>
+						<h1 id = "name">{listData ? title : null}</h1>
+						<h2 id = "username">{ author }</h2>
+						<p>{listData? description : null}</p>
+					</div>
+					:
+					<div className = "profile-inputs">
+						<label htmlFor = "title">Title</label>
+						<input type = "text" placeholder = "List title" value = {listPageData.title} name = "title" onChange = {handleInputChange}/>
+						<label htmlFor = "description">Description</label>
+						<textarea className = "description" type = "text" placeholder = "Tell people about this list" value = {listPageData.description} name = "description" onChange = {handleInputChange}/>
+					</div>
+
+				}
 
 				<div className = "icons-container">
 					{
 						isOwned ? 
 						<div>
-							edit/delete icons here
+							{
+								!isEditing ?
+								<Button onClick = {() => setIsEditing(true)} text = "Edit"/>
+								:
+								<Button onClick = {() => {
+									setIsEditing(false);
+									updateList(listData, listPageData);
+								}} text = "Update"/>
+							}
 						</div>
 						:
 						null
@@ -88,7 +143,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {setActiveList, followList, unfollowList, getPosts})(ListPage);
+export default connect(mstp, {setActiveList, followList, unfollowList, getPosts, updateList})(ListPage);
 
 const ListPageWrapper = styled.div`
     display: flex;

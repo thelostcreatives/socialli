@@ -9,6 +9,9 @@ export const ADDING_LIST_TO_FOLLOWS = "ADDING_LIST_TO_FOLLOWS";
 export const LIST_ADDED_TO_FOLLOWS = "LIST_ADDED_TO_FOLLOWS";
 export const REMOVING_LIST_FROM_FOLLOWS = "REMOVING_LIST_FROM_FOLLOWS";
 
+export const UPDATING_LIST = "UPDATING_LIST";
+export const LIST_UPDATED = "LIST_UPDATED";
+
 export const createList = (title, description, author, posts_type) => async (dispatch) => {
     dispatch({
         type: CREATING_LIST
@@ -74,4 +77,21 @@ export const unfollowList = (anylistUser, listId) => async (dispatch) => {
         type: USER_UPDATED,
         payload: updatedUser 
     })
+}
+
+export const updateList = (list, updates) => async (dispatch) => {
+    dispatch({
+        type: UPDATING_LIST
+    });
+
+    console.log(updates)
+
+    list.update(updates);
+
+    const updatedList = await list.save();
+
+    dispatch({
+        type: LIST_UPDATED,
+        payload: updatedList
+    });
 }
