@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import { handleSignIn } from '../actions';
 
 const SignIn = (props) => {
 
     return (
-      <div className="panel-landing" id="section-1">
-        <h1 className="landing-heading">Hello, Blockstack!</h1>
-        <p className="lead">
-          <button
-            className="btn btn-primary btn-lg"
-            id="signin-button"
-              onClick={ (e) => props.handleSignIn(e, props.userSession)}
-          >
-            Sign In with Blockstack
-          </button>
-        </p>
-      </div>
+      <SigninWrapper>
+        <h1 className="heading">Socialli</h1>
+        <button
+            onClick={ (e) => props.handleSignIn(e, props.userSession)}
+            className = "signin-button"
+        >
+          Sign In with Blockstack
+        </button>
+      </SigninWrapper>
     );
 }
 
@@ -28,3 +26,35 @@ const mstp = state => {
 }
 
 export default connect(mstp, {handleSignIn})(SignIn);
+
+const SigninWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+  height: fill-available;
+
+  font-family: 'Work Sans', sans-serif;
+
+  .heading {
+    font-size: 50px;
+  }
+
+
+  .signin-button {
+    font-size: 15px;
+    padding: 10px;
+    background: #29356d;
+    border: 1px solid #29356d;
+    color: white;
+
+    transition-duration: .5s;
+    border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+      background: #409eff;
+    }
+  }
+`;

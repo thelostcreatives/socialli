@@ -45,13 +45,11 @@ const App = (props) => {
         isSigninPending(userSession);
     }, []);
     return (
-      <div className="site-wrapper">
-        <div className="site-wrapper-inner">
-          { !userSession.isUserSignedIn() ?
-            <Signin/>
-            : <Main/>
-          }
-        </div>
+      <div>
+        { !userSession.isUserSignedIn() ?
+          <Signin/>
+          : <Main/>
+        }
       </div>
     );
 }
