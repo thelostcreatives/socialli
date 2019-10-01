@@ -49,6 +49,8 @@ const MainWrapper = styled.div`
     grid-template-rows: 1fr;
     grid-template-columns: 150px 1fr 150px;
 
+    font-family: 'Work Sans', sans-serif;
+
     a {
         color: black;
         &:hover{

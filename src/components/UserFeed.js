@@ -29,7 +29,11 @@ const UserFeed = (props) => {
             {
                 followedLists.length > 0 ? posts.map(post => {
                     return <PostComp key = {post._id} post={post} preview = {true} />;
-                }) : null
+                })
+                :
+                <h2 style = {{width: "500px"}}>
+                    You are not following any Lists. Try going to the Explore page see if you find something interesting.
+                </h2>
             }
         </InfiniteScroll>
     )
