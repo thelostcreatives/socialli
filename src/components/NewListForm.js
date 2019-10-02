@@ -1,5 +1,8 @@
 import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+
+import { Button } from './index';
 import { createList } from '../actions';
 
 const posts_types = [
@@ -22,21 +25,23 @@ const NewListForm = (props) => {
 		nameToSetter[e.target.name](e.target.value);
 	}
 	return (
-		<div>
+		<NewPostFormWrapper>
+			<label htmlFor = "title">Title</label>
 			<input name = "title" type = "text" placeholder = "Title" value = {title} onChange = {handleInput}/>
-			<input name = "description" type = "text" placeholder = "Description" value = {description} onChange = {handleInput}/>
-			<select>
+			<label htmlFor = "description">Description</label>
+			<textarea className = "description" name = "description" type = "text" placeholder = "Description" value = {description} onChange = {handleInput}/>
+			{/* <select>
 				{
 					posts_types.map(type => {
 						return <option value = {type}>{type}</option>
 					})
 				}
-			</select>
-			<button onClick = { async () => {
+			</select> */}
+			<Button onClick = { async () => {
 				const newList = await props.createList(title, description, props.author, posts_type);
 				props.history.push(`profile/${newList._id}`)
-			 } }>Create</button>
-		</div>
+			 } } text = "Create"/>
+		</NewPostFormWrapper>
 	)
 	
 }
@@ -48,3 +53,33 @@ const mstp = (state) => {
 }
 
 export default connect(mstp, {createList})(NewListForm);
+
+const NewPostFormWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	width: 500px;
+
+	label {
+		font-weight: bold;
+		margin-top: 10px;
+	}
+	
+	input {
+		border: 1px solid #d2d6d7;
+		padding: 5px;
+		font-family: inherit;
+		font-size: 15px;
+		width: 100%;
+	}
+
+	.description {
+		border: 1px solid #d2d6d7;
+		padding: 5px;
+		font-family: inherit;
+		font-size: 15px;
+		max-width: 100%;
+		min-width: 100%;
+		padding: 5px
+		height: 100px;
+	}
+`;
