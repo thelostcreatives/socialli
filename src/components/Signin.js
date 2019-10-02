@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { handleSignIn } from '../actions';
+import logo from '../imgs/socialli_no_bg.png'
 
 const SignIn = (props) => {
 
     return (
       <SigninWrapper>
+        <img src = {logo} alt = "logo" id = "logo"/>
         <h1 className="heading">Socialli</h1>
         <button
             onClick={ (e) => props.handleSignIn(e, props.userSession)}
@@ -37,6 +39,9 @@ const SigninWrapper = styled.div`
 
   font-family: 'Work Sans', sans-serif;
 
+  #logo {
+    width: 200px;
+  }
   .heading {
     font-size: 50px;
   }
