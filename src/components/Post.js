@@ -9,12 +9,12 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
 import { Button } from './index';
-import { setExpandedPost, updatePost } from '../actions';
+import { setExpandedPost, updatePost, deletePost } from '../actions';
 import { Post as PostModel} from '../models';
 
 const Post = (props) => {
 
-    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, userSigningKeyId } = props;
+    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, userSigningKeyId } = props;
     
     const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
 
@@ -49,6 +49,11 @@ const Post = (props) => {
             convertToRaw(contentState)
         );
         setIsEditing(false);
+    }
+
+    const handleDeleteClick = () => {
+        deletePost(expandedPost);
+        history.goBack();
     }
 
     const editor = useRef(null);
@@ -96,8 +101,12 @@ const Post = (props) => {
                                     focusEditor();
                                 }} text = "Edit" />
                                 :
-                                <Button onClick = {handleUpdateClick} text = "Update"/>
+                                <div className = "edit-options">
+                                    <Button onClick = {handleUpdateClick} text = "Update"/>
+                                    <XSquare onClick = {handleDeleteClick} className = "delete"/>
+                                </div>
                             }
+
                         </div>
                         :
                         null
@@ -117,7 +126,7 @@ const mstp = (state) => {
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, updatePost})(Post)
+    connect(mstp, {setExpandedPost, updatePost, deletePost})(Post)
 );
 
 const PostWrapper = styled.div`
@@ -136,6 +145,12 @@ const PostWrapper = styled.div`
     #options-bar {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+    }
+
+    .edit-options {
+        display: flex;
+        justify-content: space-evenly;
         align-items: center;
     }
 
@@ -174,6 +189,14 @@ const PostWrapper = styled.div`
         &:hover {
             color: black;
             cursor: pointer;
+        }
+    }
+
+    .delete {
+        color: #e86813;
+        &:hover {
+            cursor: pointer;
+            color: #e81313;
         }
     }
 

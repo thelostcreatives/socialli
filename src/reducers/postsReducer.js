@@ -115,6 +115,17 @@ const branchTable = {
 			...state,
 			expandedPost: action.payload
 		}
+	},
+	[actions.DELETED_POST]: (state, action) => {
+		const deletedPost = action.payload;
+		const {listId}  = deletedPost.attrs;
+		return {
+			...state,
+			lists: {
+				...state.lists, 
+				[listId]: [...state.lists[listId]].filter(post => post._id !== deletedPost._id)
+			}
+		}
 	}
 }
 
