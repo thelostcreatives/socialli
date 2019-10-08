@@ -79,8 +79,8 @@ const Post = (props) => {
             {
                 isDeleting ? 
                 <ConfirmationOverlay 
-                    message = "U sure bruh?" 
-                    details = "This will delete ur post"
+                    message = "Delete Post?" 
+                    details = "This will delete your post and cannot be recovered."
                     confirm = {handleDelete} 
                     cancel = {handleCancel}
                 />

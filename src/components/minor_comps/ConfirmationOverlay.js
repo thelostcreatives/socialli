@@ -49,13 +49,13 @@ const ConfirmationOverlayWrapper = styled.div`
 
 		align-items: center;
 
-		width: fit-content;
+		width: 300px;
 		height: fit-content;
 		-webkit-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 		-moz-box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 		box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 
-	padding: 10px;
-	border-radius: 10px;
+		padding: 10px;
+		border-radius: 10px;
 	}
 `;
