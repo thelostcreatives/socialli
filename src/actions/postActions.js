@@ -131,6 +131,6 @@ export const deletePost = (post) => async (dispatch) => {
 	dispatch({
 		type: DELETED_POST,
 		payload: post
-	})
+	});
 
 }
