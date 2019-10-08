@@ -12,6 +12,9 @@ export const REMOVING_LIST_FROM_FOLLOWS = "REMOVING_LIST_FROM_FOLLOWS";
 export const UPDATING_LIST = "UPDATING_LIST";
 export const LIST_UPDATED = "LIST_UPDATED";
 
+export const DELETING_LIST = "DELETING_LIST";
+export const LIST_DELETED = "LIST_DELETED";
+
 export const createList = (title, description, author, posts_type) => async (dispatch) => {
     dispatch({
         type: CREATING_LIST
@@ -84,8 +87,6 @@ export const updateList = (list, updates) => async (dispatch) => {
         type: UPDATING_LIST
     });
 
-    console.log(updates)
-
     list.update(updates);
 
     const updatedList = await list.save();
@@ -93,5 +94,18 @@ export const updateList = (list, updates) => async (dispatch) => {
     dispatch({
         type: LIST_UPDATED,
         payload: updatedList
+    });
+}
+
+export const deleteList = (list) => async (dispatch) => {
+    dispatch({
+        type: DELETING_LIST
+    });
+
+    await list.destroy();
+
+    dispatch({
+        type: LIST_DELETED,
+        payload: list
     });
 }
