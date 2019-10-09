@@ -39,7 +39,7 @@ const NewListForm = (props) => {
 			</select> */}
 			<Button onClick = { async () => {
 				const newList = await props.createList(title, description, props.author, posts_type);
-				props.history.push(`profile/${newList._id}`)
+				props.history.push(`${props.author}/${newList._id}`)
 			 } } text = "Create"/>
 		</NewPostFormWrapper>
 	)

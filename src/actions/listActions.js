@@ -1,8 +1,12 @@
-import { List } from '../models';
+import { List, Post } from '../models';
 import { USER_UPDATED } from './index';
 
 export const CREATING_LIST = "CREATING_LIST";
 export const LIST_CREATED = "LIST_CREATED";
+
+export const GETTING_PROFILE_LISTS = "GETTING_PROFILE_LISTS";
+export const RECEIVED_PROFILE_LISTS = "RECEIVED_PROFILE_LISTS";
+
 export const SET_ACTIVE_LIST = "SET_ACTIVE_LIST";
 
 export const ADDING_LIST_TO_FOLLOWS = "ADDING_LIST_TO_FOLLOWS";
@@ -34,6 +38,30 @@ export const createList = (title, description, author, posts_type) => async (dis
     });
 
 	return listdata;
+}
+
+export const getProfileLists = (username) => async (dispatch) => {
+
+    dispatch({
+        type: GETTING_PROFILE_LISTS,
+    });
+
+    if (username) {
+        const profileLists = await List.fetchList({
+            author: username
+        });
+
+        dispatch({
+            type: RECEIVED_PROFILE_LISTS,
+            payload: profileLists,
+        });
+    } else {
+        dispatch({
+            type: RECEIVED_PROFILE_LISTS,
+            payload: [],
+        });
+    }
+    
 }
 
 export const setActiveList = (list) => {
@@ -101,6 +129,12 @@ export const deleteList = (list) => async (dispatch) => {
     dispatch({
         type: DELETING_LIST
     });
+
+    const posts = await Post.fetchList({
+        listId: list._id
+    });
+
+    posts.forEach(async post => await post.destroy())
 
     await list.destroy();
 

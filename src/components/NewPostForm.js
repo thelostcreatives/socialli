@@ -56,7 +56,7 @@ const NewPostForm = (props) => {
 				},
 				convertToRaw(contentState)
 			);
-			history.push(`/profile/${listData._id}`);
+			history.goBack();
 		} else {
 			console.log("Tell us stories meyn");
 		}

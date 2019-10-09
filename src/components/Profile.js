@@ -6,14 +6,16 @@ import {
 } from 'blockstack';
 
 import { ListPreview, Button  } from './index';
-import { handleSignOut, setActiveProfile, updateUser } from '../actions';
+import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
 import { AnyListUser, List } from '../models';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
 const Profile = (props) => {
 
-	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match, updateUser  } = props;
+	const { user, isOwned, userSession, activeProfile, match, lists } = props;
+
+	const { handleSignOut, setActiveProfile, updateUser, getProfileLists } = props;
 
 	let { username, name, description, other } = isOwned ? user.attrs : activeProfile.attrs;
 
@@ -31,7 +33,7 @@ const Profile = (props) => {
 		},
 	});
 
-	const [lists, setLists] = useState([]);
+	// const [lists, setLists] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
 	const [profileData, setProfileData] = useState({})
 
@@ -44,33 +46,40 @@ const Profile = (props) => {
 			}).catch(err => {
 				console.log(err);
 			});
+		} else {
+			setActiveProfile(user);
 		}
-	}, []);
+	}, [match.params.id]);
 
 	useEffect (() => {
 		setProfileData({username, name, description, other})
-	}, [user]);
+	}, [match.params.id]);
 
 	useEffect(() => {
 
-		if (isOwned) {
-			List.fetchOwnList().then(data => {
-				setLists(data);
-			}).catch(err => {
-				console.log(err)
-			});
-		} else {
-			List.fetchList({
-				author: match.params.id
-			}).then(data => {
-				setLists(data);
-			}).catch(err => {
-				console.log(err)
-			});
-		}
+		// if (isOwned) {
+			// List.fetchOwnList().then(data => {
+			// 	setLists(data);
+			// }).catch(err => {
+			// 	console.log(err)
+			// });
+
+			console.log(username, match)
+
+			getProfileLists(match.params.id);
+
+		// } else {
+		// 	List.fetchList({
+		// 		author: match.params.id
+		// 	}).then(data => {
+		// 		// setLists(data);
+		// 	}).catch(err => {
+		// 		console.log(err)
+		// 	});
+		// }
 
 		setPerson(new Person(userSession.loadUserData().profile));
-	},[]);
+	},[match.params.id]);
 
 	const handleInputChange = (e) => {
 		const target = e.target;
@@ -151,7 +160,7 @@ const Profile = (props) => {
 			<Grid>
 				{
 					lists.map(list => {
-						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned}>{list.attrs.title}</ListPreview>
+						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned} author = {match.params.id}>{list.attrs.title}</ListPreview>
 					})
 				}
 			</Grid>
@@ -163,11 +172,12 @@ const mstp = state => {
 	return {
 		userSession: state.auth.userSession,
 		user: state.auth.anylistUser,
-		activeProfile: state.auth.activeProfile
+		activeProfile: state.auth.activeProfile,
+		lists: state.lists.profileLists
 	}
 }
 
-export default connect(mstp, {handleSignOut, setActiveProfile, updateUser})(Profile);
+export default connect(mstp, {handleSignOut, setActiveProfile, updateUser, getProfileLists})(Profile);
 
 const ProfileWrapper = styled.div`
 	display: flex;

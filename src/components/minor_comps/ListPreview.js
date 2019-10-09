@@ -7,7 +7,7 @@ import { setActiveList } from '../../actions';
 
 const ListPreview = (props) => {
 	return (
-		<StyledLink to = { `${props.isOwned ? "profile" : "list"}/${props.list._id}` }>
+		<StyledLink to = { `${props.author ? `${props.author}` : "list"}/${props.list._id}` }>
 			<ListPreviewWrapper onClick = { () => props.setActiveList(props.list)} >
 				{ props.list.attrs.title }
 			</ListPreviewWrapper>

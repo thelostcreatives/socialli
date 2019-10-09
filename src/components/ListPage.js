@@ -87,7 +87,7 @@ const ListPage = (props) => {
 
 	const handleDelete = () => {
 		deleteList(listData);
-		history.push("/profile");
+		history.push(`/${anylistUser.attrs.username}`);
 	}
 
 	return (
@@ -96,7 +96,7 @@ const ListPage = (props) => {
 				isDeleting ? 
 				<ConfirmationOverlay
 					message = "Delete List?"
-					details = "This will delete the list and will never be recovered."
+					details = "This will delete the list and all posts within the list."
 					confirm = {handleDelete}
 					cancel = {handleCancelClick}
 				/>
