@@ -17,7 +17,6 @@ const Main = (props) => {
                     <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
                     <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
                     <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
-                    <Route exact path = {`/${user.attrs.username}/:id`} component = { (props) => <Button text = "New Post" onClick = { () => props.history.push(`${props.match.url}/newPost`)} /> }/>
                 </nav>
                 <div id = "main">
                     <Switch>

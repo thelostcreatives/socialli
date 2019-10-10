@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroller';
 import { XSquare } from 'react-feather';
 
-import { Button, ConfirmationOverlay } from './index';
+import { Button, NewPostForm, ConfirmationOverlay } from './index';
 import { Header } from './Profile';
 import { setActiveList, followList, unfollowList, getPosts, updateList, deleteList } from '../actions';
 import { List } from '../models';
@@ -22,6 +22,7 @@ const ListPage = (props) => {
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [isCreatingPost, setIsCreatingPost] = useState(false);
 	const [listPageData, setListPageData] = useState({});
 
 	useEffect (() => {
@@ -92,6 +93,14 @@ const ListPage = (props) => {
 		history.push(`/${anylistUser.attrs.username}`);
 	}
 
+	const handleNewPostClick = () => {
+		setIsCreatingPost(true);
+	}
+
+	const doneCreatingPost = () => {
+		setIsCreatingPost(false);
+	}
+
 	return (
 		<ListPageWrapper>
 			{
@@ -123,6 +132,14 @@ const ListPage = (props) => {
 						}
 
 						<div className = "icons-container">
+							<div>
+								{
+									!isCreatingPost && isOwned ?
+									<Button onClick = {handleNewPostClick} text = "New Post"/>
+									:
+									null
+								}
+							</div>
 							{
 								isOwned ? 
 								<div>
@@ -148,6 +165,12 @@ const ListPage = (props) => {
 						</div>
 
 					</Header>
+					{
+						isCreatingPost ?
+						<NewPostForm match = {match} done = {doneCreatingPost}/>
+						:
+						null
+					}
 					<InfiniteScroll
 						pageStart = {0}
 						loadMore = {loadMore}

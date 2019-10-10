@@ -4,6 +4,7 @@ import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
+import { Button } from './index';
 import { createPost, setActiveList } from '../actions';
 import { List } from '../models';
 
@@ -13,7 +14,7 @@ const NewPostForm = (props) => {
 		setActiveList,
 		listData,
 		match,
-		history 
+		done
 	} = props;
 
 	const { author, title } = listData;
@@ -56,7 +57,7 @@ const NewPostForm = (props) => {
 				},
 				convertToRaw(contentState)
 			);
-			history.goBack();
+			done();
 		} else {
 			console.log("Tell us stories meyn");
 		}
@@ -83,13 +84,18 @@ const NewPostForm = (props) => {
 				placeholder = {"Share your story..."}
 			/>
 			<OptionsBar onClick = {e => e.stopPropagation()}>
-				<Button onClick = {toggleEmojiPicker} bgColor = "grey">Emoji</Button>
-				<Button onClick = {handlePost}>Post</Button>
-				{ isEmojiPickerVisible ? 
-					<EmojiPicker onEmojiClick={handleEmojiClick}/>
-					:
-					null
-				}
+				<div>
+					<Button onClick = {done} text = "Cancel"/>
+				</div>
+				<div>
+					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
+					<Button onClick = {handlePost} text = "Post"/>
+					{ isEmojiPickerVisible ? 
+						<EmojiPicker onEmojiClick={handleEmojiClick}/>
+						:
+						null
+					}
+				</div>
 			</OptionsBar>
 		</NewPostFormWrapper>
 	);
@@ -113,6 +119,7 @@ const NewPostFormWrapper = styled.div`
 	box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 
 	padding: 10px;
+	margin: 25px;
 	border-radius: 10px;
 	.DraftEditor-root{
 		min-height: 100px;
@@ -121,7 +128,7 @@ const NewPostFormWrapper = styled.div`
 
 const OptionsBar = styled.div`
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	position: relative;
 
 	.emoji-picker {
@@ -130,7 +137,7 @@ const OptionsBar = styled.div`
 	}
 `;
 
-export const Button = styled.button`
+export const StyledButton = styled.button`
 	border: 1px solid ${props => props.bgColor ? props.bgColor : "#599bb3"};
 	margin: 5px;
 	outline: none;

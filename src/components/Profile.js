@@ -117,7 +117,7 @@ const Profile = (props) => {
 				<div className="icons-container">
 					<div>
 						{
-							!isCreatingList ?
+							!isCreatingList && isOwned ?
 							<Button onClick = {handleNewListClick} text = "New List"/>
 							:
 							null
