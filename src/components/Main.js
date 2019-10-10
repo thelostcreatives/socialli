@@ -27,12 +27,14 @@ const Main = (props) => {
                         <Route exact path = "/follows" render = {(props) => (<div></div>)}/>
                         {/* <Route exact path = {`/${user.attrs.username}`} render = {(props) => <Profile {...props} isOwned = {true}/>}/> */}
                         <Route path = "/newList" component = {NewListForm}/>
-                        <Route exact path = "/:id" render = {(props) => <Profile {...props} isOwned = {false}/>}/>
-                        <Route exact path = {`/${user.attrs.username}/:id`} render = {(props) => <ListPage {...props} isOwned = {true} />}/>
+                        {/* <Route exact path = "/:id" render = {(props) => <Profile {...props} isOwned = {false}/>}/> */}
+                        <Route exact path = "/:id" component = {Profile}/>
+                        {/* <Route exact path = {`/${user.attrs.username}/:id`} render = {(props) => <ListPage {...props} isOwned = {true} />}/> */}
+                        <Route exact path = {`/${user.attrs.username}/:id`} component = {ListPage}/>
                         <Route path = {`/${user.attrs.username}/:id/newPost`} component = {NewPostForm}/>
+                        <Route exact path = "/post/:id" render = {(props) => <PostComp {...props} isOwned = {false} preview = {false}/>}/>
                         <Route path = "/:username/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
-                        <Route path = {`/${user.attrs.username}/post/:id`} render = {(props) => <PostComp {...props} isOwned = {true} preview = {false}/>}/>
-                        <Route path = "/post/:id" render = {(props) => <PostComp {...props} isOwned = {false} preview = {false}/>}/>
+                        {/* <Route path = {`/${user.attrs.username}/post/:id`} render = {(props) => <PostComp {...props} isOwned = {true} preview = {false}/>}/> */}
                     </Switch>
                 </div>
                 <div id = "aside">
