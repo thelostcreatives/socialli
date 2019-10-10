@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Button = (props) => {
     return (
-        <StyledButton onClick = { props.onClick }>{ props.text }</StyledButton>
+        <StyledButton onClick = { props.onClick } bgColor = { props.bgColor }>{ props.text }</StyledButton>
     )
 }
 
