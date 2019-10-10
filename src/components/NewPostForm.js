@@ -134,6 +134,7 @@ const OptionsBar = styled.div`
 	.emoji-picker {
 		position: absolute;
 		top: 100%;
+		z-index: 100;
 	}
 `;
 
