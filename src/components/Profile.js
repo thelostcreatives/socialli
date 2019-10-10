@@ -5,7 +5,7 @@ import {
 	Person,
 } from 'blockstack';
 
-import { ListPreview, Button  } from './index';
+import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
 import { AnyListUser, List } from '../models';
 
@@ -13,14 +13,11 @@ const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder
 
 const Profile = (props) => {
 
-	const { user, userSession, activeProfile, match, lists } = props;
+	const { user, userSession, activeProfile, match, history, lists } = props;
 
 	const { handleSignOut, setActiveProfile, updateUser, getProfileLists } = props;
 
-	console.log(user, activeProfile);
 	const isOwned = user.attrs.signingKeyId === activeProfile.attrs.signingKeyId;
-
-	console.log(isOwned)
 
 	let { username, name, description, other } = activeProfile.attrs;
 
@@ -40,6 +37,7 @@ const Profile = (props) => {
 	});
 
 	const [isEditing, setIsEditing] = useState(false);
+	const [isCreatingList, setIsCreatingList] = useState(false);
 	const [profileData, setProfileData] = useState({})
 
 	useEffect(() => {
@@ -83,6 +81,14 @@ const Profile = (props) => {
 		});
 	}
 
+	const handleNewListClick = () => {
+		setIsCreatingList(true);
+	}
+
+	const cancelNewList = () => {
+		setIsCreatingList(false);
+	}
+
 	return (
 		<ProfileWrapper>
 			<Header>
@@ -109,6 +115,14 @@ const Profile = (props) => {
 				</div>
 
 				<div className="icons-container">
+					<div>
+						{
+							!isCreatingList ?
+							<Button onClick = {handleNewListClick} text = "New List"/>
+							:
+							null
+						}
+					</div>
 					{isOwned ? 
 						<div>
 							{
@@ -121,6 +135,7 @@ const Profile = (props) => {
 								<Button onClick = {() => {
 									setIsEditing(true);
 								}} text = "Edit"/>
+
 							}
 							<Button
 								onClick = { (e) => handleSignOut(e, userSession) }
@@ -132,6 +147,12 @@ const Profile = (props) => {
 					}
 				</div>
 			</Header>
+			{
+				isCreatingList ?
+				<NewListForm cancel = {cancelNewList} history = {history}/>
+				:
+				null
+			}
 				
 			<Grid>
 				{
@@ -188,7 +209,7 @@ export const Header = styled.div`
 		border-bottom: 1px solid #d2d6d7;
         width: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-self: center;
 		margin-top: 10px;
 		padding: 5px;

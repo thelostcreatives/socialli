@@ -12,7 +12,9 @@ import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, history, listData, anylistUser, followedLists, isOwned, updateList, deleteList} = props;
+	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, history, listData, anylistUser, followedLists, updateList, deleteList} = props;
+
+	const isOwned = listData.attrs.signingKeyId === anylistUser.attrs.signingKeyId;
 
 	const posts = listPosts[match.params.id] ? listPosts[match.params.id] : [];
 

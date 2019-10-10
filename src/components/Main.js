@@ -17,7 +17,6 @@ const Main = (props) => {
                     <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
                     <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
                     <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
-                    <Route exact path = {`/${user.attrs.username}`} component = { (props) => <Button text = "New List" onClick = { () => props.history.push("/newList")}/> }/>
                     <Route exact path = {`/${user.attrs.username}/:id`} component = { (props) => <Button text = "New Post" onClick = { () => props.history.push(`${props.match.url}/newPost`)} /> }/>
                 </nav>
                 <div id = "main">
@@ -30,10 +29,10 @@ const Main = (props) => {
                         {/* <Route exact path = "/:id" render = {(props) => <Profile {...props} isOwned = {false}/>}/> */}
                         <Route exact path = "/:id" component = {Profile}/>
                         {/* <Route exact path = {`/${user.attrs.username}/:id`} render = {(props) => <ListPage {...props} isOwned = {true} />}/> */}
-                        <Route exact path = {`/${user.attrs.username}/:id`} component = {ListPage}/>
+                        <Route exact path = {`/list/:id`} component = {ListPage}/>
                         <Route path = {`/${user.attrs.username}/:id/newPost`} component = {NewPostForm}/>
                         <Route exact path = "/post/:id" render = {(props) => <PostComp {...props} isOwned = {false} preview = {false}/>}/>
-                        <Route path = "/:username/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
+                        {/* <Route path = "/:username/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/> */}
                         {/* <Route path = {`/${user.attrs.username}/post/:id`} render = {(props) => <PostComp {...props} isOwned = {true} preview = {false}/>}/> */}
                     </Switch>
                 </div>

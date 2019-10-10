@@ -37,10 +37,14 @@ const NewListForm = (props) => {
 					})
 				}
 			</select> */}
-			<Button onClick = { async () => {
-				const newList = await props.createList(title, description, props.author, posts_type);
-				props.history.push(`${props.author}/${newList._id}`)
-			 } } text = "Create"/>
+			<div className = "options">
+				<Button onClick = { async () => {
+					const newList = await props.createList(title, description, props.author, posts_type);
+					props.history.push(`list/${newList._id}`)
+				}} text = "Create"/>
+
+				<Button onClick={props.cancel} text = "Cancel"/>
+			</div>
 		</NewPostFormWrapper>
 	)
 	
@@ -81,5 +85,8 @@ const NewPostFormWrapper = styled.div`
 		min-width: 100%;
 		padding: 5px
 		height: 100px;
+	}
+	.options {
+		display: flex;
 	}
 `;
