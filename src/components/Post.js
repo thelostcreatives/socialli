@@ -8,18 +8,19 @@ import ClipBoard from 'clipboard';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
-import { Button } from './index';
-import { setExpandedPost, updatePost } from '../actions';
+import { Button, ConfirmationOverlay } from './index';
+import { setExpandedPost, updatePost, deletePost } from '../actions';
 import { Post as PostModel} from '../models';
 
 const Post = (props) => {
 
-    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, userSigningKeyId } = props;
+    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, userSigningKeyId } = props;
     
     const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
     const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     new ClipBoard('.postLink');
 
@@ -51,6 +52,20 @@ const Post = (props) => {
         setIsEditing(false);
     }
 
+    const handleDeleteClick = () => {
+        
+        setIsDeleting(true);
+    }
+
+    const handleCancel = () => {
+        setIsDeleting(false);
+    }
+
+    const handleDelete = () => {
+        deletePost(expandedPost);
+        history.goBack();
+    }
+
     const editor = useRef(null);
 
 	const focusEditor = () => {
@@ -61,50 +76,64 @@ const Post = (props) => {
 
     return (
         <PostWrapper preview = {preview} onClick = {preview ? handlePreviewClick : null}>
-            <div id = "post-header">
-                <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
-                    <h4 className = "list-title">
-                        {metadata ? metadata.listTitle : listId}
-                    </h4>
-                </Link>
-                <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
-                    {metadata ? `@${metadata.listAuthor}` : null}
-                </Link>
-            </div>
-            
-            <Editor
-                ref = {editor}
-                editorState = {editorState}
-                onChange = {editorState => setEditorState(editorState)}
-                readOnly = {!isEditing}
-            />
+            {
+                isDeleting ? 
+                <ConfirmationOverlay 
+                    message = "Delete Post?" 
+                    details = "This will delete your post and cannot be recovered."
+                    confirm = {handleDelete} 
+                    cancel = {handleCancel}
+                />
+                :
+                <>
+                    <div id = "post-header">
+                        <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
+                            <h4 className = "list-title">
+                                {metadata ? metadata.listTitle : listId}
+                            </h4>
+                        </Link>
+                        <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
+                            {metadata ? `@${metadata.listAuthor}` : null}
+                        </Link>
+                    </div>
+                    <Editor
+                        ref = {editor}
+                        editorState = {editorState}
+                        onChange = {editorState => setEditorState(editorState)}
+                        readOnly = {!isEditing}
 
-            {preview ? null :
-                <div id = "icons-container">
-                    <Tippy content = "copied link" trigger = "click">
-                        <div>
-                            <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
-                        </div>
-                    </Tippy>
-                    {
-                        userSigningKeyId === signingKeyId ? 
-                        <div>
+                    />
+                    {preview ? null :
+                        <div id = "icons-container">
+                            <Tippy content = "copied link" trigger = "click">
+                                <div>
+                                    <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
+                                </div>
+                            </Tippy>
                             {
-                                !isEditing ?
-                                <Button onClick = { () => {
-                                    setIsEditing(true);
-                                    focusEditor();
-                                }} text = "Edit" />
+                                userSigningKeyId === signingKeyId ? 
+                                <div>
+                                    {
+                                        !isEditing ?
+                                        <Button onClick = { () => {
+                                            setIsEditing(true);
+                                            focusEditor();
+                                        }} text = "Edit" />
+                                        :
+                                        <div className = "edit-options">
+                                            <Button onClick = {handleUpdateClick} text = "Update"/>
+                                            <XSquare onClick = {handleDeleteClick} className = "delete"/>
+                                        </div>
+                                    }
+
+                                </div>
                                 :
-                                <Button onClick = {handleUpdateClick} text = "Update"/>
+                                null
                             }
                         </div>
-                        :
-                        null
                     }
-                </div>
+                </>
             }
-            
         </PostWrapper>
     )
 }
@@ -117,7 +146,7 @@ const mstp = (state) => {
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, updatePost})(Post)
+    connect(mstp, {setExpandedPost, updatePost, deletePost})(Post)
 );
 
 const PostWrapper = styled.div`
@@ -136,6 +165,12 @@ const PostWrapper = styled.div`
     #options-bar {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+    }
+
+    .edit-options {
+        display: flex;
+        justify-content: space-evenly;
         align-items: center;
     }
 
@@ -174,6 +209,14 @@ const PostWrapper = styled.div`
         &:hover {
             color: black;
             cursor: pointer;
+        }
+    }
+
+    .delete {
+        color: #e86813;
+        &:hover {
+            cursor: pointer;
+            color: #e81313;
         }
     }
 

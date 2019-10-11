@@ -5,23 +5,28 @@ import {
 	Person,
 } from 'blockstack';
 
-import { ListPreview, Button  } from './index';
-import { handleSignOut, setActiveProfile, updateUser } from '../actions';
+import { ListPreview, Button, NewListForm  } from './index';
+import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
 import { AnyListUser, List } from '../models';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
 const Profile = (props) => {
 
-	const { user, isOwned, userSession, activeProfile, handleSignOut, setActiveProfile, match, updateUser  } = props;
+	const { user, userSession, activeProfile, match, history, lists } = props;
 
-	let { username, name, description, other } = isOwned ? user.attrs : activeProfile.attrs;
+	const { handleSignOut, setActiveProfile, updateUser, getProfileLists } = props;
+
+	const isOwned = user.attrs.signingKeyId === activeProfile.attrs.signingKeyId;
+
+	let { username, name, description, other } = activeProfile.attrs;
 
 	if ( !other ) {
 		other = {
 			avatarUrl: avatarFallbackImage
 		}
 	}
+
 	const [person, setPerson] = useState({
 		name() {
 			return 'Anonymous';
@@ -31,46 +36,28 @@ const Profile = (props) => {
 		},
 	});
 
-	const [lists, setLists] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
+	const [isCreatingList, setIsCreatingList] = useState(false);
 	const [profileData, setProfileData] = useState({})
 
 	useEffect(() => {
-		if (!isOwned) {
-			AnyListUser.fetchList({
-				username: match.params.id
-			}).then(anylistUser => {
-				setActiveProfile(anylistUser[0]);
-			}).catch(err => {
-				console.log(err);
-			});
-		}
-	}, []);
+		AnyListUser.fetchList({
+			username: match.params.id
+		}).then(anylistUser => {
+			setActiveProfile(anylistUser[0]);
+		}).catch(err => {
+			console.log(err);
+		});
+	}, [match.params.id]);
 
 	useEffect (() => {
 		setProfileData({username, name, description, other})
-	}, [user]);
+	}, [match.params.id]);
 
 	useEffect(() => {
-
-		if (isOwned) {
-			List.fetchOwnList().then(data => {
-				setLists(data);
-			}).catch(err => {
-				console.log(err)
-			});
-		} else {
-			List.fetchList({
-				author: match.params.id
-			}).then(data => {
-				setLists(data);
-			}).catch(err => {
-				console.log(err)
-			});
-		}
-
+		getProfileLists(match.params.id);
 		setPerson(new Person(userSession.loadUserData().profile));
-	},[]);
+	},[match.params.id]);
 
 	const handleInputChange = (e) => {
 		const target = e.target;
@@ -88,11 +75,18 @@ const Profile = (props) => {
 			}
 		}
 
-
 		setProfileData({
 			...profileData,
 			[name] : value
 		});
+	}
+
+	const handleNewListClick = () => {
+		setIsCreatingList(true);
+	}
+
+	const cancelNewList = () => {
+		setIsCreatingList(false);
 	}
 
 	return (
@@ -107,9 +101,9 @@ const Profile = (props) => {
 							<input type = "text" placeholder = "Avatar url" value = {profileData.other.avatarUrl ? profileData.other.avatarUrl : ""} name = "avatarUrl" onChange = {handleInputChange}/>
 						</label>
 							<label htmlFor = "name">Name</label>
-							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name} name = "name" onChange = {handleInputChange}/>
+							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name ? profileData.name : ""} name = "name" onChange = {handleInputChange}/>
 							<label htmlFor = "description">Description</label>
-							<textarea className = "description" type = "text" placeholder = "Tell people about yourself" value = {profileData.description} name = "description" onChange = {handleInputChange}/>
+							<textarea className = "description" type = "text" placeholder = "Tell people about yourself" value = {profileData.description ? profileData.description : ""} name = "description" onChange = {handleInputChange}/>
 						</div>
 						:
 						<div>
@@ -121,8 +115,14 @@ const Profile = (props) => {
 				</div>
 
 				<div className="icons-container">
-					
-
+					<div>
+						{
+							!isCreatingList && isOwned ?
+							<Button onClick = {handleNewListClick} text = "New List"/>
+							:
+							null
+						}
+					</div>
 					{isOwned ? 
 						<div>
 							{
@@ -135,6 +135,7 @@ const Profile = (props) => {
 								<Button onClick = {() => {
 									setIsEditing(true);
 								}} text = "Edit"/>
+
 							}
 							<Button
 								onClick = { (e) => handleSignOut(e, userSession) }
@@ -145,13 +146,18 @@ const Profile = (props) => {
 						null
 					}
 				</div>
-				
 			</Header>
+			{
+				isCreatingList ?
+				<NewListForm cancel = {cancelNewList} history = {history}/>
+				:
+				null
+			}
 				
 			<Grid>
 				{
 					lists.map(list => {
-						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned}>{list.attrs.title}</ListPreview>
+						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned} author = {match.params.id}>{list.attrs.title}</ListPreview>
 					})
 				}
 			</Grid>
@@ -163,11 +169,12 @@ const mstp = state => {
 	return {
 		userSession: state.auth.userSession,
 		user: state.auth.anylistUser,
-		activeProfile: state.auth.activeProfile
+		activeProfile: state.auth.activeProfile,
+		lists: state.lists.profileLists
 	}
 }
 
-export default connect(mstp, {handleSignOut, setActiveProfile, updateUser})(Profile);
+export default connect(mstp, {handleSignOut, setActiveProfile, updateUser, getProfileLists})(Profile);
 
 const ProfileWrapper = styled.div`
 	display: flex;
@@ -202,7 +209,7 @@ export const Header = styled.div`
 		border-bottom: 1px solid #d2d6d7;
         width: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-self: center;
 		margin-top: 10px;
 		padding: 5px;

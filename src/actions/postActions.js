@@ -10,6 +10,9 @@ export const RECEIVED_LIST_POSTS = "RECEIVED_LIST_POSTS";
 export const UPDATING_POST = "UPDATING_POST";
 export const POST_UPDATED = "POST_UPDATED";
 
+export const DELETING_POST = "DELETING_POST";
+export const DELETED_POST = "DELETED_POST";
+
 export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
 
@@ -101,7 +104,7 @@ export const setExpandedPost = (post) => {
 	}
 }
 
-export const updatePost = (post, content) => async (dispatch)=> {
+export const updatePost = (post, content) => async (dispatch) => {
 	dispatch({
 		type: UPDATING_POST
 	});
@@ -116,4 +119,18 @@ export const updatePost = (post, content) => async (dispatch)=> {
 		type: POST_UPDATED,
 		payload: updatedPost
 	});
+}
+
+export const deletePost = (post) => async (dispatch) => {
+	dispatch({
+		type: DELETING_POST
+	});
+
+	await post.destroy();
+
+	dispatch({
+		type: DELETED_POST,
+		payload: post
+	});
+
 }

@@ -1,8 +1,12 @@
-import { List } from '../models';
+import { List, Post } from '../models';
 import { USER_UPDATED } from './index';
 
 export const CREATING_LIST = "CREATING_LIST";
 export const LIST_CREATED = "LIST_CREATED";
+
+export const GETTING_PROFILE_LISTS = "GETTING_PROFILE_LISTS";
+export const RECEIVED_PROFILE_LISTS = "RECEIVED_PROFILE_LISTS";
+
 export const SET_ACTIVE_LIST = "SET_ACTIVE_LIST";
 
 export const ADDING_LIST_TO_FOLLOWS = "ADDING_LIST_TO_FOLLOWS";
@@ -11,6 +15,9 @@ export const REMOVING_LIST_FROM_FOLLOWS = "REMOVING_LIST_FROM_FOLLOWS";
 
 export const UPDATING_LIST = "UPDATING_LIST";
 export const LIST_UPDATED = "LIST_UPDATED";
+
+export const DELETING_LIST = "DELETING_LIST";
+export const LIST_DELETED = "LIST_DELETED";
 
 export const createList = (title, description, author, posts_type) => async (dispatch) => {
     dispatch({
@@ -31,6 +38,30 @@ export const createList = (title, description, author, posts_type) => async (dis
     });
 
 	return listdata;
+}
+
+export const getProfileLists = (username) => async (dispatch) => {
+
+    dispatch({
+        type: GETTING_PROFILE_LISTS,
+    });
+
+    if (username) {
+        const profileLists = await List.fetchList({
+            author: username
+        });
+
+        dispatch({
+            type: RECEIVED_PROFILE_LISTS,
+            payload: profileLists,
+        });
+    } else {
+        dispatch({
+            type: RECEIVED_PROFILE_LISTS,
+            payload: [],
+        });
+    }
+    
 }
 
 export const setActiveList = (list) => {
@@ -84,8 +115,6 @@ export const updateList = (list, updates) => async (dispatch) => {
         type: UPDATING_LIST
     });
 
-    console.log(updates)
-
     list.update(updates);
 
     const updatedList = await list.save();
@@ -94,4 +123,25 @@ export const updateList = (list, updates) => async (dispatch) => {
         type: LIST_UPDATED,
         payload: updatedList
     });
+}
+
+export const deleteList = (list, redirect) => async (dispatch) => {
+    dispatch({
+        type: DELETING_LIST
+    });
+
+    const posts = await Post.fetchList({
+        listId: list._id
+    });
+
+    await Promise.all(posts.map(post => post.destroy()));
+
+    await list.destroy();
+
+    dispatch({
+        type: LIST_DELETED,
+        payload: list
+    });
+
+    redirect();
 }

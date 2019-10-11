@@ -1,10 +1,14 @@
 import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { UserFeed, Explore, Profile, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
 
 const Main = (props) => {
+
+    const { user } = props;
+
     return(
         <Router>
             <MainWrapper>
@@ -12,23 +16,18 @@ const Main = (props) => {
                     <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
                     <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
                     <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
-                    <NavLink exact to = "/profile" activeStyle = { NavActiveStyle }>Profile</NavLink>
-                    <Route exact path = "/profile" component = { (props) => <Button text = "New List" onClick = { () => props.history.push("/newList")}/> }/>
-                    <Route exact path = "/profile/:id" component = { (props) => <Button text = "New Post" onClick = { () => props.history.push(`${props.match.url}/newPost`)} /> }/>
+                    <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
                 </nav>
                 <div id = "main">
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
                         <Route exact path = "/explore" component = {Explore}/>
                         <Route exact path = "/follows" render = {(props) => (<div></div>)}/>
-                        <Route exact path = "/profile" render = {(props) => <Profile {...props} isOwned = {true}/>}/>
                         <Route path = "/newList" component = {NewListForm}/>
-                        <Route exact path = "/:id" render = {(props) => <Profile {...props} isOwned = {false}/>}/>
-                        <Route exact path = "/profile/:id" render = {(props) => <ListPage {...props} isOwned = {true} />}/>
-                        <Route path = "/list/:id" render = {(props) => <ListPage {...props} isOwned = {false} />}/>
-                        <Route path = "/profile/:id/newPost" component = {NewPostForm}/>
-                        <Route path = "profile/post/:id" render = {(props) => <PostComp {...props} isOwned = {true} preview = {false}/>}/>
-                        <Route path = "/post/:id" render = {(props) => <PostComp {...props} isOwned = {false} preview = {false}/>}/>
+                        <Route exact path = "/:id" component = {Profile}/>
+                        <Route exact path = {`/list/:id`} component = {ListPage}/>
+                        <Route path = {`/${user.attrs.username}/:id/newPost`} component = {NewPostForm}/>
+                        <Route exact path = "/post/:id" render = {(props) => <PostComp {...props} preview = {false}/>}/>
                     </Switch>
                 </div>
                 <div id = "aside">
@@ -39,7 +38,13 @@ const Main = (props) => {
     )
 }
 
-export default withRouter(Main);
+const mstp = (state) => {
+    return {
+        user: state.auth.anylistUser
+    }
+}
+
+export default connect(mstp, {})(withRouter(Main));
 
 const MainWrapper = styled.div`
     display: grid;
