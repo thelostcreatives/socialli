@@ -4,10 +4,6 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.js';
 import 'draft-js/dist/Draft.css';
 
-// Require Sass file so webpack can build it
-//import 'bootstrap/dist/css/bootstrap.css';
-//import'./styles/style.css';
-
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
