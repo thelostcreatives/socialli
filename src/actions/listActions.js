@@ -125,7 +125,7 @@ export const updateList = (list, updates) => async (dispatch) => {
     });
 }
 
-export const deleteList = (list) => async (dispatch) => {
+export const deleteList = (list, redirect) => async (dispatch) => {
     dispatch({
         type: DELETING_LIST
     });
@@ -134,7 +134,7 @@ export const deleteList = (list) => async (dispatch) => {
         listId: list._id
     });
 
-    posts.forEach(async post => await post.destroy())
+    await Promise.all(posts.map(post => post.destroy()));
 
     await list.destroy();
 
@@ -142,4 +142,6 @@ export const deleteList = (list) => async (dispatch) => {
         type: LIST_DELETED,
         payload: list
     });
+
+    redirect();
 }

@@ -12,7 +12,7 @@ import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, history, listData, anylistUser, followedLists, updateList, deleteList} = props;
+	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, history, listData, anylistUser, followedLists, updateList, deleteList, deletingList} = props;
 
 	const isOwned = listData.attrs.signingKeyId === anylistUser.attrs.signingKeyId;
 
@@ -89,8 +89,7 @@ const ListPage = (props) => {
 	}
 
 	const handleDelete = () => {
-		deleteList(listData);
-		history.push(`/${anylistUser.attrs.username}`);
+		deleteList(listData, () => history.push(`/${anylistUser.attrs.username}`));
 	}
 
 	const handleNewPostClick = () => {
@@ -105,6 +104,12 @@ const ListPage = (props) => {
 		<ListPageWrapper>
 			{
 				isDeleting ? 
+				deletingList ?
+				<div>
+					<h2>Deleting List</h2>
+					<p>Do not close this tab while deleting all your posts.</p>
+				</div>
+				:
 				<ConfirmationOverlay
 					message = "Delete List?"
 					details = "This will delete the list and all posts within the list."
@@ -197,7 +202,8 @@ const mstp = (state) => {
         anylistUser: state.auth.anylistUser,
 		followedLists: state.auth.anylistUser.attrs.followedLists ? state.auth.anylistUser.attrs.followedLists : [],
 		listPosts: state.posts.lists,
-		hasMore: state.posts.listHasMore
+		hasMore: state.posts.listHasMore,
+		deletingList: state.lists.deletingList
 	}
 }
 

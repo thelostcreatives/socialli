@@ -6,7 +6,8 @@ const initialState = {
 			signingKeyId: null
 		}
 	},
-	profileLists: []
+	profileLists: [],
+	deletingList: false
 }
 
 const branchTable = {
@@ -26,10 +27,17 @@ const branchTable = {
 			...state, activeList: action.payload
 		}
 	},
+	[actions.DELETING_LIST]: (state, action) => {
+		return {
+			...state,
+			deletingList: true
+		}
+	},
 	[actions.LIST_DELETED]: (state, action) => {
 		return {
 			...state,
-			profileLists: [...state.profileLists].filter((list) => list._id !== action.payload._id)
+			profileLists: [...state.profileLists].filter((list) => list._id !== action.payload._id),
+			deletingList: false
 		}
 	}
 }
