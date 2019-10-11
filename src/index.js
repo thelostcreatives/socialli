@@ -17,9 +17,11 @@ import rootReducer from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const middlewares = [thunk, process.env.NODE_ENV !== 'production' && logger].filter(middleware => middleware !== false);
+
 const store = createStore(
     rootReducer,
-    composeEnhancers(applyMiddleware(thunk, logger))
+    composeEnhancers(applyMiddleware(...middlewares))
 )
 
 ReactDOM.render(<Provider store = {store}>
