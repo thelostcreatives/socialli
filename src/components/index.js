@@ -7,5 +7,7 @@ export { default as NewListForm} from './NewListForm';
 export { default as NewPostForm} from './NewPostForm';
 export { default as ListPage } from './ListPage';
 export { default as PostComp } from './Post';
+export { default as Comments} from './Comments';
+export { default as Comment} from './Comment';
 
 export * from './minor_comps';
