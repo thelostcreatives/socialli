@@ -9,5 +9,6 @@ export { default as ListPage } from './ListPage';
 export { default as PostComp } from './Post';
 export { default as Comments} from './Comments';
 export { default as Comment} from './Comment';
+export { default as NewCommentForm} from './NewCommentForm';
 
 export * from './minor_comps';
