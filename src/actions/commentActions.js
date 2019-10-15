@@ -21,6 +21,7 @@ export const createComment = (postId, metadata, content) => async (dispatch) => 
 
 	dispatch({
 		type: COMMENT_CREATED,
+		postId,
 		payload: comment
 	});
 }
