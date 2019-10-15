@@ -5,7 +5,7 @@ const initialState = {
 }
 
 const branchTable = {
-	[actions.GETTING_COMMENTS]: (state, action) => {
+	[actions.COMMENTS_RECEIVED]: (state, action) => {
 		return {
 			...state,
 			[action.postId]: state[action.postId] ? [...state[action.postId], action.payload] : []
