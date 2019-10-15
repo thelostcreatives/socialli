@@ -8,7 +8,7 @@ import ClipBoard from 'clipboard';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
-import { Button, ConfirmationOverlay } from './index';
+import { Button, ConfirmationOverlay, Comments } from './index';
 import { setExpandedPost, updatePost, deletePost } from '../actions';
 import { Post as PostModel} from '../models';
 
@@ -104,33 +104,36 @@ const Post = (props) => {
 
                     />
                     {preview ? null :
-                        <div id = "icons-container">
-                            <Tippy content = "copied link" trigger = "click">
-                                <div>
-                                    <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
-                                </div>
-                            </Tippy>
-                            {
-                                userSigningKeyId === signingKeyId ? 
-                                <div>
-                                    {
-                                        !isEditing ?
-                                        <Button onClick = { () => {
-                                            setIsEditing(true);
-                                            focusEditor();
-                                        }} text = "Edit" />
-                                        :
-                                        <div className = "edit-options">
-                                            <Button onClick = {handleUpdateClick} text = "Update"/>
-                                            <XSquare onClick = {handleDeleteClick} className = "delete"/>
-                                        </div>
-                                    }
+                        <>
+                            <div id = "icons-container">
+                                <Tippy content = "copied link" trigger = "click">
+                                    <div>
+                                        <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
+                                    </div>
+                                </Tippy>
+                                {
+                                    userSigningKeyId === signingKeyId ? 
+                                    <div>
+                                        {
+                                            !isEditing ?
+                                            <Button onClick = { () => {
+                                                setIsEditing(true);
+                                                focusEditor();
+                                            }} text = "Edit" />
+                                            :
+                                            <div className = "edit-options">
+                                                <Button onClick = {handleUpdateClick} text = "Update"/>
+                                                <XSquare onClick = {handleDeleteClick} className = "delete"/>
+                                            </div>
+                                        }
+                                    </div>
+                                    :
+                                    null
+                                }
+                            </div>
 
-                                </div>
-                                :
-                                null
-                            }
-                        </div>
+                            <Comments post = {expandedPost}/>
+                        </>
                     }
                 </>
             }
