@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
 import { Button } from './index';
-import { createPost, setActiveList } from '../actions';
+import { createComment, setActiveList } from '../actions';
 import { List } from '../models';
 
 const NewCommentForm = (props) => {
@@ -16,7 +16,8 @@ const NewCommentForm = (props) => {
 		// listData,
 		anylistUser,
 		match,
-		done
+		done,
+		createComment
 	} = props;
 
 	// const { author, title } = listData;
@@ -49,9 +50,9 @@ const NewCommentForm = (props) => {
 		focusEditor();
 	}, []);
 
-	const createComment = () => {
-		return 0;
-	}
+	// const createComment = () => {
+	// 	return 0;
+	// }
 
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
@@ -63,9 +64,9 @@ const NewCommentForm = (props) => {
 				},
 				convertToRaw(contentState)
 			);
-			done();
+			// done();
 		} else {
-			console.log("Tell us stories meyn");
+			console.log("Tell us what you think meyn");
 		}
 	}
 
@@ -112,7 +113,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {})(NewCommentForm);
+export default connect(mstp, {createComment})(NewCommentForm);
 
 const NewCommentFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
