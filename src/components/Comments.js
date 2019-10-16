@@ -18,11 +18,7 @@ const Comments = (props) => {
 		<>
 			{
 				comments ?
-				comments.map(comment => {
-					return (
-						<Comment/>
-					)
-				})
+				comments.map(comment => <Comment comment = {comment}/>)
 				:
 				null
 			}
