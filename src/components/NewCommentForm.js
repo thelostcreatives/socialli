@@ -34,25 +34,9 @@ const NewCommentForm = (props) => {
 		editor.current.focus();
 	}
 
-	// useEffect (() => {
-	// 	const getListData = async () => {
-	// 		const data = await List.findById(`${match.params.id}`);
-	// 		return data;
-	// 	}
-	// 	if (listData._id !== match.params.id) {
-	// 		getListData().then(data => {
-	// 			setActiveList(data);
-	// 		});
-	// 	}
-	// }, [listData]);
-
 	useEffect (() => {
 		focusEditor();
 	}, []);
-
-	// const createComment = () => {
-	// 	return 0;
-	// }
 
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
@@ -64,7 +48,7 @@ const NewCommentForm = (props) => {
 				},
 				convertToRaw(contentState)
 			);
-			// done();
+			setEditorState(EditorState.createEmpty());
 		} else {
 			console.log("Tell us what you think meyn");
 		}
