@@ -12,13 +12,13 @@ const Comments = (props) => {
 		if(post && !comments){
 			getComments(0, 5, post._id);
 		}
-	}, [post]);
+	}, [post, comments]);
 
 	return (
 		<>
 			{
 				comments ?
-				comments.map(comment => <Comment comment = {comment}/>)
+				comments.map(comment => <Comment key = {comment._id} comment = {comment}/>)
 				:
 				null
 			}

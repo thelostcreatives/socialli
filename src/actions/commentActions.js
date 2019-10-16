@@ -6,6 +6,12 @@ export const COMMENT_CREATED = 'COMMENT_CREATED';
 export const GETTING_COMMENTS = 'GETTING_COMMENTS';
 export const COMMENTS_RECEIVED = "COMMENTS_RECEIVED";
 
+export const UPDATING_COMMENT = 'UPDATING_COMMENT';
+export const COMMENT_UPDATED = 'COMMENT_UPDATED';
+
+export const DELETING_COMMENT = 'DELETING_COMMENT';
+export const COMMENT_DELETED = 'COMMENT_DELETED';
+
 export const createComment = (postId, metadata, content) => async (dispatch) => {
 	dispatch({
 		type: CREATE_COMMENT
@@ -43,4 +49,35 @@ export const getComments = (offset, limit, postId) => async (dispatch) => {
 		postId,
 		payload: comments
 	});
+}
+
+export const updateComment = (comment, content) => async (dispatch) => {
+	dispatch({
+		type: UPDATING_COMMENT
+	});
+
+	comment.update({
+		content
+	});
+
+	const updatedPost = await comment.save();
+
+	dispatch({
+		type: COMMENT_UPDATED,
+		payload: updatedPost
+	});
+}
+
+export const deleteComment = (comment) => async (dispatch) => {
+	dispatch({
+		type: DELETING_COMMENT
+	});
+
+	await comment.destroy();
+
+	dispatch({
+		type: COMMENT_DELETED,
+		payload: comment
+	});
+
 }

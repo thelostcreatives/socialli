@@ -26,6 +26,14 @@ const branchTable = {
 					}
 				}).reverse() : [...action.payload].reverse()
 		}
+	},
+	[actions.COMMENT_DELETED]: (state, action) => {
+		const deletedComment = action.payload;
+		const { postId } = deletedComment.attrs;
+		return {
+			...state,
+			[postId]: state[postId].filter((comment) => comment._id !== deletedComment._id)
+		}
 	}
 }
 

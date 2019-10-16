@@ -6,13 +6,15 @@ import { Editor, EditorState, Modifier, convertToRaw, convertFromRaw } from 'dra
 import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
+import { Button } from './index';
+import { updateComment, deleteComment } from '../actions';
+
 const Comment = (props) => {
 
 	const { comment, userSigningKeyId} = props;
+	const { updateComment, deleteComment } = props;
 
 	const { content, metadata, signingKeyId } = comment.attrs;
-
-	console.log(content, metadata)
 
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 	const [isEditing, setIsEditing] = useState(false);
@@ -22,11 +24,21 @@ const Comment = (props) => {
 	const stopPropagation = (e) => e.stopPropagation();
 
 	const toggleEdit = () => {
-		if (isEditing) {
+		if (!isEditing) {
 			editor.current.focus();
 		}
 		setIsEditing(!isEditing);
 	}
+
+	const handleUpdateClick = () => {
+
+	}
+
+	const handleDeleteClick = () => {
+		deleteComment(comment);
+	}
+
+
 
 	return (
 		<CommentWrapper>
@@ -40,12 +52,21 @@ const Comment = (props) => {
 					onChange = {editorState => setEditorState(editorState)}
 					readOnly = {!isEditing}
 				/>
+				{
+					isEditing ?
+					<div>
+						<Button onClick = {toggleEdit} text = "Cancel"/>
+						<Button onClick = {()=>{}} text = "Update"/>
+					</div>
+					:
+					null
+				}
 			</div>
 			{
 				signingKeyId === userSigningKeyId ?
 				<div className = "icons">
 					<Edit2 size = '15' onClick = {toggleEdit}/>
-					<XSquare size = '15'/>
+					<XSquare size = '15' onClick = {handleDeleteClick}/>
 				</div>
 				:
 				null
@@ -61,7 +82,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {})(Comment);
+export default connect(mstp, {updateComment, deleteComment})(Comment);
 
 const CommentWrapper = styled.div`
 	display: flex;
