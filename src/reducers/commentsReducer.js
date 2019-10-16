@@ -24,7 +24,7 @@ const branchTable = {
 					} else {
 						return false;
 					}
-				}) : action.payload
+				}).reverse() : [...action.payload].reverse()
 		}
 	}
 }
