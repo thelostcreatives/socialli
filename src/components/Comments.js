@@ -9,12 +9,10 @@ const Comments = (props) => {
 	const { post, comments, getComments } = props;
 
 	useEffect (() => {
-		if(post){
+		if(post && !comments){
 			getComments(0, 5, post._id);
 		}
 	}, [post]);
-
-	console.log(comments)
 
 	return (
 		<>
@@ -31,9 +29,6 @@ const Comments = (props) => {
 
 const mstp = (state) => {
 	const postId = state.posts.expandedPost._id;
-
-	console.log(postId)
-
 	return {
 		comments: state.comments[postId]
 	}
