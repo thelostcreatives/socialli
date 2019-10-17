@@ -10,7 +10,7 @@ const Comments = (props) => {
 
 	useEffect (() => {
 		if(post && !comments){
-			getComments(0, 5, post._id);
+			getComments(0, false, post._id);
 		}
 	}, [post, comments]);
 
