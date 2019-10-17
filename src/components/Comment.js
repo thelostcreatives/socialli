@@ -31,7 +31,12 @@ const Comment = (props) => {
 	}
 
 	const handleUpdateClick = () => {
-
+		const contentState = editorState.getCurrentContent(); 
+        updateComment(
+            comment,
+            convertToRaw(contentState)
+        );
+        setIsEditing(false);
 	}
 
 	const handleDeleteClick = () => {
@@ -42,7 +47,7 @@ const Comment = (props) => {
 
 	return (
 		<CommentWrapper>
-			<div>
+			<div className = "content">
 				<Link to = {`/${metadata ? metadata.commentAuthor: null}`} className = "author" onClick = {stopPropagation}>
 					{metadata ? `@${metadata.commentAuthor}` : null}
 				</Link>
@@ -54,9 +59,13 @@ const Comment = (props) => {
 				/>
 				{
 					isEditing ?
-					<div>
-						<Button onClick = {toggleEdit} text = "Cancel"/>
-						<Button onClick = {()=>{}} text = "Update"/>
+					<div className = "edit-options">
+						<div>
+							<Button onClick = {toggleEdit} text = "Cancel"/>
+						</div>
+						<div>
+							<Button onClick = {handleUpdateClick} text = "Update"/>
+						</div>
 					</div>
 					:
 					null
@@ -95,6 +104,10 @@ const CommentWrapper = styled.div`
 		font-size: 13px;
 	}
 
+	.content {
+		width: fill-available;
+	}
+
 	.DraftEditor-root {
 		padding-left: 10px;
 		margin: 10px 0;
@@ -110,6 +123,11 @@ const CommentWrapper = styled.div`
 				color: black;
 			}
 		}
+	}
+
+	.edit-options {
+		display: flex;
+		justify-content: space-between;
 	}
 
 `;
