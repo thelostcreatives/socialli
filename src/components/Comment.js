@@ -17,7 +17,9 @@ const Comment = (props) => {
 	const { content, metadata, signingKeyId } = comment.attrs;
 
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+	const [prevEditorState, setPrevEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 	const [isEditing, setIsEditing] = useState(false);
+	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
 	const editor = useRef(null);
 
@@ -26,8 +28,22 @@ const Comment = (props) => {
 	const toggleEdit = () => {
 		if (!isEditing) {
 			editor.current.focus();
+		} else {
+			setEditorState(prevEditorState);
 		}
 		setIsEditing(!isEditing);
+	}
+
+	const toggleEmojiPicker = () => {
+		setIsEmojiPickerVisible(!isEmojiPickerVisible);
+	}
+
+	const handleEmojiClick = (emoji, data) => {
+		const selection = editorState.getSelection();
+		const contentState = editorState.getCurrentContent();
+		const newState =  Modifier.insertText(contentState, selection, String.fromCodePoint(`0x${emoji}`))
+		const state = EditorState.push(editorState, newState, "insert-characters");
+		setEditorState(state);
 	}
 
 	const handleUpdateClick = () => {
@@ -36,7 +52,9 @@ const Comment = (props) => {
             comment,
             convertToRaw(contentState)
         );
-        setIsEditing(false);
+		setIsEditing(false);
+		setIsEmojiPickerVisible(false);
+		setPrevEditorState(editorState);
 	}
 
 	const handleDeleteClick = () => {
@@ -64,7 +82,13 @@ const Comment = (props) => {
 							<Button onClick = {toggleEdit} text = "Cancel"/>
 						</div>
 						<div>
+							<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 							<Button onClick = {handleUpdateClick} text = "Update"/>
+							{ isEmojiPickerVisible ? 
+								<EmojiPicker onEmojiClick={handleEmojiClick}/>
+								:
+								null
+							}
 						</div>
 					</div>
 					:
@@ -128,6 +152,13 @@ const CommentWrapper = styled.div`
 	.edit-options {
 		display: flex;
 		justify-content: space-between;
+		position: relative;
+
+		.emoji-picker {
+			position: absolute;
+			top: 100%;
+			z-index: 100;
+		}
 	}
 
 `;
