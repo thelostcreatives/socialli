@@ -19,6 +19,7 @@ const Comment = (props) => {
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 	const [prevEditorState, setPrevEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 	const [isEditing, setIsEditing] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
 	const editor = useRef(null);
@@ -57,10 +58,13 @@ const Comment = (props) => {
 		setPrevEditorState(editorState);
 	}
 
-	const handleDeleteClick = () => {
-		deleteComment(comment);
+	const toggleDelete = () => {
+		setIsDeleting(!isDeleting);
 	}
 
+	const handleDelete = () => {
+		deleteComment(comment);
+	}
 
 
 	return (
@@ -94,12 +98,25 @@ const Comment = (props) => {
 					:
 					null
 				}
+				{
+					isDeleting ?
+					<div className = "edit-options">
+						<div>
+							<Button onClick = {toggleDelete} text = "Cancel"/>
+						</div>
+						<div>
+							<Button onClick = {handleDelete} text = "Delete"/>
+						</div>
+					</div>
+					:
+					null
+				}
 			</div>
 			{
 				signingKeyId === userSigningKeyId ?
 				<div className = "icons">
 					<Edit2 size = '15' onClick = {toggleEdit}/>
-					<XSquare size = '15' onClick = {handleDeleteClick}/>
+					<XSquare size = '15' onClick = {toggleDelete}/>
 				</div>
 				:
 				null
