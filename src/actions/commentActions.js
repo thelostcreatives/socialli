@@ -37,12 +37,23 @@ export const getComments = (offset, limit, postId) => async (dispatch) => {
 		type: GETTING_COMMENTS
 	});
 
-	const comments = await Comment.fetchList({
-		offset,
-		limit,
-		postId,
-		sort: '-createdAt'
-	});
+	let comments
+
+	if (!limit) {
+		comments = await Comment.fetchList({
+			postId,
+			sort: '-createdAt'
+		});
+	} else {
+		comments = await Comment.fetchList({
+			offset,
+			limit,
+			postId,
+			sort: '-createdAt'
+		});
+	}
+
+	
 
 	dispatch({
 		type: COMMENTS_RECEIVED,
