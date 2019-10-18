@@ -80,3 +80,25 @@ export class Post extends Model {
         other: {}
     }
 }
+
+export class Comment extends Model {
+    static className = "Comment";
+    static schema = {
+        postId: {
+            type: String,
+            decrypted: true
+        },
+        metadata: {
+            type: Object,
+            decrypted: true
+        },
+        content: {
+            type: Object,
+            decrypted: true
+        },
+        other: {
+            type: Object,
+            decrypted: true
+        }
+    }
+}

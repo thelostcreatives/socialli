@@ -67,6 +67,8 @@ const MainWrapper = styled.div`
         grid-area: nav;
         padding: 0 0 0 50px;
 
+        position: fixed;
+
         display: flex;
         flex-direction: column;
         align-items: flex-start;
