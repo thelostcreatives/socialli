@@ -16,6 +16,7 @@ export class AnyListUser extends Model {
             decrypted: true
         },
         followedLists: Array,
+        subbed_models: Array,
         other: {
             type: Object,
             decrypted: true
@@ -97,6 +98,24 @@ export class Comment extends Model {
             decrypted: true
         },
         other: {
+            type: Object,
+            decrypted: true
+        }
+    }
+}
+
+export class Notification extends Model {
+    static className = "Notification";
+    static schema = {
+        notif_for: {
+            type: String,
+            decrypted: true
+        },
+        type: {
+            type: String,
+            decrypted: true
+        },
+        content: {
             type: Object,
             decrypted: true
         }
