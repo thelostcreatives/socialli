@@ -22,17 +22,14 @@ const NewCommentForm = (props) => {
 		createNotif
 	} = props;
 
-	// const { author, title } = listData;
-
 	const { username } = anylistUser.attrs;
+	const { metadata } = post.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
 	const editor = useRef(null);
-
-	console.log(post)
 
 	const focusEditor = () => {
 		editor.current.focus();
@@ -45,7 +42,7 @@ const NewCommentForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
-			await createComment(
+			const newComment = await createComment(
 				post._id,
 				{
 					commentAuthor: username
@@ -54,7 +51,13 @@ const NewCommentForm = (props) => {
 			);
 			setEditorState(EditorState.createEmpty());
 			
-			createNotif(post._id, notif_types.comment, post.attrs.metadata);
+			if (metadata.listAuthor !== username) {
+				createNotif(post._id, newComment._id, notif_types.comment, {
+					...post.attrs.metadata,
+					commentAuthor: username
+				});
+			}
+
 		} else {
 			console.log("Tell us what you think meyn");
 		}
