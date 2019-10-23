@@ -30,6 +30,8 @@ export const createComment = (postId, metadata, content) => async (dispatch) => 
 		postId,
 		payload: comment
 	});
+
+	return comment;
 }
 
 export const getComments = (offset, limit, postId) => async (dispatch) => {
