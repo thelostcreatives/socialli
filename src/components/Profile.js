@@ -52,7 +52,7 @@ const Profile = (props) => {
 
 	useEffect (() => {
 		setProfileData({username, name, description, other})
-	}, [match.params.id]);
+	}, [activeProfile]);
 
 	useEffect(() => {
 		getProfileLists(match.params.id);
@@ -97,6 +97,7 @@ const Profile = (props) => {
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
+							{console.log(profileData)}
 							<label htmlFor = "avatarUrl">Avatar
 							<input type = "text" placeholder = "Avatar url" value = {profileData.other.avatarUrl ? profileData.other.avatarUrl : ""} name = "avatarUrl" onChange = {handleInputChange}/>
 						</label>
