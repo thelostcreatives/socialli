@@ -1,14 +1,20 @@
 import * as actions from '../actions';
 
 const initialState = {
-
+	notifications: []
 };
 
 const branchTable = {
-	[actions.CREACTING_NOTIF]: (state, action) => {
+	[actions.CREATING_NOTIF]: (state, action) => {
 		return {
 			...state,
 			notifications: [action.payload, ...state.notifications]
+		}
+	},
+	[actions.NOTIFS_RECEIVED]: (state, action) => {
+		return {
+			...state,
+			notifications: [...action.payload, ...state.notifications]
 		}
 	}
 };
