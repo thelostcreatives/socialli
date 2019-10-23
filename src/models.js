@@ -104,11 +104,23 @@ export class Comment extends Model {
     }
 }
 
+/**
+ * notif_for: id of a list or post
+ * notif_with: id of the post or comment thats created with the notification
+ * 
+ * notif_with will is used when deleting a comment or post.
+ *  the notification should be deleted with it
+ */
+
 export class Notification extends Model {
     static className = "Notification";
     static schema = {
         notif_for: {
             type: String,
+            decrypted: true
+        },
+        notif_with: {
+            tpye: String,
             decrypted: true
         },
         type: {
