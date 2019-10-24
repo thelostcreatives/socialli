@@ -5,7 +5,7 @@ const initialState = {
 };
 
 const branchTable = {
-	[actions.CREATING_NOTIF]: (state, action) => {
+	[actions.NOTIF_CREATED]: (state, action) => {
 		return {
 			...state,
 			notifications: [action.payload, ...state.notifications]
