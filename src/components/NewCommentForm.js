@@ -23,7 +23,7 @@ const NewCommentForm = (props) => {
 		followPost
 	} = props;
 
-	const { username } = anylistUser.attrs;
+	const { username, followedPosts } = anylistUser.attrs;
 	const { metadata } = post.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
@@ -52,12 +52,12 @@ const NewCommentForm = (props) => {
 			);
 			setEditorState(EditorState.createEmpty());
 
-			createNotif(post._id, newComment._id, notif_types.comment, {
+			createNotif(username, post._id, newComment._id, notif_types.comment, {
 				...post.attrs.metadata,
 				commentAuthor: username
 			});
 
-			if (metadata.listAuthor !== username) {
+			if (followedPosts.indexOf(post._id) < 0) {
 				followPost(anylistUser, post._id);
 			}
 
