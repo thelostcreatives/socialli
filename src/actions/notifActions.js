@@ -11,12 +11,13 @@ export const NOTIF_CREATED = "NOTIF_CREATED";
 export const GETTING_NOTIFS = "GETTING_NOTIFS";
 export const NOTIFS_RECEIVED = "NOTIFS_RECEIVED";
 
-export const createNotif = (notif_for, notif_with, type, content) => async (dispatch) => {
+export const createNotif = (author, notif_for, notif_with, type, content) => async (dispatch) => {
 	dispatch({
 		type: CREATING_NOTIF
 	});
 
 	const newNotif = new Notification({
+		author,
 		notif_for,
 		notif_with,
 		type,
@@ -31,12 +32,15 @@ export const createNotif = (notif_for, notif_with, type, content) => async (disp
 	});
 }
 
-export const getNotifs = (subbed_models) => async (dispatch) => {
+export const getNotifs = (username, subbed_models) => async (dispatch) => {
 	dispatch({
 		type: GETTING_NOTIFS
 	});
 
 	const notifs = await Notification.fetchList({
+		author: {
+			$ne: username
+		},
 		notif_for: subbed_models,
 		sort: '-createdAt'
 	});
