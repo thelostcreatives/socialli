@@ -116,6 +116,10 @@ export class Comment extends Model {
 export class Notification extends Model {
     static className = "Notification";
     static schema = {
+        author: {
+            type: String,
+            decrypted: true
+        },
         notif_for: {
             type: String,
             decrypted: true
