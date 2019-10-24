@@ -5,13 +5,15 @@ import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
 import { Button } from './index';
-import { createPost, setActiveList } from '../actions';
+import { createPost, setActiveList, followPost } from '../actions';
 import { List } from '../models';
 
 const NewPostForm = (props) => {
 	const { 
 		createPost,
 		setActiveList,
+		followPost,
+		anylistUser,
 		listData,
 		match,
 		done
@@ -49,7 +51,7 @@ const NewPostForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
-			await createPost(
+			const newPost = await createPost(
 				listData._id,
 				{
 					listAuthor: author,
@@ -58,6 +60,7 @@ const NewPostForm = (props) => {
 				convertToRaw(contentState)
 			);
 			done();
+			followPost(anylistUser, newPost._id);
 		} else {
 			console.log("Tell us stories meyn");
 		}
@@ -103,11 +106,12 @@ const NewPostForm = (props) => {
 
 const mstp = (state) => {
 	return {
+		anylistUser: state.auth.anylistUser,
 		listData: state.lists.activeList.attrs
 	}
 }
 
-export default connect(mstp, {createPost, setActiveList})(NewPostForm);
+export default connect(mstp, {createPost, setActiveList, followPost})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;

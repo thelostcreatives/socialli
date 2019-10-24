@@ -6,7 +6,7 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Button } from './index';
 import { notif_types } from '../actions';
-import { createComment, setActiveList, createNotif } from '../actions';
+import { createComment, setActiveList, createNotif, followPost } from '../actions';
 import { List } from '../models';
 
 const NewCommentForm = (props) => {
@@ -19,7 +19,8 @@ const NewCommentForm = (props) => {
 		match,
 		done,
 		createComment,
-		createNotif
+		createNotif,
+		followPost
 	} = props;
 
 	const { username } = anylistUser.attrs;
@@ -56,6 +57,7 @@ const NewCommentForm = (props) => {
 					...post.attrs.metadata,
 					commentAuthor: username
 				});
+				followPost(anylistUser, post._id);
 			}
 
 		} else {
@@ -106,7 +108,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {createComment, createNotif})(NewCommentForm);
+export default connect(mstp, {createComment, createNotif, followPost})(NewCommentForm);
 
 const NewCommentFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
