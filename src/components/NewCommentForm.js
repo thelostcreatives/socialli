@@ -51,12 +51,13 @@ const NewCommentForm = (props) => {
 				convertToRaw(contentState)
 			);
 			setEditorState(EditorState.createEmpty());
-			
+
+			createNotif(post._id, newComment._id, notif_types.comment, {
+				...post.attrs.metadata,
+				commentAuthor: username
+			});
+
 			if (metadata.listAuthor !== username) {
-				createNotif(post._id, newComment._id, notif_types.comment, {
-					...post.attrs.metadata,
-					commentAuthor: username
-				});
 				followPost(anylistUser, post._id);
 			}
 
