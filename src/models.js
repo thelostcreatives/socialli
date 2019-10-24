@@ -16,7 +16,7 @@ export class AnyListUser extends Model {
             decrypted: true
         },
         followedLists: Array,
-        subbed_models: Array,
+        followedPosts: Array,
         other: {
             type: Object,
             decrypted: true
@@ -25,6 +25,7 @@ export class AnyListUser extends Model {
 
     static defaults = {
         followedLists: [],
+        followedPosts: [],
         other: {}
     }
 }
