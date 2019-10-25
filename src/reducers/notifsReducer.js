@@ -5,6 +5,11 @@ const initialState = {
 };
 
 const branchTable = {
+	[actions.SIGNOUT]: (state, action) => {
+		return {
+			...initialState
+		}
+	},
 	[actions.NOTIF_CREATED]: (state, action) => {
 		return {
 			...state,
