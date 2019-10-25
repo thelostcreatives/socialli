@@ -16,8 +16,9 @@ const Notification = (props) => {
 		<CleanLink to={`/post/${notif_for}`}>
 			<NotifWrapper>
 					<span className = "author">@{author} </span>
-					{typeToContent[type]} on a post on
-					<span className = "list-title"> {content.listTitle}</span>
+					{typeToContent[type]} on a post from
+					<span className = "list-title"> {content.listTitle} </span>
+					| @{content.listAuthor}
 			</NotifWrapper>
 		</CleanLink>
 	)
