@@ -11,12 +11,6 @@ const branchTable = {
 			...initialState
 		}
 	},
-	[actions.NOTIF_CREATED]: (state, action) => {
-		return {
-			...state,
-			notifications: [action.payload, ...state.notifications]
-		}
-	},
 	[actions.NOTIFS_RECEIVED]: (state, action) => {
 		let hasMore = true;
 		if (action.payload.length === 0) {
