@@ -1,7 +1,8 @@
 import * as actions from '../actions';
 
 const initialState = {
-	notifications: []
+	notifications: [],
+	hasMore: true
 };
 
 const branchTable = {
@@ -17,9 +18,14 @@ const branchTable = {
 		}
 	},
 	[actions.NOTIFS_RECEIVED]: (state, action) => {
+		let hasMore = true;
+		if (action.payload.length === 0) {
+			hasMore = false;
+		}
 		return {
 			...state,
-			notifications: [...action.payload, ...state.notifications]
+			notifications: [...action.payload, ...state.notifications],
+			hasMore
 		}
 	}
 };
