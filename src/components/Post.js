@@ -26,7 +26,7 @@ const Post = (props) => {
 
     useEffect (() => {
         if (!preview) {
-            if (!expandedPost.attrs._id) {
+            if (!expandedPost.attrs._id || expandedPost.attrs._id !== match.params.id ) {
                 PostModel.findById(match.params.id).then(post => {
                     setExpandedPost(post)
                 })
