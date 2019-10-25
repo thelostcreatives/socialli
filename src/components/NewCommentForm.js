@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
 import { Button } from './index';
-import { createComment, setActiveList } from '../actions';
+import { notif_types } from '../actions';
+import { createComment, setActiveList, createNotif, followPost } from '../actions';
 import { List } from '../models';
 
 const NewCommentForm = (props) => {
@@ -17,12 +18,13 @@ const NewCommentForm = (props) => {
 		anylistUser,
 		match,
 		done,
-		createComment
+		createComment,
+		createNotif,
+		followPost
 	} = props;
 
-	// const { author, title } = listData;
-
-	const { username } = anylistUser.attrs;
+	const { username, followedPosts } = anylistUser.attrs;
+	const { metadata } = post.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
@@ -41,7 +43,7 @@ const NewCommentForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
-			await createComment(
+			const newComment = await createComment(
 				post._id,
 				{
 					commentAuthor: username
@@ -49,6 +51,16 @@ const NewCommentForm = (props) => {
 				convertToRaw(contentState)
 			);
 			setEditorState(EditorState.createEmpty());
+
+			createNotif(username, post._id, newComment._id, notif_types.comment, {
+				...post.attrs.metadata,
+				commentAuthor: username
+			});
+
+			if (followedPosts.indexOf(post._id) < 0) {
+				followPost(anylistUser, post._id);
+			}
+
 		} else {
 			console.log("Tell us what you think meyn");
 		}
@@ -97,7 +109,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {createComment})(NewCommentForm);
+export default connect(mstp, {createComment, createNotif, followPost})(NewCommentForm);
 
 const NewCommentFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;

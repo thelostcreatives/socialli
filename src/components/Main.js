@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'rea
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { UserFeed, Explore, Profile, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
+import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
 
 const Main = (props) => {
 
@@ -15,13 +15,15 @@ const Main = (props) => {
                 <nav id = "nav">
                     <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
                     <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
-                    <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
+                    {/* <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink> */}
+                    <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>Notifications</NavLink>
                     <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
                 </nav>
                 <div id = "main">
                     <Switch>
                         <Route exact path = "/" component = {UserFeed}/>
                         <Route exact path = "/explore" component = {Explore}/>
+                        <Route exact path = "/notifications" component = {Notifications}/>
                         <Route exact path = "/follows" render = {(props) => (<div></div>)}/>
                         <Route path = "/newList" component = {NewListForm}/>
                         <Route exact path = "/:id" component = {Profile}/>

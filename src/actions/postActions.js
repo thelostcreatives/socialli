@@ -1,4 +1,5 @@
 import { Post } from '../models';
+import { USER_UPDATED } from './index';
 
 export const CREATING_POST = "CREATING_POST";
 export const POST_CREATED = "POST_CREATED";
@@ -17,6 +18,9 @@ export const GETTING_FEED_POSTS = "GETTING_FEED_POSTS";
 export const RECEIVED_FEED_POSTS = "RECEIVED_FEED_POSTS";
 
 export const SET_EXPANDED_POST = "SET_EXPANDED_POST";
+
+export const ADDING_POST_TO_FOllOWS = "ADDING_POST_TO_FOllOWS";
+export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 
 export const createPost = (listId, metadata, content) => async (dispatch) => {
     dispatch({
@@ -133,4 +137,43 @@ export const deletePost = (post) => async (dispatch) => {
 		payload: post
 	});
 
+}
+
+export const followPost = (anylistUser, postId) => async (dispatch) => {
+	dispatch({
+		type: ADDING_POST_TO_FOllOWS
+	});
+
+	const posts = [...anylistUser.attrs.followedPosts, postId];
+
+    anylistUser.update({
+        followedPosts: posts.filter((v, i, s) => s.indexOf(v) === i)
+    });
+
+    const updatedUser = await anylistUser.save();
+
+    dispatch({
+        type:   USER_UPDATED,
+        payload: updatedUser
+    });
+}
+
+export const unfollowPost = (anylistUser, postId) => async (dispatch) => {
+    dispatch({
+        type: REMOVING_POST_FROM_FOLLOWS
+    });
+
+    const { followedPosts } = anylistUser.attrs;
+    followedPosts.splice(followedPosts.indexOf(postId), 1);
+
+    anylistUser.update({
+        followedLists: [...followedPosts]
+    });
+
+    const updatedUser = await anylistUser.save();
+
+    dispatch({
+        type: USER_UPDATED,
+        payload: updatedUser 
+    })
 }

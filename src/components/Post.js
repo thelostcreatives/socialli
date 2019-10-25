@@ -9,12 +9,12 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
 import { Button, ConfirmationOverlay, Comments } from './index';
-import { setExpandedPost, updatePost, deletePost } from '../actions';
+import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
 import { Post as PostModel} from '../models';
 
 const Post = (props) => {
 
-    const { preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, userSigningKeyId } = props;
+    const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
     
     const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
 
@@ -26,7 +26,7 @@ const Post = (props) => {
 
     useEffect (() => {
         if (!preview) {
-            if (!expandedPost.attrs._id) {
+            if (!expandedPost.attrs._id || expandedPost.attrs._id !== match.params.id ) {
                 PostModel.findById(match.params.id).then(post => {
                     setExpandedPost(post)
                 })
@@ -63,6 +63,7 @@ const Post = (props) => {
 
     const handleDelete = () => {
         deletePost(expandedPost);
+        unfollowPost(anylistUser, expandedPost._id);
         history.goBack();
     }
 
@@ -143,13 +144,14 @@ const Post = (props) => {
 
 const mstp = (state) => {
     return {
+        anylistUser: state.auth.anylistUser,
         userSigningKeyId: state.auth.anylistUser.attrs.signingKeyId, 
         expandedPost: state.posts.expandedPost
     }
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, updatePost, deletePost})(Post)
+    connect(mstp, {setExpandedPost, updatePost, deletePost, unfollowPost})(Post)
 );
 
 const PostWrapper = styled.div`

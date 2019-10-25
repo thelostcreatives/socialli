@@ -16,6 +16,7 @@ export class AnyListUser extends Model {
             decrypted: true
         },
         followedLists: Array,
+        followedPosts: Array,
         other: {
             type: Object,
             decrypted: true
@@ -24,6 +25,7 @@ export class AnyListUser extends Model {
 
     static defaults = {
         followedLists: [],
+        followedPosts: [],
         other: {}
     }
 }
@@ -97,6 +99,40 @@ export class Comment extends Model {
             decrypted: true
         },
         other: {
+            type: Object,
+            decrypted: true
+        }
+    }
+}
+
+/**
+ * notif_for: id of a list or post
+ * notif_with: id of the post or comment thats created with the notification
+ * 
+ * notif_with will is used when deleting a comment or post.
+ *  the notification should be deleted with it
+ */
+
+export class Notification extends Model {
+    static className = "Notification";
+    static schema = {
+        author: {
+            type: String,
+            decrypted: true
+        },
+        notif_for: {
+            type: String,
+            decrypted: true
+        },
+        notif_with: {
+            tpye: String,
+            decrypted: true
+        },
+        type: {
+            type: String,
+            decrypted: true
+        },
+        content: {
             type: Object,
             decrypted: true
         }

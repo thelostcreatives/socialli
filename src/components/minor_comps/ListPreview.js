@@ -9,7 +9,9 @@ const ListPreview = (props) => {
 	return (
 		<StyledLink to = { `list/${props.list._id}` }>
 			<ListPreviewWrapper onClick = { () => props.setActiveList(props.list)} >
-				{ props.list.attrs.title }
+                <h2>
+                { props.list.attrs.title }
+                </h2>
 			</ListPreviewWrapper>
 		</StyledLink>
 	);
@@ -28,25 +30,25 @@ const StyledLink = styled(Link)`
 `;
 
 const ListPreviewWrapper = styled.div`
-    width: 344px;
+    width: 300px;;
     height: 93px;
     word-break: break-word;
 
     display: flex;
     align-items: center;
-    justify-content: center;
-    
-    text-align: center;
 
     background: #D6D6D6B3;
     border-radius: 10px;
     margin: 10px;
 
-    font-size: 25px;
-    font-family: 'Work Sans', sans-serif;
-    text-decoration: none !important;
-
     &:hover {
         color: white;
+    }
+
+    h2 {
+        font-size: 25px;
+        font-family: 'Work Sans', sans-serif;
+        font-weight: normal;
+        margin-left: 10px;
     }
 `;
