@@ -32,21 +32,30 @@ export const createNotif = (author, notif_for, notif_with, type, content) => asy
 	});
 }
 
-export const getNotifs = (username, subbed_models) => async (dispatch) => {
+export const getNotifs = (username, subbed_models, offset, limit) => async (dispatch) => {
 	dispatch({
 		type: GETTING_NOTIFS
 	});
 
-	const notifs = await Notification.fetchList({
-		author: {
-			$ne: username
-		},
-		notif_for: subbed_models,
-		sort: '-createdAt'
-	});
+	if (subbed_models.length > 0) {
+		const notifs = await Notification.fetchList({
+			offset,
+			limit,
+			author: {
+				$ne: username
+			},
+			notif_for: subbed_models,
+			sort: '-createdAt'
+		});
 
-	dispatch({
-		type: NOTIFS_RECEIVED,
-		payload: notifs
-	});
+		dispatch({
+			type: NOTIFS_RECEIVED,
+			payload: notifs
+		});
+	} else {
+		dispatch({
+			type: NOTIFS_RECEIVED,
+			payload: []
+		});
+	}
 }
