@@ -1,43 +1,50 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { getNotifs } from '../actions';
 import { Notification } from './index';
 
 const Notifications = (props) => {
 
-	const { notifs, anylistUser } = props;
+	const { notifs, anylistUser, hasMore } = props;
 	const { getNotifs } = props;
 
-	const { username, followedLists, followedPosts } = anylistUser.attrs;
+	const { username, followedLists = [], followedPosts = [] } = anylistUser.attrs;
 
 	useEffect (() => {
 		if (anylistUser._id && notifs.length === 0) {
-			getNotifs(username, [...followedLists, ...followedPosts]);
+			getNotifs(username, [...followedLists, ...followedPosts], notifs.length, 20);
 		}
 	}, [anylistUser]);
 
-	// useEffect (() => {
-	// 	// if (notifs.length > 0) {
-	// 	// 	notifs[0].destroy();
-	// 	// }
-	// 	console.log(notifs)
-	// }, [notifs])
+	const loadMore = () => {
+		getNotifs(username, [...followedLists, ...followedPosts], notifs.length, 20);
+	}
 
 	return (
-		<div>
-			notifs here
-			{
-				notifs.map((notif) => <Notification key = {notif._id} notif = {notif}/>)
-			}
-		</div>
+		<InfiniteScroll
+            pageStart = {0}
+            loadMore = {loadMore}
+            hasMore = {hasMore}
+            loader = {<div className="loader" key={0}>Loading ...</div>}
+        >
+            {
+                notifs.length > 0 ? notifs.map((notif) => <Notification key = {notif._id} notif = {notif}/>)
+                :
+                <h2 style = {{width: "500px"}}>
+					There are no notifications at the moment.
+                </h2>
+            }
+        </InfiniteScroll>
 	)
 }
 
 const mstp = (state) => {
 	return {
 		anylistUser: state.auth.anylistUser,
-		notifs: state.notifs.notifications
+		notifs: state.notifs.notifications,
+		hasMore: state.notifs.hasMore
 	}
 }
 
