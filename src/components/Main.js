@@ -15,7 +15,7 @@ const Main = (props) => {
                 <nav id = "nav">
                     <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
                     <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
-                    <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink>
+                    {/* <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink> */}
                     <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>Notifications</NavLink>
                     <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
                 </nav>
