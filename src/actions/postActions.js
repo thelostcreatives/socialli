@@ -144,7 +144,7 @@ export const followPost = (anylistUser, postId) => async (dispatch) => {
 		type: ADDING_POST_TO_FOllOWS
 	});
 
-	const posts = [...anylistUser.attrs.followedLists, postId];
+	const posts = [...anylistUser.attrs.followedPosts, postId];
 
     anylistUser.update({
         followedPosts: posts.filter((v, i, s) => s.indexOf(v) === i)
