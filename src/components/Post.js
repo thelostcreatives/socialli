@@ -23,8 +23,6 @@ const Post = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    console.log(createdAt)
-
     new ClipBoard('.postLink');
 
     useEffect (() => {
@@ -235,6 +233,10 @@ const PostWrapper = styled.div`
             cursor: pointer;
         }
     }
+
+    .DraftEditor-root {
+		margin: 10px 0;
+	}
 
     .delete {
         color: #e86813;
