@@ -5,6 +5,7 @@ import { Edit2, XSquare } from 'react-feather';
 import { Editor, EditorState, Modifier, convertToRaw, convertFromRaw } from 'draft-js';
 import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
+import moment from 'moment';
 
 import { Button } from './index';
 import { updateComment, deleteComment } from '../actions';
@@ -14,7 +15,7 @@ const Comment = (props) => {
 	const { comment, userSigningKeyId} = props;
 	const { updateComment, deleteComment } = props;
 
-	const { content, metadata, signingKeyId } = comment.attrs;
+	const { content, metadata, signingKeyId, createdAt } = comment.attrs;
 
 	const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
 	const [prevEditorState, setPrevEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
@@ -69,10 +70,16 @@ const Comment = (props) => {
 
 	return (
 		<CommentWrapper>
+			
 			<div className = "content">
-				<Link to = {`/${metadata ? metadata.commentAuthor: null}`} className = "author" onClick = {stopPropagation}>
-					{metadata ? `@${metadata.commentAuthor}` : null}
-				</Link>
+				<div className = "metadata">
+					<Link to = {`/${metadata ? metadata.commentAuthor: null}`} className = "author" onClick = {stopPropagation}>
+						{metadata ? `@${metadata.commentAuthor}` : null}
+					</Link>
+					<time>
+						{moment(createdAt).fromNow()}
+					</time>
+				</div>
 				<Editor
 					ref = {editor}
 					editorState = {editorState}
@@ -140,10 +147,20 @@ const CommentWrapper = styled.div`
 	align-items: flex-start;
 
 	margin: 15px 0;
+	
+	.metadata {
+		display: flex;
+		flex-direction: column;
 
-	.author {
-		font-size: 13px;
+		.author {
+			font-size: 13px;
+		}
+
+		time {
+			font-size: 12px;
+		}
 	}
+
 
 	.content {
 		width: fill-available;
