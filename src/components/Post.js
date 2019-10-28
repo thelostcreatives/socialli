@@ -5,6 +5,7 @@ import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link2, Edit, XSquare } from 'react-feather';
 import ClipBoard from 'clipboard';
+import moment from 'moment';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -16,7 +17,7 @@ const Post = (props) => {
 
     const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
     
-    const { listId, metadata, content, signingKeyId } = post ? post.attrs: expandedPost.attrs;
+    const { listId, metadata, content, signingKeyId, createdAt } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
     const [isEditing, setIsEditing] = useState(false);
@@ -88,14 +89,19 @@ const Post = (props) => {
                 :
                 <>
                     <div id = "post-header">
-                        <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
-                            <h4 className = "list-title">
-                                {metadata ? metadata.listTitle : listId}
-                            </h4>
-                        </Link>
-                        <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
-                            {metadata ? `@${metadata.listAuthor}` : null}
-                        </Link>
+                        <div className = "metadata">
+                            <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
+                                <h4 className = "list-title">
+                                    {metadata ? metadata.listTitle : listId}
+                                </h4>
+                            </Link>
+                            <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
+                                {metadata ? `@${metadata.listAuthor}` : null}
+                            </Link>
+                        </div>
+                        <time>
+                            {moment(createdAt).fromNow()}
+                        </time>
                     </div>
                     <Editor
                         ref = {editor}
@@ -197,15 +203,26 @@ const PostWrapper = styled.div`
 
     #post-header {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
         width: 100%;
-        
-        .list-title {
-            margin: 10px 0;
+
+        .metadata {
+            display: flex;
+            align-items: center;
+
+            .list-title {
+                margin: 10px 0;
+                margin-bottom: 5px;
+            }
+            .author {
+                font-size: 13px;
+                margin-left: 10px;
+            }
         }
-        .author {
-            font-size: 13px;
-            margin-left: 10px;
+
+        time {
+            font-size: 12px;
         }
     }
 
@@ -216,6 +233,10 @@ const PostWrapper = styled.div`
             cursor: pointer;
         }
     }
+
+    .DraftEditor-root {
+		margin: 10px 0;
+	}
 
     .delete {
         color: #e86813;
