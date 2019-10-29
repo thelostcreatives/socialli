@@ -1,29 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { handleSignIn } from '../actions';
-import { Post, AnyListUser } from '../models';
 import logo from '../imgs/socialli_no_bg.png'
 
 const SignIn = (props) => {
-
-    const [postsCount, setPostsCount ] = useState(0);
-    const [userCount, setUserCount] = useState(0);
-
-    useEffect(() => {
-      Post.count().then((data) => {
-        setPostsCount(data);
-      }).catch((error) => {
-        console.log("error counting posts")
-      });
-
-      AnyListUser.count().then((data) => {
-        setUserCount(data);
-      }).catch((error) => {
-        console.log("error counting users");
-      });
-    });
 
     return (
       <SigninWrapper>
