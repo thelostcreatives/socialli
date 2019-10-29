@@ -106,13 +106,12 @@ const SigninWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: 100vh;
-    width: 100%
+    width: 100%;
 
     p {
       max-width: 500px;
     }
   }
-
 
   .signin-button {
     font-size: 15px;
@@ -129,4 +128,23 @@ const SigninWrapper = styled.div`
       background: #409eff;
     }
   }
+
+  background: white;
+  
+
+  @media only screen and (max-width: 480px) {
+    font-size: 1em;
+    .section {
+      background: blue;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 1em;
+    .section {
+      background: red;
+    }
+  }
+
+  
 `;
