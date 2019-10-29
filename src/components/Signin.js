@@ -69,7 +69,7 @@ const SignIn = (props) => {
             Join <a href="https://discord.gg/zYzh9Zy">discord</a> for development discussions and other things.
           </h3>     
           <p>
-          Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://socialli.st/xanderjakeq.id.blockstack">xanderjakeq</a>
+          Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://twitter.com/xanderjakeq">xanderjakeq</a>
           </p>
         </div>
       </SigninWrapper>
