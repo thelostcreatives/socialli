@@ -18,9 +18,6 @@ const SignIn = (props) => {
           >
             Sign In with Blockstack
           </button>
-          <h2>
-            Users: {userCount} Posts: {postsCount}
-          </h2>
         </div>
 
         <div className = "section">
