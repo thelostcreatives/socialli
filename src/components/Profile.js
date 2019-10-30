@@ -243,6 +243,13 @@ export const Header = styled.div`
 			height: 100px;
 		}
 	}
+
+	@media only screen and (max-width: 480px) {
+		width: unset;
+		.icons-container {
+			width: unset;
+		}
+    }
 	
 `;
 
