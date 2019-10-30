@@ -8,6 +8,7 @@ import {
 import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
 import { AnyListUser, List } from '../models';
+import { breakpoint } from '../utils/styleConsts';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
@@ -244,18 +245,25 @@ export const Header = styled.div`
 		}
 	}
 
-	@media only screen and (max-width: 480px) {
-		width: unset;
+	@media only screen and (max-width: ${breakpoint.a}) {
+		max-width: 500px;
+		width: -webkit-fill-available;
+		margin: 10px;
 		.icons-container {
 			width: unset;
 		}
-    }
+	}
+
+	@media only screen and (min-width: ${breakpoint.b}) {
+		width: 500px;
+	}
 	
 `;
 
 const Grid = styled.div`
 	display: flex;
 	width: 100%;
+	max-width: 1000px;
 	flex-wrap: wrap;
 	justify-content: center;
 `;
