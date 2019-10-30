@@ -8,6 +8,7 @@ import { Button, NewPostForm, ConfirmationOverlay } from './index';
 import { Header } from './Profile';
 import { setActiveList, followList, unfollowList, getPosts, updateList, deleteList } from '../actions';
 import { List } from '../models';
+import { breakpoint } from '../utils/styleConsts';
 import PostComp from './Post';
 
 const ListPage = (props) => {
@@ -212,7 +213,7 @@ export default connect(mstp, {setActiveList, followList, unfollowList, getPosts,
 const ListPageWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 
 	font-family: 'Work Sans', sans-serif;
 	
@@ -228,7 +229,7 @@ const ListPageWrapper = styled.div`
             cursor: pointer;
             color: #e81313;
         }
-    }
+	}
 `;
 
 
