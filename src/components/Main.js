@@ -2,8 +2,10 @@ import React, {} from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { User, Compass, Bell, Home } from 'react-feather';
 
 import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
+import { breakpoint } from '../utils/styleConsts';
 
 const Main = (props) => {
 
@@ -14,11 +16,23 @@ const Main = (props) => {
             <MainWrapper>
                 <nav id = "nav">
                     <div>
-                        <NavLink exact to = "/" activeStyle = { NavActiveStyle }>Home</NavLink>
-                        <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>Explore</NavLink>
+                        <NavLink exact to = "/" activeStyle = { NavActiveStyle }>
+                            <Home/>
+                            <span>Home</span>
+                        </NavLink>
+                        <NavLink exact to = "/explore" activeStyle = { NavActiveStyle }>
+                            <Compass/>
+                            <span>Explore</span>
+                        </NavLink>
                         {/* <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink> */}
-                        <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>Notifications</NavLink>
-                        <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>Profile</NavLink>
+                        <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>
+                            <Bell/>
+                            <span>Notifications</span>
+                        </NavLink>
+                        <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>
+                            <User/>
+                            <span>Profile</span>
+                        </NavLink>
                     </div>
                 </nav>
                 <div id = "main">
@@ -90,13 +104,27 @@ const MainWrapper = styled.div`
             position: fixed;
             top: 0;
             a {
+                display: flex;
+                align-items: center;
+
                 text-decoration: none;
                 color: black;
                 padding: 10px;
                 width: 100%;
+
+                span {
+                    margin-left: 10px;
+                }
+
                 &:hover {
                     background: #f7f7f7;
                     cursor: pointer;
+                }
+            }
+
+            .active {
+                svg {
+                    stroke-width: 2.5;
                 }
             }
         }
@@ -111,7 +139,7 @@ const MainWrapper = styled.div`
         grid-area: side;
     }
 
-    @media only screen and (max-width: 480px) {
+    @media only screen and (max-width: ${breakpoint.a}) {
         display: unset;
         #nav {
             grid-area: none;
@@ -125,10 +153,21 @@ const MainWrapper = styled.div`
                 bottom: 0;
                 left: 0;
 
+                padding: 0;
+                width: 100%;
+
                 flex-direction: row;
+                justify-content: space-evenly;
 
                 background: white;
                 border-top: 1px solid #d2d6d7;
+
+                a {
+                    width: min-content;
+                    span {
+                        display: none;
+                    }
+                }
             }
         }
         #main {
