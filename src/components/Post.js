@@ -270,4 +270,9 @@ const PostWrapper = styled.div`
             background: #f7f7f7;
         }
     `}
+
+
+    @media only screen and (max-width: 480px) {
+        width: unset;
+    }
 `;

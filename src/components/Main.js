@@ -75,15 +75,16 @@ const MainWrapper = styled.div`
 
     #nav {
         grid-area: nav;
-        padding: 0 0 0 50px;
 
-        position: relative;
+        // position: relative;
 
         div {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
 
+            padding: 0 0 0 50px;
+            
             font-family: 'Work Sans', sans-serif;
             font-size: 25px;
             position: fixed;
@@ -111,12 +112,29 @@ const MainWrapper = styled.div`
     }
 
     @media only screen and (max-width: 480px) {
+        display: unset;
         #nav {
             grid-area: none;
+            position: fixed;
+            bottom: 0;
+            z-index: 10;
+
+            div {
+                position: fixed;
+                top: unset;
+                bottom: 0;
+                left: 0;
+
+                flex-direction: row;
+
+                background: white;
+                border-top: 1px solid #d2d6d7;
+            }
         }
         #main {
             grid-area: none;
             width: unset;
+            margin-bottom: 50px;
         }
         #aside {
             grid-area: none;
