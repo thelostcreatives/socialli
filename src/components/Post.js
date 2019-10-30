@@ -167,6 +167,7 @@ const PostWrapper = styled.div`
     position: relative;
 
     width: 500px;
+    max-width: 500px;
     padding: 10px;
 
     border: none;
