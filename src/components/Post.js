@@ -271,6 +271,10 @@ const PostWrapper = styled.div`
             cursor: pointer;
             background: #f7f7f7;
         }
+
+        @media only screen and (max-width: ${breakpoint.a}) {
+            max-height: 180px;
+        }
     `}
 
 
