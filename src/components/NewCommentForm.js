@@ -8,6 +8,7 @@ import { Button } from './index';
 import { notif_types } from '../actions';
 import { createComment, setActiveList, createNotif, followPost } from '../actions';
 import { List } from '../models';
+import { breakpoint } from '../utils/styleConsts';
 
 const NewCommentForm = (props) => {
 	const { 
@@ -125,6 +126,14 @@ const NewCommentFormWrapper = styled.div`
 	.DraftEditor-root{
 		min-height: 50px;
 	}
+
+	@media only screen and (max-width: ${breakpoint.b}) {
+		width: 90vw;
+	}
+
+	@media only screen and (min-width: ${breakpoint.b}) {
+		width: 500px;
+	}
 `;
 
 const OptionsBar = styled.div`
@@ -136,6 +145,12 @@ const OptionsBar = styled.div`
 		position: absolute;
 		top: 100%;
 		z-index: 100;
+	}
+
+	@media only screen and (max-width: ${breakpoint.a}) {
+		.emoji-picker {
+			left: 0;
+		}
 	}
 `;
 

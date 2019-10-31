@@ -9,6 +9,7 @@ import moment from 'moment';
 
 import { Button } from './index';
 import { updateComment, deleteComment } from '../actions';
+import { breakpoint } from '../utils/styleConsts';
 
 const Comment = (props) => {
 
@@ -193,6 +194,21 @@ const CommentWrapper = styled.div`
 			top: 100%;
 			z-index: 100;
 		}
+	}
+
+	
+    @media only screen and (max-width: ${breakpoint.a}) {
+		max-width: 500px;
+		width: -webkit-fill-available;
+		margin: 10px;
+		.icons-container {
+			width: unset;
+		}
+	}
+
+	@media only screen and (max-width: ${breakpoint.b}) {
+		width: 100%;
+		max-width: 500px;
 	}
 
 `;
