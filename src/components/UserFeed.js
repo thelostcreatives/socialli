@@ -32,7 +32,7 @@ const UserFeed = (props) => {
                 })
                 :
                 <div>
-                    <h2 style = {{width: "500px"}}>
+                    <h2 style = {{maxWidth: "500px"}}>
                         You are not following any Lists. Try going to the Explore page see if you find something interesting.
                     </h2>
                     <br/>

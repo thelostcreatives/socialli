@@ -32,7 +32,7 @@ const Notifications = (props) => {
             {
                 notifs.length > 0 ? notifs.map((notif) => <Notification key = {notif._id} notif = {notif}/>)
                 :
-                <h2 style = {{width: "500px"}}>
+                <h2 style = {{maxWidth: "500px"}}>
 					There are no notifications at the moment.
                 </h2>
             }
