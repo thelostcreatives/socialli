@@ -16,9 +16,18 @@ const branchTable = {
 		if (action.payload.length === 0) {
 			hasMore = false;
 		}
+
+		const hash = {};
 		return {
 			...state,
-			notifications: [...action.payload, ...state.notifications],
+			notifications: [...state.notifications, ...action.payload].filter((v, i, s) => {
+				if (!Object.keys(hash).includes(v._id)){
+					hash[v._id] = 0;
+					return true;
+				} else {
+					return false;
+				}
+			}),
 			hasMore
 		}
 	}
