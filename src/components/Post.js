@@ -294,7 +294,7 @@ const PostWrapper = styled.div`
         }
 
         @media only screen and (max-width: ${breakpoint.a}) {
-            // max-height: 200px;
+            height: 150px;
         }
     `}
 `;
