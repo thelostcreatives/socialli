@@ -125,7 +125,7 @@ const ListPage = (props) => {
 							<div>
 								<h1 id = "name">{listData ? title : null}</h1>
 								<h2 id = "username">{ author }</h2>
-								<p>{listData? description : null}</p>
+								<p id = "description">{listData? description : null}</p>
 							</div>
 							:
 							<div className = "profile-inputs">

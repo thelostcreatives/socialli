@@ -201,6 +201,11 @@ export const Header = styled.div`
 		font-size: 15px;
 		font-weight: inherit;
 	}
+
+	#description {
+		margin: 10px 0;
+	}
+
 	.info-section {
 		display: flex;
 		flex-direction: column;
