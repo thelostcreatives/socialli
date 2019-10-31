@@ -248,6 +248,27 @@ const PostWrapper = styled.div`
         }
     }
 
+    @media only screen and (max-width: ${breakpoint.a}) {
+        width: unset;
+        #post-header {
+            .metadata {
+                flex-direction: column;
+                align-items: flex-start;
+                
+                .author {
+                    margin: 0;
+                }
+            }
+        }
+
+        margin: 0;
+    }
+
+
+    @media only screen and (max-width: ${breakpoint.b}) {
+        // width: 90vh;
+    }
+
     ${props => props.preview === true && css`
         max-height: 150px;
         overflow: hidden;
@@ -273,29 +294,7 @@ const PostWrapper = styled.div`
         }
 
         @media only screen and (max-width: ${breakpoint.a}) {
-            max-height: 180px;
+            max-height: 250px;
         }
     `}
-
-
-    @media only screen and (max-width: ${breakpoint.a}) {
-        width: unset;
-        #post-header {
-            .metadata {
-                flex-direction: column;
-                align-items: flex-start;
-                
-                .author {
-                    margin: 0;
-                }
-            }
-        }
-
-        margin: 0;
-    }
-
-
-    @media only screen and (max-width: ${breakpoint.b}) {
-        // width: 90vh;
-    }
 `;
