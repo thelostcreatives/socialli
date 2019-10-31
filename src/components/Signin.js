@@ -85,13 +85,12 @@ const SigninWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: 100vh;
-    width: 100%
+    width: 100%;
 
     p {
       max-width: 500px;
     }
   }
-
 
   .signin-button {
     font-size: 15px;

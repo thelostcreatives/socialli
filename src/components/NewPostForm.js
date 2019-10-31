@@ -7,6 +7,7 @@ import EmojiPicker from 'emoji-picker-react';
 import { Button } from './index';
 import { createPost, setActiveList, followPost } from '../actions';
 import { List } from '../models';
+import { breakpoint } from '../utils/styleConsts';
 
 const NewPostForm = (props) => {
 	const { 
@@ -115,6 +116,8 @@ export default connect(mstp, {createPost, setActiveList, followPost})(NewPostFor
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
+
+	align-self: center;
 	
 	width: 500px;
     height: fit-content;
@@ -123,10 +126,18 @@ const NewPostFormWrapper = styled.div`
 	box-shadow: 0px 0px 20px 0px rgba(171,171,171,0.88);
 
 	padding: 10px;
-	margin: 25px;
+	margin: 25px 0;
 	border-radius: 10px;
 	.DraftEditor-root{
 		min-height: 100px;
+	}
+
+	@media only screen and (max-width: ${breakpoint.b}) {
+		width: 90vw;
+	}
+
+	@media only screen and (min-width: ${breakpoint.b}) {
+		width: 500px;
 	}
 `;
 
@@ -139,6 +150,12 @@ const OptionsBar = styled.div`
 		position: absolute;
 		top: 100%;
 		z-index: 100;
+	}
+
+	@media only screen and (max-width: ${breakpoint.a}) {
+		.emoji-picker {
+			left: 0;
+		}
 	}
 `;
 

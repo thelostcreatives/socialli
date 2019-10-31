@@ -1,6 +1,7 @@
 import React, {} from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { breakpoint } from '../utils/styleConsts';
 
 const Notification = (props) => {
 
@@ -53,6 +54,20 @@ const NotifWrapper = styled.div`
 	&:hover {
 		cursor: pointer;
 		background: #f7f7f7;
+	}
+
+	@media only screen and (max-width: ${breakpoint.a}) {
+		max-width: 500px;
+		width: 100%;
+		// margin: 10px;
+		.icons-container {
+			width: unset;
+		}
+	}
+
+	@media only screen and (max-width: ${breakpoint.b}) {
+		width: 100%;
+		max-width: 500px;
 	}
 `;
 

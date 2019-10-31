@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from './index';
 import { createList } from '../actions';
+import { breakpoint } from '../utils/styleConsts';
 
 const posts_types = [
 	"text posts",
@@ -88,5 +89,15 @@ const NewPostFormWrapper = styled.div`
 	}
 	.options {
 		display: flex;
+	}
+
+	@media only screen and (max-width: ${breakpoint.a}) {
+		max-width: 500px;
+		width: -webkit-fill-available;
+		margin: 10px;
+	}
+
+	@media only screen and (min-width: ${breakpoint.b}) {
+		width: 500px;
 	}
 `;

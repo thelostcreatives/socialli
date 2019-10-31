@@ -12,6 +12,7 @@ import 'tippy.js/dist/tippy.css';
 import { Button, ConfirmationOverlay, Comments } from './index';
 import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
 import { Post as PostModel} from '../models';
+import { breakpoint } from '../utils/styleConsts';
 
 const Post = (props) => {
 
@@ -166,6 +167,7 @@ const PostWrapper = styled.div`
     position: relative;
 
     width: 500px;
+    max-width: 500px;
     padding: 10px;
 
     border: none;
@@ -270,4 +272,26 @@ const PostWrapper = styled.div`
             background: #f7f7f7;
         }
     `}
+
+
+    @media only screen and (max-width: ${breakpoint.a}) {
+        width: unset;
+        #post-header {
+            .metadata {
+                flex-direction: column;
+                align-items: flex-start;
+                
+                .author {
+                    margin: 0;
+                }
+            }
+        }
+
+        margin: 0;
+    }
+
+
+    @media only screen and (max-width: ${breakpoint.b}) {
+        // width: 90vh;
+    }
 `;
