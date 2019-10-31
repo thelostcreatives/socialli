@@ -31,9 +31,15 @@ const UserFeed = (props) => {
                     return <PostComp key = {post._id} post={post} preview = {true} />;
                 })
                 :
-                <h2 style = {{width: "500px"}}>
-                    You are not following any Lists. Try going to the Explore page see if you find something interesting.
-                </h2>
+                <div>
+                    <h2 style = {{width: "500px"}}>
+                        You are not following any Lists. Try going to the Explore page see if you find something interesting.
+                    </h2>
+                    <br/>
+                    <a href = "https://socialli.st/post/dcc3bf6abc4c-461d-981a-1b86f3dc6cc5">
+                        quick tutorial
+                    </a>
+                </div>
             }
         </InfiniteScroll>
     )
