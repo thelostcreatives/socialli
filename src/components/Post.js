@@ -289,4 +289,9 @@ const PostWrapper = styled.div`
 
         margin: 0;
     }
+
+
+    @media only screen and (max-width: ${breakpoint.b}) {
+        // width: 90vh;
+    }
 `;
