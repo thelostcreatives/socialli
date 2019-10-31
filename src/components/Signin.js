@@ -28,6 +28,13 @@ const SignIn = (props) => {
             <p>
               Socialli is just another social media app. But decentralized.
             </p>
+            <h4>
+              What does that mean for you?
+            </h4>
+            <p>
+              Your data is your own. Private data, like the "lists" you follow are only accessible by you.
+              Thus, can't be exploited. 
+            </p>
           </div>
         </div>
 
