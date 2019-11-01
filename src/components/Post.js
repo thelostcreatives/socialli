@@ -211,7 +211,7 @@ const PostWrapper = styled.div`
 
         .metadata {
             display: flex;
-            align-items: center;
+            align-items: baseline;
 
             .list-title {
                 margin: 10px 0;
