@@ -23,6 +23,9 @@ const NewPostForm = (props) => {
 	const { author, title } = listData;
 
 	const [media, setMedia] = useState("");
+
+	const [creatingPost, setCreatingPost] = useState(false);
+
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -52,6 +55,7 @@ const NewPostForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
+			setCreatingPost(true);
 			const newPost = await createPost(
 				listData._id,
 				{
@@ -93,7 +97,7 @@ const NewPostForm = (props) => {
 				</div>
 				<div>
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
-					<Button onClick = {handlePost} text = "Post"/>
+					<Button onClick = {handlePost} text = "Post" disabled = {creatingPost}/>
 					{ isEmojiPickerVisible ? 
 						<EmojiPicker onEmojiClick={handleEmojiClick}/>
 						:
