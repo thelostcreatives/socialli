@@ -11,6 +11,9 @@ export const NOTIF_CREATED = "NOTIF_CREATED";
 export const GETTING_NOTIFS = "GETTING_NOTIFS";
 export const NOTIFS_RECEIVED = "NOTIFS_RECEIVED";
 
+export const DELETING_NOTIF = "DELETING_NOTIF";
+export const NOTIF_DELETED = "NOTIF_DELETED";
+
 export const createNotif = (author, notif_for, notif_with, type, content) => async (dispatch) => {
 	dispatch({
 		type: CREATING_NOTIF
@@ -58,4 +61,23 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 			payload: []
 		});
 	}
+}
+
+export const deleteNotif = (notif_with) => async (dispatch) => {
+	dispatch({
+		type: DELETING_NOTIF
+	});
+
+	const notif = await Notification.fetchList({
+		notif_with
+	});
+
+	if (notif[0]) {
+		await notif[0].destroy();
+	}
+
+	dispatch({
+		type: NOTIF_DELETED,
+		payload: notif
+	});
 }

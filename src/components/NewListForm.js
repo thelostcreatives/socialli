@@ -17,6 +17,8 @@ const NewListForm = (props) => {
 	const [description, setDescription] = useState("");
 	const [posts_type, setPostsType] = useState("");
 
+	const [creatingList, setCreatingList] = useState(false);
+
 	const handleInput = (e) => {
 		const nameToSetter = {
 			title: setTitle,
@@ -40,9 +42,10 @@ const NewListForm = (props) => {
 			</select> */}
 			<div className = "options">
 				<Button onClick = { async () => {
+					setCreatingList(true);
 					const newList = await props.createList(title, description, props.author, posts_type);
 					props.history.push(`list/${newList._id}`)
-				}} text = "Create"/>
+				}} text = "Create" disabled = {creatingList}/>
 
 				<Button onClick={props.cancel} text = "Cancel"/>
 			</div>
@@ -53,7 +56,7 @@ const NewListForm = (props) => {
 
 const mstp = (state) => {
     return {
-        author: state.auth.anylistUser.attrs.username
+		author: state.auth.anylistUser.attrs.username,
     }
 }
 

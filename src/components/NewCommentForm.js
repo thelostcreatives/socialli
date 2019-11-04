@@ -29,6 +29,8 @@ const NewCommentForm = (props) => {
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
+	const [creatingComment, setCreatingComment] = useState(false);
+
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
 	const editor = useRef(null);
@@ -44,6 +46,7 @@ const NewCommentForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
+			setCreatingComment(true);
 			const newComment = await createComment(
 				post._id,
 				{
@@ -92,7 +95,7 @@ const NewCommentForm = (props) => {
 				</div>
 				<div>
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
-					<Button onClick = {handlePost} text = "Comment"/>
+					<Button onClick = {handlePost} text = "Comment" disabled = {creatingComment}/>
 					{ isEmojiPickerVisible ? 
 						<EmojiPicker onEmojiClick={handleEmojiClick}/>
 						:
