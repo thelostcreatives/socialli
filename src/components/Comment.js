@@ -8,13 +8,13 @@ import EmojiPicker from 'emoji-picker-react';
 import moment from 'moment';
 
 import { Button } from './index';
-import { updateComment, deleteComment } from '../actions';
+import { updateComment, deleteComment, deleteNotif } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
 const Comment = (props) => {
 
 	const { comment, userSigningKeyId} = props;
-	const { updateComment, deleteComment } = props;
+	const { updateComment, deleteComment, deleteNotif } = props;
 
 	const { content, metadata, signingKeyId, createdAt } = comment.attrs;
 
@@ -66,8 +66,8 @@ const Comment = (props) => {
 
 	const handleDelete = () => {
 		deleteComment(comment);
+		deleteNotif(comment._id);
 	}
-
 
 	return (
 		<CommentWrapper>
@@ -140,7 +140,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {updateComment, deleteComment})(Comment);
+export default connect(mstp, {updateComment, deleteComment, deleteNotif})(Comment);
 
 const CommentWrapper = styled.div`
 	display: flex;
