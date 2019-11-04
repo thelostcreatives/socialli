@@ -66,7 +66,7 @@ const Post = (props) => {
     const handleDelete = () => {
         deletePost(expandedPost);
         unfollowPost(anylistUser, expandedPost._id);
-        history.goBack();
+        history.push(`/list/${listId}`);
     }
 
     const editor = useRef(null);
