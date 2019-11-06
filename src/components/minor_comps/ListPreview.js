@@ -6,12 +6,24 @@ import styled from 'styled-components';
 import { setActiveList } from '../../actions';
 
 const ListPreview = (props) => {
+    const { list } = props;
+
+    const { setActiveList } = props;
+
+    const { title, other } = list.attrs;
+
 	return (
-		<StyledLink to = { `list/${props.list._id}` }>
-			<ListPreviewWrapper onClick = { () => props.setActiveList(props.list)} >
+		<StyledLink to = { `list/${list._id}` }>
+			<ListPreviewWrapper onClick = { () => setActiveList(list)} >
                 <h2>
-                { props.list.attrs.title }
+                { title }
                 </h2>
+                {
+                    other && other.bannerLink ?
+                    <img src = {other.bannerLink} alt = "Banner"/>
+                    :
+                    null
+                }
 			</ListPreviewWrapper>
 		</StyledLink>
 	);
@@ -34,15 +46,20 @@ const ListPreviewWrapper = styled.div`
     height: 93px;
     word-break: break-word;
 
+    position: relative;
+
     display: flex;
     align-items: center;
 
-    background: #D6D6D6B3;
+    background: hsla(0, 0%, 95%, 0.69);
     border-radius: 10px;
     margin: 10px;
 
+    overflow: hidden;
+
     &:hover {
         color: white;
+        background: hsla(0, 0%, 10%, 0.69);
     }
 
     h2 {
@@ -50,5 +67,11 @@ const ListPreviewWrapper = styled.div`
         font-family: 'Work Sans', sans-serif;
         font-weight: normal;
         margin-left: 10px;
+    }
+
+    img {
+        position: absolute;
+        z-index: -1;
+        width: 100%;
     }
 `;

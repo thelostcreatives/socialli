@@ -6,14 +6,24 @@ import { XSquare } from 'react-feather';
 
 import { Button, NewPostForm, ConfirmationOverlay } from './index';
 import { Header } from './Profile';
-import { setActiveList, followList, unfollowList, getPosts, updateList, deleteList } from '../actions';
+import { setActiveList, followList, unfollowList, getPosts, updateList, deleteList, uploadBanner } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import PostComp from './Post';
 
 const ListPage = (props) => {
 
-	const { hasMore, listPosts, getPosts, setActiveList, followList, unfollowList, match, history, listData, anylistUser, followedLists, updateList, deleteList, deletingList} = props;
+	const { hasMore, listPosts,  
+			match, history, 
+			listData, anylistUser, 
+			followedLists, deletingList, 
+			userSession, uploadingBanner} = props;
+	
+	const { getPosts, setActiveList, 
+			followList, unfollowList, 
+			updateList, deleteList, 
+			uploadBanner } = props;
+
 
 	const isOwned = listData.attrs.signingKeyId === anylistUser.attrs.signingKeyId;
 
@@ -31,8 +41,8 @@ const ListPage = (props) => {
 			title,
 			description,
 			other
-		})
-	}, [listData])
+		});
+	}, [listData.attrs])
 
 	useEffect (() => {
 		const getListData = async () => {
@@ -89,6 +99,10 @@ const ListPage = (props) => {
 		setIsDeleting(false);
 	}
 
+	const handleBannerClick = () => {
+		document.getElementById("banner-input").click();
+	}
+
 	const handleDelete = () => {
 		deleteList(listData, () => history.push(`/${anylistUser.attrs.username}`));
 	}
@@ -99,6 +113,11 @@ const ListPage = (props) => {
 
 	const doneCreatingPost = () => {
 		setIsCreatingPost(false);
+	}
+
+	const handleBannerUpload = (e) => {
+		const file = e.target.files[0];
+		uploadBanner(userSession, listData, file);
 	}
 
 	return (
@@ -120,6 +139,13 @@ const ListPage = (props) => {
 				:
 				<>
 					<Header>
+						<div id = "banner">
+							{other && other.bannerLink ? 
+								<img src = {other ? other.bannerLink : null} alt = "Banner"/>
+								:
+								null
+							}
+						</div>
 						{
 							!isEditing ?
 							<div>
@@ -134,8 +160,9 @@ const ListPage = (props) => {
 								<label htmlFor = "description">Description</label>
 								<textarea className = "description" type = "text" placeholder = "Tell people about this list" value = {listPageData.description} name = "description" onChange = {handleInputChange}/>
 							</div>
-
 						}
+
+						<input type = "file" id = "banner-input" accept = "image/*" hidden = 'hidden' onChange = {handleBannerUpload}/>
 
 						<div className = "icons-container">
 							<div>
@@ -154,6 +181,7 @@ const ListPage = (props) => {
 										<Button onClick = {() => setIsEditing(true)} text = "Edit"/>
 										:
 										<div className = "edit-options">
+											<Button onClick = {handleBannerClick} disabled = {uploadingBanner} text = {uploadingBanner ? "uploading" : "Banner"}/>
 											<Button onClick = {handleUpdateClick} text = "Update"/>
 											<XSquare onClick = {handleDeleteClick} className = "delete"/>
 										</div>
@@ -201,14 +229,16 @@ const mstp = (state) => {
 	return {
         listData: state.lists.activeList,
         anylistUser: state.auth.anylistUser,
+        userSession: state.auth.userSession,
 		followedLists: state.auth.anylistUser.attrs.followedLists ? state.auth.anylistUser.attrs.followedLists : [],
 		listPosts: state.posts.lists,
 		hasMore: state.posts.listHasMore,
-		deletingList: state.lists.deletingList
+		deletingList: state.lists.deletingList,
+		uploadingBanner: state.lists.uploadingBanner
 	}
 }
 
-export default connect(mstp, {setActiveList, followList, unfollowList, getPosts, updateList, deleteList})(ListPage);
+export default connect(mstp, {setActiveList, followList, unfollowList, getPosts, updateList, deleteList, uploadBanner})(ListPage);
 
 const ListPageWrapper = styled.div`
     display: flex;
@@ -217,6 +247,22 @@ const ListPageWrapper = styled.div`
 
 	font-family: 'Work Sans', sans-serif;
 	
+	#banner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		width: 100%;
+		height: 200px;
+		overflow: hidden;
+
+		margin: 10px 0;
+
+		img {
+			width: 100%;
+		}
+	}
+
 	.edit-options {
         display: flex;
         justify-content: space-evenly;
