@@ -150,15 +150,23 @@ export const deleteList = (list, redirect) => async (dispatch) => {
     redirect();
 }
 
-export const uploadBanner = (userSession, file) => async (dispatch) => {
+export const uploadBanner = (userSession, list, file) => async (dispatch) => {
     dispatch({
         type: UPLOADING_LIST_BANNER
     });
 
     const link = await uploadFile(userSession, "listBanners", file, {encrypt:false});
 
+    list.update({
+        other: {
+            bannerLink: link
+        }
+    });
+
+    const updatedList = await list.save();
+
     dispatch({
         type: LIST_BANNER_UPLOADED,
-        payload: link
+        payload: updatedList
     });
 }
