@@ -1,5 +1,6 @@
 import { List, Post } from '../models';
 import { USER_UPDATED } from './index';
+import { uploadFile } from '../utils/helpers';
 
 export const CREATING_LIST = "CREATING_LIST";
 export const LIST_CREATED = "LIST_CREATED";
@@ -18,6 +19,9 @@ export const LIST_UPDATED = "LIST_UPDATED";
 
 export const DELETING_LIST = "DELETING_LIST";
 export const LIST_DELETED = "LIST_DELETED";
+
+export const UPLOADING_LIST_BANNER = "UPLOADING_LIST_BANNER";
+export const LIST_BANNER_UPLOADED = "LIST_BANNER_UPLOADED";
 
 export const createList = (title, description, author, posts_type) => async (dispatch) => {
     dispatch({
@@ -144,4 +148,17 @@ export const deleteList = (list, redirect) => async (dispatch) => {
     });
 
     redirect();
+}
+
+export const uploadBanner = (userSession, file) => async (dispatch) => {
+    dispatch({
+        type: UPLOADING_LIST_BANNER
+    });
+
+    const link = await uploadFile(userSession, "listBanners", file, {encrypt:false});
+
+    dispatch({
+        type: LIST_BANNER_UPLOADED,
+        payload: link
+    });
 }
