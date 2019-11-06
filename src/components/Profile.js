@@ -158,7 +158,7 @@ const Profile = (props) => {
 			<Grid>
 				{
 					lists.map(list => {
-						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned} author = {match.params.id}>{list.attrs.title}</ListPreview>
+						return <ListPreview key = {list._id} list = { list } isOwned = {isOwned} author = {match.params.id}/>
 					})
 				}
 			</Grid>
