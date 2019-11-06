@@ -7,6 +7,7 @@ const initialState = {
 		}
 	},
 	profileLists: [],
+	uploadingBanner: false,
 	deletingList: false
 }
 
@@ -22,9 +23,16 @@ const branchTable = {
 			profileLists: [...action.payload]
 		}
 	},
+	[actions.UPLOADING_LIST_BANNER]: (state, action) => {
+		return {
+			...state, uploadingBanner: true
+		}
+	},
 	[actions.LIST_UPDATED]: (state, action) => {
 		return {
-			...state, activeList: action.payload
+			...state,
+			uploadingBanner: false,
+			activeList: action.payload
 		}
 	},
 	[actions.DELETING_LIST]: (state, action) => {
