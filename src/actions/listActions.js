@@ -166,7 +166,7 @@ export const uploadBanner = (userSession, list, file) => async (dispatch) => {
     const updatedList = await list.save();
 
     dispatch({
-        type: LIST_BANNER_UPLOADED,
+        type: LIST_UPDATED,
         payload: updatedList
     });
 }
