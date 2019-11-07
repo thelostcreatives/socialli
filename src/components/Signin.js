@@ -114,4 +114,8 @@ const SigninWrapper = styled.div`
       background: #409eff;
     }
   }
+  
+  .footer {
+    margin: 10px 0;
+  }
 `;
