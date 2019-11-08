@@ -103,7 +103,7 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ other.avatarUrl || person.avatarUrl || avatarFallbackImage } id = "avatar-image" alt=""/>
+					<img src={ other.avatarUrl || avatarFallbackImage } id = "avatar-image" alt=""/>
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
@@ -115,9 +115,9 @@ const Profile = (props) => {
 						</div>
 						:
 						<div>
-							<h1 id = "name">{ name || person.name || "Your beautiful name" }</h1>
+							<h1 id = "name">{ name || "Anonymous" }</h1>
 							<h2 id = "username">{ username }</h2>
-							<p id = "description">{ description || person.description }</p>
+							<p id = "description">{ description }</p>
 						</div>
 					}
 				</div>
