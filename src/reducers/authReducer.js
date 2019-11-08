@@ -10,8 +10,7 @@ const initialState = {
         attrs: {
 
         }
-    },
-    uploadingAvatar: false
+    }
 }
 
 const branchTable = {
@@ -37,9 +36,7 @@ const branchTable = {
     [actions.USER_UPDATED]: (state, actions) => {
         return {
             ...state,
-            anylistUser: actions.payload,
-            activeProfile: actions.payload,
-            uploadingAvatar: false
+            anylistUser: actions.payload
         }
     },
     [actions.SET_ACTIVE_PROFILE]: (state, actions) => {
@@ -47,15 +44,9 @@ const branchTable = {
             ...state,
             activeProfile: actions.payload
         }
-    },
-    [actions.UPLOADING_AVATAR]: (state, actions) => {
-        return {
-            ...state,
-            uploadingAvatar: true
-        }
     }
-}
 
+}
 export default (state = initialState, action) => {
     return action.type in branchTable ? branchTable[action.type](state, action) : state;
 }
