@@ -1,5 +1,4 @@
 import  { AnyListUser } from '../models';
-import { uploadFile } from '../utils/helpers';
 
 import { ERROR } from './index';
 
@@ -14,8 +13,6 @@ export const UPDATING_USER = "UPDATING_USER";
 export const USER_UPDATED = "USER_UPDATED";
 
 export const SET_ACTIVE_PROFILE = "SET_ACTIVE_PROFILE";
-
-export const UPLOADING_AVATAR = "UPLOADING_AVATAR";
 
 //export auth methods below
 export function handleSignIn(e, userSession) {
@@ -91,25 +88,4 @@ export const updateUser = (AnyListUser, updates) => async (dispatch) => {
         type: USER_UPDATED,
         payload: updatedUser
     })
-}
-
-export const uploadAvatar = (userSession, user, file) => async (dispatch) => {
-    dispatch({
-        type: UPLOADING_AVATAR
-    });
-
-    const link = await uploadFile(userSession, "avatars", file, {encrypt:false});
-
-    user.update({
-        other: {
-            avatarUrl: link
-        }
-    });
-
-    const updatedUser = await user.save();
-
-    dispatch({
-        type: USER_UPDATED,
-        payload: updatedUser
-    });
 }
