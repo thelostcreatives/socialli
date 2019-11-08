@@ -7,7 +7,7 @@ import {
 
 import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
-import { AnyListUser, List } from '../models';
+import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
@@ -53,11 +53,11 @@ const Profile = (props) => {
 
 	useEffect (() => {
 		setProfileData({username, name, description, other})
-	}, [activeProfile]);
+	}, [activeProfile.attrs]);
 
 	useEffect(() => {
 		getProfileLists(match.params.id);
-		setPerson(new Person(userSession.loadUserData().profile));
+		setPerson(new Person(userSession.loadUserData().profile).toJSON());
 	},[match.params.id]);
 
 	const handleInputChange = (e) => {
@@ -94,23 +94,24 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ typeof(other.avatarUrl) !== "undefined" ? other.avatarUrl : avatarFallbackImage } id = "avatar-image" alt=""/>
+					<img src={ typeof(other.avatarUrl) !== "undefined" ? other.avatarUrl : person.avatarUrl } id = "avatar-image" alt=""/>
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
-							<label htmlFor = "avatarUrl">Avatar
+							<label htmlFor = "avatarUrl">Avatar</label>
 							<input type = "text" placeholder = "Avatar url" value = {profileData.other.avatarUrl ? profileData.other.avatarUrl : ""} name = "avatarUrl" onChange = {handleInputChange}/>
-						</label>
+
 							<label htmlFor = "name">Name</label>
-							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name ? profileData.name : ""} name = "name" onChange = {handleInputChange}/>
+							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name ? profileData.name : person.name } name = "name" onChange = {handleInputChange}/>
+
 							<label htmlFor = "description">Description</label>
-							<textarea className = "description" type = "text" placeholder = "Tell people about yourself" value = {profileData.description ? profileData.description : ""} name = "description" onChange = {handleInputChange}/>
+							<textarea className = "description" type = "text" placeholder = "Tell people about yourself" value = {profileData.description ? profileData.description : person.description} name = "description" onChange = {handleInputChange}/>
 						</div>
 						:
 						<div>
-							<h1 id = "name">{ name }</h1>
+							<h1 id = "name">{ name || person.name || "Your beautiful name" }</h1>
 							<h2 id = "username">{ username }</h2>
-							<p id = "description">{ description }</p>
+							<p id = "description">{ description || person.description }</p>
 						</div>
 					}
 				</div>
