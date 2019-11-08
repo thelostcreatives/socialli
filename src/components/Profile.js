@@ -103,7 +103,7 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ typeof(other.avatarUrl) !== "undefined" ? other.avatarUrl : person.avatarUrl } id = "avatar-image" alt=""/>
+					<img src={ other.avatarUrl || person.avatarUrl || avatarFallbackImage } id = "avatar-image" alt=""/>
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
