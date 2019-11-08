@@ -36,7 +36,8 @@ const branchTable = {
     [actions.USER_UPDATED]: (state, actions) => {
         return {
             ...state,
-            anylistUser: actions.payload
+            anylistUser: actions.payload,
+            activeProfile: actions.payload
         }
     },
     [actions.SET_ACTIVE_PROFILE]: (state, actions) => {
