@@ -6,7 +6,7 @@ import {
 } from 'blockstack';
 
 import { ListPreview, Button, NewListForm  } from './index';
-import { handleSignOut, setActiveProfile, updateUser, getProfileLists } from '../actions';
+import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } from '../actions';
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -14,9 +14,9 @@ const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder
 
 const Profile = (props) => {
 
-	const { user, userSession, activeProfile, match, history, lists } = props;
+	const { user, userSession, activeProfile, match, history, lists, uploadingAvatar } = props;
 
-	const { handleSignOut, setActiveProfile, updateUser, getProfileLists } = props;
+	const { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } = props;
 
 	const isOwned = user.attrs.signingKeyId === activeProfile.attrs.signingKeyId;
 
@@ -90,6 +90,15 @@ const Profile = (props) => {
 		setIsCreatingList(false);
 	}
 
+	const handleAvatarClick = () => {
+		document.getElementById("avatar-input").click();
+	}
+
+	const handleAvatarUpload = (e) => {
+		const file = e.target.files[0];
+		uploadAvatar(userSession, user, file);
+	}
+
 	return (
 		<ProfileWrapper>
 			<Header>
@@ -98,9 +107,6 @@ const Profile = (props) => {
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
-							<label htmlFor = "avatarUrl">Avatar</label>
-							<input type = "text" placeholder = "Avatar url" value = {profileData.other.avatarUrl ? profileData.other.avatarUrl : ""} name = "avatarUrl" onChange = {handleInputChange}/>
-
 							<label htmlFor = "name">Name</label>
 							<input type = "text" placeholder = "Your beautiful name" value = {profileData.name ? profileData.name : person.name } name = "name" onChange = {handleInputChange}/>
 
@@ -116,6 +122,8 @@ const Profile = (props) => {
 					}
 				</div>
 
+				<input type = "file" id = "avatar-input" accept = "image/*" hidden = 'hidden' onChange = {handleAvatarUpload}/>
+
 				<div className="icons-container">
 					<div>
 						{
@@ -129,20 +137,24 @@ const Profile = (props) => {
 						<div>
 							{
 								isEditing ?
-								<Button onClick = {() => {
-									setIsEditing(false);
-									updateUser(user, profileData);
-								}} text = "Update"/>
+								<div>
+									<Button onClick = {handleAvatarClick} disabled = {uploadingAvatar} text = {uploadingAvatar ? "Uploading" : "Avatar"}/>
+									<Button onClick = {() => {
+										setIsEditing(false);
+										updateUser(user, profileData);
+									}} text = "Update"/>
+								</div>
 								:
-								<Button onClick = {() => {
-									setIsEditing(true);
-								}} text = "Edit"/>
-
+								<div>
+									<Button onClick = {() => {
+										setIsEditing(true);
+									}} text = "Edit"/>
+									<Button
+										onClick = { (e) => handleSignOut(e, userSession) }
+										text = "Log Out"
+									/>
+								</div>
 							}
-							<Button
-								onClick = { (e) => handleSignOut(e, userSession) }
-								text = "Log Out"
-							/>
 						</div>
 						: 
 						null
@@ -172,11 +184,12 @@ const mstp = state => {
 		userSession: state.auth.userSession,
 		user: state.auth.anylistUser,
 		activeProfile: state.auth.activeProfile,
+		uploadingAvatar: state.auth.uploadingAvatar,
 		lists: state.lists.profileLists
 	}
 }
 
-export default connect(mstp, {handleSignOut, setActiveProfile, updateUser, getProfileLists})(Profile);
+export default connect(mstp, {handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar})(Profile);
 
 const ProfileWrapper = styled.div`
 	display: flex;
