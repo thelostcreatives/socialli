@@ -58,7 +58,10 @@ export const getCustomUser = ({profile, username}) => async (dispatch) => {
         const newuser = new AnyListUser({
             name: profile.name,
             username,
-            description: profile.description
+            description: profile.description,
+            other : {
+                avatarUrl: profile.image[0].contentUrl || null
+            }
         });
 
         const res = await newuser.save();
