@@ -4,7 +4,7 @@ import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import EmojiPicker from 'emoji-picker-react';
 
-import { Button } from './index';
+import { Button, OptionsBar } from './index';
 import { notif_types } from '../actions';
 import { createComment, createNotif, followPost } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
@@ -132,24 +132,6 @@ const NewCommentFormWrapper = styled.div`
 
 	@media only screen and (min-width: ${breakpoint.b}) {
 		width: 500px;
-	}
-`;
-
-const OptionsBar = styled.div`
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-
-	.emoji-picker {
-		position: absolute;
-		top: 100%;
-		z-index: 100;
-	}
-
-	@media only screen and (max-width: ${breakpoint.a}) {
-		.emoji-picker {
-			left: 0;
-		}
 	}
 `;
 

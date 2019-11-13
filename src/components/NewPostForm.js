@@ -145,7 +145,7 @@ const NewPostFormWrapper = styled.div`
 	}
 `;
 
-const OptionsBar = styled.div`
+export const OptionsBar = styled.div`
 	display: flex;
 	justify-content: space-between;
 	position: relative;
@@ -154,6 +154,13 @@ const OptionsBar = styled.div`
 		position: absolute;
 		top: 100%;
 		z-index: 100;
+		.emoji {
+			margin-right: 1px;
+		}
+	}
+
+	.skin-tones {
+		display: none;
 	}
 
 	@media only screen and (max-width: ${breakpoint.a}) {
