@@ -4,14 +4,17 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { User, Compass, Bell, Home } from 'react-feather';
 
-import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp } from './index';
+import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp, LoadingScreen } from './index';
 import { breakpoint } from '../utils/styleConsts';
 
 const Main = (props) => {
 
     const { user } = props;
 
-    return(
+    return !user.attrs.username ?
+    (<LoadingScreen/>) 
+    :
+    (
         <Router>
             <MainWrapper>
                 <nav id = "nav">
