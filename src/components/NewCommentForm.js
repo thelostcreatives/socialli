@@ -6,30 +6,26 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Button } from './index';
 import { notif_types } from '../actions';
-import { createComment, setActiveList, createNotif, followPost } from '../actions';
-import { List } from '../models';
+import { createComment, createNotif, followPost } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
 const NewCommentForm = (props) => {
+
 	const { 
-		createPost,
-		setActiveList,
 		post,
-		// listData,
 		anylistUser,
-		match,
-		done,
+		creatingComment,
+	} = props;
+
+	const {
 		createComment,
 		createNotif,
 		followPost
-	} = props;
+	} = props
 
 	const { username, followedPosts } = anylistUser.attrs;
-	const { metadata } = post.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
-
-	const [creatingComment, setCreatingComment] = useState(false);
 
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -46,7 +42,6 @@ const NewCommentForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
-			setCreatingComment(true);
 			const newComment = await createComment(
 				post._id,
 				{
@@ -109,7 +104,8 @@ const NewCommentForm = (props) => {
 
 const mstp = (state) => {
 	return {
-        anylistUser: state.auth.anylistUser,
+		anylistUser: state.auth.anylistUser,
+		creatingComment: state.comments.creatingComment
 	}
 }
 
