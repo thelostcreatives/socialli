@@ -39,7 +39,11 @@ export const getComments = (offset, limit, postId) => async (dispatch) => {
 		type: GETTING_COMMENTS
 	});
 
-	let comments
+	let comments;
+
+	const total = await Comment.count({
+		postId
+	});
 
 	if (!limit) {
 		comments = await Comment.fetchList({
@@ -55,11 +59,10 @@ export const getComments = (offset, limit, postId) => async (dispatch) => {
 		});
 	}
 
-	
-
 	dispatch({
 		type: COMMENTS_RECEIVED,
 		postId,
+		total,
 		payload: comments
 	});
 }
