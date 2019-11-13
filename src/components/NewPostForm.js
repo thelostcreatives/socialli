@@ -150,7 +150,7 @@ export const OptionsBar = styled.div`
 	justify-content: space-between;
 	position: relative;
 
-	.emoji-picker {
+	.emoji-picker-react {
 		position: absolute;
 		top: 100%;
 		z-index: 100;
