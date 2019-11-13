@@ -236,10 +236,6 @@ const PostWrapper = styled.div`
         }
     }
 
-    .DraftEditor-root {
-		margin: 10px 0;
-	}
-
     .delete {
         color: #e86813;
         &:hover {

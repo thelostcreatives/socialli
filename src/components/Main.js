@@ -90,6 +90,11 @@ const MainWrapper = styled.div`
         }
     }
 
+    .DraftEditor-root {
+        margin: 10px 0;
+        line-height: initial;
+	}
+
     #nav {
         grid-area: nav;
 
