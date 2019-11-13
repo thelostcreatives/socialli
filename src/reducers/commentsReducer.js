@@ -1,13 +1,20 @@
 import * as actions from '../actions';
 
 const initialState = {
-
+	creatingComment: false
 }
 
 const branchTable = {
+	[actions.CREATING_COMMENT]: (state, action) => {
+		return {
+			...state,
+			creatingComment: true
+		}
+	},
 	[actions.COMMENT_CREATED]: (state, action) => {
 		return {
 			...state,
+			creatingComment: false,
 			[action.postId]: state[action.postId] ? [...state[action.postId], action.payload] : [action.payload]
 		}
 	},

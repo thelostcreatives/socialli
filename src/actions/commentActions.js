@@ -1,6 +1,6 @@
 import { Comment } from '../models';
 
-export const CREATE_COMMENT = 'CREATE_COMMENT';
+export const CREATING_COMMENT = 'CREATING_COMMENT';
 export const COMMENT_CREATED = 'COMMENT_CREATED';
 
 export const GETTING_COMMENTS = 'GETTING_COMMENTS';
@@ -14,7 +14,7 @@ export const COMMENT_DELETED = 'COMMENT_DELETED';
 
 export const createComment = (postId, metadata, content) => async (dispatch) => {
 	dispatch({
-		type: CREATE_COMMENT
+		type: CREATING_COMMENT
 	});
 
 	const newComment = new Comment({
