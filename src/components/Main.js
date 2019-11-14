@@ -1,17 +1,28 @@
-import React, {} from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { User, Compass, Bell, Home } from 'react-feather';
 
 import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp, LoadingScreen } from './index';
+import { getNotifs, getNewNotifsCount } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
 const Main = (props) => {
 
-    const { user } = props;
+    const { anylistUser, notifs, newNotifs } = props;
+    const { getNotifs, getNewNotifsCount } = props;
 
-    return !user.attrs.username ?
+	const { username, followedLists = [], followedPosts = [], other } = anylistUser.attrs;
+
+    useEffect (() => {
+		if (anylistUser._id) {
+			getNotifs(username, [...followedLists, ...followedPosts], 0, 20);
+            getNewNotifsCount(username, [...followedLists, ...followedPosts], other.lastSeenNotif);
+        }
+	}, [anylistUser]);
+
+    return !username ?
     (<LoadingScreen/>) 
     :
     (
@@ -30,9 +41,14 @@ const Main = (props) => {
                         {/* <NavLink exact to = "/follows" activeStyle = { NavActiveStyle }>Follows</NavLink> */}
                         <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>
                             <Bell/>
+                            {newNotifs > 0 ?
+                                <indicator id = "new-notifs"/>
+                                :
+                                null
+                            }
                             <span>Notifications</span>
                         </NavLink>
-                        <NavLink exact to = {`/${user.attrs.username}`} activeStyle = { NavActiveStyle }>
+                        <NavLink exact to = {`/${username}`} activeStyle = { NavActiveStyle }>
                             <User/>
                             <span>Profile</span>
                         </NavLink>
@@ -47,7 +63,7 @@ const Main = (props) => {
                         <Route path = "/newList" component = {NewListForm}/>
                         <Route exact path = "/:id" component = {Profile}/>
                         <Route exact path = {`/list/:id`} component = {ListPage}/>
-                        <Route path = {`/${user.attrs.username}/:id/newPost`} component = {NewPostForm}/>
+                        <Route path = {`/${username}/:id/newPost`} component = {NewPostForm}/>
                         <Route exact path = "/post/:id" render = {(props) => <PostComp {...props} preview = {false}/>}/>
                     </Switch>
                 </div>
@@ -61,11 +77,13 @@ const Main = (props) => {
 
 const mstp = (state) => {
     return {
-        user: state.auth.anylistUser
+        anylistUser: state.auth.anylistUser,
+        notifs: state.notifs.notifications,
+        newNotifs: state.notifs.newNotifs
     }
 }
 
-export default connect(mstp, {})(withRouter(Main));
+export default connect(mstp, {getNotifs, getNewNotifsCount})(withRouter(Main));
 
 const MainWrapper = styled.div`
     * {
@@ -114,6 +132,7 @@ const MainWrapper = styled.div`
             a {
                 display: flex;
                 align-items: center;
+                position: relative;
 
                 text-decoration: none;
                 color: black;
@@ -135,6 +154,19 @@ const MainWrapper = styled.div`
                     stroke-width: 2.5;
                 }
             }
+        }
+
+        #new-notifs {
+            position: absolute;
+            background: black;
+            border: 2px solid white;
+            border-radius: 100%;
+            width: 12px !important;
+            height: 12px;
+            margin: 0;
+
+            left: 23px;
+            top: 11px;
         }
     }
 
