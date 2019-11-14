@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
-import EmojiPicker from 'emoji-picker-react';
+import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, OptionsBar } from './index';
 import { notif_types } from '../actions';
@@ -69,10 +69,10 @@ const NewCommentForm = (props) => {
 		setIsEmojiPickerVisible(!isEmojiPickerVisible);
 	}
 
-	const handleEmojiClick = (emoji, data) => {
+	const handleEmojiClick = (emoji) => {
 		const selection = editorState.getSelection();
 		const contentState = editorState.getCurrentContent();
-		const newState =  Modifier.insertText(contentState, selection, String.fromCodePoint(`0x${emoji}`))
+		const newState =  Modifier.insertText(contentState, selection, emoji.native)
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
 	}
@@ -92,7 +92,10 @@ const NewCommentForm = (props) => {
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 					<Button onClick = {handlePost} text = "Comment" disabled = {creatingComment}/>
 					{ isEmojiPickerVisible ? 
-						<EmojiPicker onEmojiClick={handleEmojiClick}/>
+						<EmojiPicker 
+							set = "emojione"
+							onSelect = {handleEmojiClick}
+						/>
 						:
 						null
 					}
