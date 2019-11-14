@@ -11,6 +11,9 @@ export const NOTIF_CREATED = "NOTIF_CREATED";
 export const GETTING_NOTIFS = "GETTING_NOTIFS";
 export const NOTIFS_RECEIVED = "NOTIFS_RECEIVED";
 
+export const GETTING_NEW_NOTIFS_COUNT = "GETTING_NEW_NOTIFS_COUNT";
+export const NEW_NOTIFS_COUNT_RECEIVED = "NEW_NOTIFS_COUNT_RECEIVED";
+
 export const DELETING_NOTIF = "DELETING_NOTIF";
 export const NOTIF_DELETED = "NOTIF_DELETED";
 
@@ -58,6 +61,34 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 	} else {
 		dispatch({
 			type: NOTIFS_RECEIVED,
+			payload: []
+		});
+	}
+}
+
+export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (dispatch) => {
+	dispatch({
+		type: GETTING_NEW_NOTIFS_COUNT
+	});
+
+	if (subbed_models.length > 0) {
+		const notifs = await Notification.count({
+			author: {
+				$ne: username
+			},
+			notif_for: subbed_models,
+			createdAt: {
+				$gt: lastSeen
+			}
+		});
+
+		dispatch({
+			type: NEW_NOTIFS_COUNT_RECEIVED,
+			payload: notifs
+		});
+	} else {
+		dispatch({
+			type: NEW_NOTIFS_COUNT_RECEIVED,
 			payload: []
 		});
 	}
