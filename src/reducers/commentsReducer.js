@@ -7,7 +7,6 @@ const initialState = {
 
 const branchTable = {
 	[actions.CREATING_COMMENT]: (state, action) => {
-		console.log(action, state.totals[action.postId] ++)
 		return {
 			...state,
 			creatingComment: true,
