@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
-import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link2, Edit, XSquare } from 'react-feather';
 import ClipBoard from 'clipboard';
 import moment from 'moment';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
+import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar } from './index';
 import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
@@ -23,6 +24,7 @@ const Post = (props) => {
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
     new ClipBoard('.postLink');
 
@@ -43,6 +45,10 @@ const Post = (props) => {
             props.setExpandedPost(post);
             history.push(`/post/${post._id}`);
         }
+    }
+
+    const toggleEmojiPicker = () => {
+        setIsEmojiPickerVisible(!isEmojiPickerVisible);
     }
 
     const handleUpdateClick = () => {
@@ -68,6 +74,14 @@ const Post = (props) => {
         unfollowPost(anylistUser, expandedPost._id);
         history.push(`/list/${listId}`);
     }
+
+    const handleEmojiClick = (emoji) => {
+		const selection = editorState.getSelection();
+		const contentState = editorState.getCurrentContent();
+		const newState =  Modifier.insertText(contentState, selection, emoji.native);
+		const state = EditorState.push(editorState, newState, "insert-characters");
+		setEditorState(state);
+	}
 
     const editor = useRef(null);
 
@@ -129,10 +143,22 @@ const Post = (props) => {
                                                 focusEditor();
                                             }} text = "Edit" />
                                             :
-                                            <div className = "edit-options">
+                                            <OptionsBar>
+                                                <Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
                                                 <Button onClick = {handleUpdateClick} text = "Update"/>
-                                                <XSquare onClick = {handleDeleteClick} className = "delete"/>
-                                            </div>
+                                                <XSquare onClick = {handleDeleteClick} className = "delete" style = {{margin: "5px"}}/>
+                                                { isEmojiPickerVisible ?
+                                                    <EmojiPicker 
+                                                        set = "emojione"
+                                                        onSelect = {handleEmojiClick}
+                                                        style = {{
+                                                            left: "-100px"
+                                                        }}
+                                                    />
+                                                    :
+                                                    null
+                                                }
+                                            </OptionsBar>
                                         }
                                     </div>
                                     :

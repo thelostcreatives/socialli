@@ -203,8 +203,9 @@ export const OptionsBar = styled.div`
 	}
 
 	@media only screen and (max-width: ${breakpoint.a}) {
-		.emoji-picker {
+		.emoji-mart {
 			left: 0;
+			width: 80vw !important;
 		}
 	}
 `;
