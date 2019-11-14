@@ -10,7 +10,7 @@ const branchTable = {
 		return {
 			...state,
 			creatingComment: true,
-			totals: { ...state.totals, [action.postId]: state.totals[action.postId] ++}
+			totals: { ...state.totals, [action.postId]: ++ state.totals[action.postId]}
 		}
 	},
 	[actions.COMMENT_CREATED]: (state, action) => {
