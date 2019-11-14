@@ -37,6 +37,12 @@ const branchTable = {
 			...state,
 			newNotifs: action.payload
 		}
+	},
+	[actions.SETTING_LAST_SEEN_NOTIF]: (state, action) => {
+		return {
+			...state,
+			newNotifs: 0
+		}
 	}
 };
 
