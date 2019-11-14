@@ -48,7 +48,7 @@ const mstp = (state) => {
 
 export default connect(mstp, {getComments})(Comments);
 
-const FakeLink = styled.button`
+export const FakeLink = styled.button`
 	background: none;
     border: none;
     display: inherit;
