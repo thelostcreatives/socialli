@@ -14,7 +14,8 @@ export const COMMENT_DELETED = 'COMMENT_DELETED';
 
 export const createComment = (postId, metadata, content) => async (dispatch) => {
 	dispatch({
-		type: CREATING_COMMENT
+		type: CREATING_COMMENT,
+		postId
 	});
 
 	const newComment = new Comment({
