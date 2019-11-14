@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Edit2, XSquare } from 'react-feather';
 import { Editor, EditorState, Modifier, convertToRaw, convertFromRaw } from 'draft-js';
 import styled from 'styled-components';
-import EmojiPicker from 'emoji-picker-react';
+import { Picker as EmojiPicker } from 'emoji-mart';
 import moment from 'moment';
 
 import { Button } from './index';
