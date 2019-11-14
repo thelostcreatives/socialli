@@ -1,13 +1,15 @@
 import React, {} from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { connect } from 'react-redux';
+
 import { breakpoint } from '../utils/styleConsts';
 
 const Notification = (props) => {
 
-	const { notif } = props;
+	const { notif, lastSeenNotif} = props;
 
-	const { notif_for, author, type, content } = notif.attrs;
+	const { notif_for, author, type, content, createdAt } = notif.attrs;
 
 	const typeToContent = {
 		"COMMENT": "commented",
@@ -15,7 +17,7 @@ const Notification = (props) => {
 
 	return (
 		<CleanLink to={`/post/${notif_for}`}>
-			<NotifWrapper>
+			<NotifWrapper isNew = {createdAt > lastSeenNotif}>
 					<span className = "author">@{author} </span>
 					{typeToContent[type]} on a post from
 					<span className = "list-title"> {content.listTitle} </span>
@@ -25,7 +27,13 @@ const Notification = (props) => {
 	)
 }
 
-export default Notification;
+const mstp = (state) => {
+	return {
+		lastSeenNotif: state.auth.anylistUser.attrs.other.lastSeenNotif
+	}
+}
+
+export default connect(mstp, {})(Notification);
 
 const NotifWrapper = styled.div`
 	padding: 10px;
@@ -46,6 +54,10 @@ const NotifWrapper = styled.div`
 		width: 100%;
 		height: 100%;
 	}
+
+	${props => props.isNew && css`
+		background: hsla(186, 76%, 81%, 0.30);
+	`}
 
 	.list-title {
 		font-weight: 600;

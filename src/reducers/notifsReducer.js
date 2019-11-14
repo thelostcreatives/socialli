@@ -2,7 +2,8 @@ import * as actions from '../actions';
 
 const initialState = {
 	notifications: [],
-	hasMore: true
+	hasMore: true,
+	newNotifs: 0
 };
 
 const branchTable = {
@@ -29,6 +30,18 @@ const branchTable = {
 				}
 			}),
 			hasMore
+		}
+	},
+	[actions.NEW_NOTIFS_COUNT_RECEIVED]: (state, action) => {
+		return {
+			...state,
+			newNotifs: action.payload
+		}
+	},
+	[actions.SETTING_LAST_SEEN_NOTIF]: (state, action) => {
+		return {
+			...state,
+			newNotifs: 0
 		}
 	}
 };

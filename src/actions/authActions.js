@@ -105,6 +105,7 @@ export const uploadAvatar = (userSession, user, file) => async (dispatch) => {
 
     user.update({
         other: {
+            ...user.attrs.other,
             avatarUrl: link
         }
     });
