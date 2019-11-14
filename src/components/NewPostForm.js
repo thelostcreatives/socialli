@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
-import EmojiPicker from 'emoji-picker-react';
+import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button } from './index';
 import { createPost, setActiveList, followPost } from '../actions';
@@ -75,10 +75,10 @@ const NewPostForm = (props) => {
 		setIsEmojiPickerVisible(!isEmojiPickerVisible);
 	}
 
-	const handleEmojiClick = (emoji, data) => {
+	const handleEmojiClick = (emoji) => {
 		const selection = editorState.getSelection();
 		const contentState = editorState.getCurrentContent();
-		const newState =  Modifier.insertText(contentState, selection, String.fromCodePoint(`0x${emoji}`))
+		const newState =  Modifier.insertText(contentState, selection, emoji.native)
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
 	}
@@ -99,7 +99,10 @@ const NewPostForm = (props) => {
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 					<Button onClick = {handlePost} text = "Post" disabled = {creatingPost}/>
 					{ isEmojiPickerVisible ? 
-						<EmojiPicker onEmojiClick={handleEmojiClick}/>
+						<EmojiPicker 
+							set = "emojione"
+							onSelect = {handleEmojiClick}
+						/>
 						:
 						null
 					}
@@ -150,12 +153,48 @@ export const OptionsBar = styled.div`
 	justify-content: space-between;
 	position: relative;
 
-	.emoji-picker-react {
+	.emoji-mart {
 		position: absolute;
 		top: 100%;
 		z-index: 100;
-		.emoji {
+
+		height: 500px;
+		overflow-y: scroll;
+
+		padding: 10px;
+		margin-bottom: 10px;
+
+		background: white;
+		border: none;
+
+		font-family: 'Work Sans', sans-serif;
+
+		label, .emoji-mart-bar, .emoji-mart-search-icon {
+			display: none;
+		}
+
+		button {
+			display: inline-block;
+			background: none;
+			border: none;
 			margin-right: 1px;
+		}
+
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+		}
+		
+		.emoji-mart-search > input {
+			width: fill-available;
+			outline: none;
+			margin: 10px 0;
+
+			padding: 1px;
+
+			border: none;
+			border-bottom: 2px solid black;
 		}
 	}
 
