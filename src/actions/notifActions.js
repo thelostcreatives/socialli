@@ -1,4 +1,5 @@
 import { Notification } from '../models';
+import { USER_UPDATED } from './index';
 
 export const notif_types= {
 	post: "POST",
@@ -16,6 +17,8 @@ export const NEW_NOTIFS_COUNT_RECEIVED = "NEW_NOTIFS_COUNT_RECEIVED";
 
 export const DELETING_NOTIF = "DELETING_NOTIF";
 export const NOTIF_DELETED = "NOTIF_DELETED";
+
+export const SETTING_LAST_SEEN_NOTIF = "SETTING_LAST_SEEN_NOTIF";
 
 export const createNotif = (author, notif_for, notif_with, type, content) => async (dispatch) => {
 	dispatch({
@@ -92,6 +95,27 @@ export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (d
 			payload: []
 		});
 	}
+}
+
+export const setLastSeenNotif = (anylistUser, notif) => async (dispatch) => {
+	dispatch({
+		type: SETTING_LAST_SEEN_NOTIF
+	});
+
+	anylistUser.update({
+		other: {
+			...anylistUser.attrs.other,
+			lastSeenNotif: notif.attrs.createdAt
+		}
+	});
+
+	const updatedUser = await anylistUser.save();
+
+	dispatch({
+		type: USER_UPDATED,
+		payload: updatedUser
+	});
+
 }
 
 export const deleteNotif = (notif_with) => async (dispatch) => {
