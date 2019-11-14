@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { Edit2, XSquare } from 'react-feather';
 import { Editor, EditorState, Modifier, convertToRaw, convertFromRaw } from 'draft-js';
 import styled from 'styled-components';
-import EmojiPicker from 'emoji-picker-react';
+import { Picker as EmojiPicker } from 'emoji-mart';
 import moment from 'moment';
 
-import { Button } from './index';
+import { Button, OptionsBar } from './index';
 import { updateComment, deleteComment, deleteNotif } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -41,10 +41,10 @@ const Comment = (props) => {
 		setIsEmojiPickerVisible(!isEmojiPickerVisible);
 	}
 
-	const handleEmojiClick = (emoji, data) => {
+	const handleEmojiClick = (emoji) => {
 		const selection = editorState.getSelection();
 		const contentState = editorState.getCurrentContent();
-		const newState =  Modifier.insertText(contentState, selection, String.fromCodePoint(`0x${emoji}`))
+		const newState =  Modifier.insertText(contentState, selection, emoji.native);
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
 	}
@@ -89,7 +89,7 @@ const Comment = (props) => {
 				/>
 				{
 					isEditing ?
-					<div className = "edit-options">
+					<OptionsBar>
 						<div>
 							<Button onClick = {toggleEdit} text = "Cancel"/>
 						</div>
@@ -97,12 +97,15 @@ const Comment = (props) => {
 							<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 							<Button onClick = {handleUpdateClick} text = "Update"/>
 							{ isEmojiPickerVisible ? 
-								<EmojiPicker onEmojiClick={handleEmojiClick}/>
+								<EmojiPicker 
+									set = "emojione"
+									onSelect = {handleEmojiClick}
+								/>
 								:
 								null
 							}
 						</div>
-					</div>
+					</OptionsBar>
 					:
 					null
 				}

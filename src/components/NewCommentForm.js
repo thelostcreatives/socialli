@@ -2,34 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
-import EmojiPicker from 'emoji-picker-react';
+import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button } from './index';
+import { Button, OptionsBar } from './index';
 import { notif_types } from '../actions';
-import { createComment, setActiveList, createNotif, followPost } from '../actions';
-import { List } from '../models';
+import { createComment, createNotif, followPost } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
 const NewCommentForm = (props) => {
+
 	const { 
-		createPost,
-		setActiveList,
 		post,
-		// listData,
 		anylistUser,
-		match,
-		done,
+		creatingComment,
+	} = props;
+
+	const {
 		createComment,
 		createNotif,
 		followPost
-	} = props;
+	} = props
 
 	const { username, followedPosts } = anylistUser.attrs;
-	const { metadata } = post.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
-
-	const [creatingComment, setCreatingComment] = useState(false);
 
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -46,7 +42,6 @@ const NewCommentForm = (props) => {
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
-			setCreatingComment(true);
 			const newComment = await createComment(
 				post._id,
 				{
@@ -74,10 +69,10 @@ const NewCommentForm = (props) => {
 		setIsEmojiPickerVisible(!isEmojiPickerVisible);
 	}
 
-	const handleEmojiClick = (emoji, data) => {
+	const handleEmojiClick = (emoji) => {
 		const selection = editorState.getSelection();
 		const contentState = editorState.getCurrentContent();
-		const newState =  Modifier.insertText(contentState, selection, String.fromCodePoint(`0x${emoji}`))
+		const newState =  Modifier.insertText(contentState, selection, emoji.native)
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
 	}
@@ -97,7 +92,10 @@ const NewCommentForm = (props) => {
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 					<Button onClick = {handlePost} text = "Comment" disabled = {creatingComment}/>
 					{ isEmojiPickerVisible ? 
-						<EmojiPicker onEmojiClick={handleEmojiClick}/>
+						<EmojiPicker 
+							set = "emojione"
+							onSelect = {handleEmojiClick}
+						/>
 						:
 						null
 					}
@@ -109,7 +107,8 @@ const NewCommentForm = (props) => {
 
 const mstp = (state) => {
 	return {
-        anylistUser: state.auth.anylistUser,
+		anylistUser: state.auth.anylistUser,
+		creatingComment: state.comments.creatingComment
 	}
 }
 
@@ -136,24 +135,6 @@ const NewCommentFormWrapper = styled.div`
 
 	@media only screen and (min-width: ${breakpoint.b}) {
 		width: 500px;
-	}
-`;
-
-const OptionsBar = styled.div`
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-
-	.emoji-picker {
-		position: absolute;
-		top: 100%;
-		z-index: 100;
-	}
-
-	@media only screen and (max-width: ${breakpoint.a}) {
-		.emoji-picker {
-			left: 0;
-		}
 	}
 `;
 

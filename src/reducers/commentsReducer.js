@@ -1,13 +1,21 @@
 import * as actions from '../actions';
 
 const initialState = {
-
+	creatingComment: false,
+	totals: {},
 }
 
 const branchTable = {
+	[actions.CREATING_COMMENT]: (state, action) => {
+		return {
+			...state,
+			creatingComment: true
+		}
+	},
 	[actions.COMMENT_CREATED]: (state, action) => {
 		return {
 			...state,
+			creatingComment: false,
 			[action.postId]: state[action.postId] ? [...state[action.postId], action.payload] : [action.payload]
 		}
 	},
@@ -17,14 +25,18 @@ const branchTable = {
 		
 		return {
 			...state,
-			[action.postId]: state[action.postId] ? [...state[action.postId], ...action.payload].filter((v, i, s) => {
+			[action.postId]: state[action.postId] ? [...action.payload.reverse(), ...state[action.postId]].filter((v, i, s) => {
 					if (!Object.keys(hash).includes(v._id)){
 						hash[v._id] = 0;
 						return true;
 					} else {
 						return false;
 					}
-				}).reverse() : [...action.payload].reverse()
+				}) : [...action.payload].reverse(),
+			totals: {
+				...state.totals,
+				[action.postId]: action.total
+			}
 		}
 	},
 	[actions.COMMENT_DELETED]: (state, action) => {
