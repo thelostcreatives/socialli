@@ -157,6 +157,11 @@ export const OptionsBar = styled.div`
 
 	svg {
 		margin: 5px;
+		color: grey;
+        &:hover {
+            color: black;
+            cursor: pointer;
+        }
 	}
 
 	& > div {

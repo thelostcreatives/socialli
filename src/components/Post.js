@@ -245,14 +245,6 @@ const PostWrapper = styled.div`
         }
     }
 
-    .postLink {
-        color: grey;
-        &:hover {
-            color: black;
-            cursor: pointer;
-        }
-    }
-
     .delete {
         color: #e86813;
         &:hover {
