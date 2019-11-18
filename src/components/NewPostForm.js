@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
+import { Image } from 'react-feather';
 
 import { Button } from './index';
 import { createPost, setActiveList, followPost } from '../actions';
@@ -96,6 +97,7 @@ const NewPostForm = (props) => {
 					<Button onClick = {done} text = "Cancel"/>
 				</div>
 				<div>
+					<Image className = "image"/>
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 					<Button onClick = {handlePost} text = "Post" disabled = {creatingPost}/>
 					{ isEmojiPickerVisible ? 
@@ -152,6 +154,16 @@ export const OptionsBar = styled.div`
 	display: flex;
 	justify-content: space-between;
 	position: relative;
+
+	svg {
+		margin: 5px;
+	}
+
+	& > div {
+		display: flex;
+	}
+
+	margin: 5px 0;
 
 	.emoji-mart {
 		position: absolute;

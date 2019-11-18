@@ -127,7 +127,7 @@ const Post = (props) => {
                     />
                     {preview ? null :
                         <>
-                            <div id = "icons-container">
+                            <OptionsBar className = "icons-container">
                                 <Tippy content = "copied link" trigger = "click">
                                     <div>
                                         <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
@@ -143,7 +143,7 @@ const Post = (props) => {
                                                 focusEditor();
                                             }} text = "Edit" />
                                             :
-                                            <OptionsBar>
+                                            <>
                                                 <Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
                                                 <Button onClick = {handleUpdateClick} text = "Update"/>
                                                 <XSquare onClick = {handleDeleteClick} className = "delete" style = {{margin: "5px"}}/>
@@ -151,20 +151,17 @@ const Post = (props) => {
                                                     <EmojiPicker 
                                                         set = "emojione"
                                                         onSelect = {handleEmojiClick}
-                                                        style = {{
-                                                            left: "-100px"
-                                                        }}
                                                     />
                                                     :
                                                     null
                                                 }
-                                            </OptionsBar>
+                                            </>
                                         }
                                     </div>
                                     :
                                     null
                                 }
-                            </div>
+                            </OptionsBar>
 
                             <Comments post = {expandedPost}/>
                         </>
@@ -213,14 +210,8 @@ const PostWrapper = styled.div`
         align-items: center;
     }
 
-    #icons-container {
-        border-top: 1px solid #d2d6d7;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        align-self: center;
-        margin-top: 10px;
+    .icons-container {
+        border-bottom: 1px solid #d2d6d7;
     }
 
     #content {
