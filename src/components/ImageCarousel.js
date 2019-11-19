@@ -125,7 +125,7 @@ const ImageCarouselWrapper = styled.div`
 		}
 	}
 
-	@media only screen and (max-width: ${breakpoint.a}) {
+	@media only screen and (max-width: ${breakpoint.b}) {
 		.image-wrapper {
 			height: 350px ;
 		}
