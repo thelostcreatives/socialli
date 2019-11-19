@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { ChevronLeft, ChevronRight } from 'react-feather';
+
+import { breakpoint } from '../utils/styleConsts';
 
 const ImageCarousel = (props) => {
 
@@ -32,6 +35,29 @@ const ImageCarousel = (props) => {
 		<ImageCarouselWrapper>
 			<div className = "image-wrapper">
 				<img src = {imgs[index]} onLoad = {manageImgDimensions}/>
+				{
+					index > 0 ? 
+					<span 
+						className = "left"
+						onClick = {() => changeIndex(-1)}
+					>
+						<ChevronLeft/>
+					</span>
+					:
+					null
+				}
+				{
+					index < imgs.length - 1 ?
+					<span 
+						className = "right"
+						onClick = {() => changeIndex(1)}
+					>
+						<ChevronRight/>
+					</span>
+					:
+					null
+				}
+				
 			</div>
 			<div className = "index-indicator-container">
 				{
@@ -44,8 +70,6 @@ const ImageCarousel = (props) => {
 					null
 				}
 			</div>
-			<span onClick = {() => changeIndex(-1)}>left </span>
-			<span onClick = {() => changeIndex(1)}>right</span>
 		</ImageCarouselWrapper>
 	)
 }
@@ -60,24 +84,50 @@ const ImageCarouselWrapper = styled.div`
 		justify-content: center;
 		width: 100%;
 		height: 480px;
+		position: relative;
 		img {
 			width: 100%;
+		}
+		span {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			top: 46%;
+			border-radius: 50%;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+		.left {
+			left: 5px;
+		}
+		.right {
+			right: 5px;
 		}
 	}
 
 	.index-indicator-container {
 		display: flex;
+		justify-content center;
+		flex-wrap: wrap;
 
 		.index-indicator {
 			margin: 5px;
 			width: 6px;
 			height: 6px;
 			border-radius: 50%;
-			background: grey;
+			background: #d2d6d7;
 		}
 
 		.active {
 			background: blue;
+		}
+	}
+
+	@media only screen and (max-width: ${breakpoint.a}) {
+		.image-wrapper {
+			height: 350px ;
 		}
 	}
 `
