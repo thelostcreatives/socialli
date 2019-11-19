@@ -68,7 +68,12 @@ const NewPostForm = (props) => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
 			setCreatingPost(true);
-			const imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
+			let imageGaiaLinks = images
+
+			if ( images ) {
+				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
+			}
+
 			const newPost = await createPost(
 				listData._id,
 				{
