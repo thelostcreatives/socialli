@@ -42,7 +42,7 @@ const Main = (props) => {
                         <NavLink exact to = "/notifications" activeStyle = { NavActiveStyle }>
                             <Bell/>
                             {newNotifs > 0 ?
-                                <indicator id = "new-notifs"/>
+                                <div id = "new-notifs"/>
                                 :
                                 null
                             }
@@ -164,6 +164,7 @@ const MainWrapper = styled.div`
             width: 12px !important;
             height: 12px;
             margin: 0;
+            padding: 0;
 
             left: 23px;
             top: 11px;
