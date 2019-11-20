@@ -16,7 +16,7 @@ const ListPage = (props) => {
 	const { hasMore, listPosts,  
 			match, history, 
 			listData, anylistUser, 
-			followedLists, deletingList, 
+			followedLists = [], deletingList, 
 			userSession, uploadingBanner} = props;
 	
 	const { getPosts, setActiveList, 
