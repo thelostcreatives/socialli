@@ -10,7 +10,7 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments, OptionsBar } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
 import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
@@ -19,12 +19,14 @@ const Post = (props) => {
 
     const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
     
-    const { listId, metadata, content, signingKeyId, createdAt } = post ? post.attrs: expandedPost.attrs;
+    const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
     const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+
+    console.log(other)
 
     new ClipBoard('.postLink');
 
@@ -92,7 +94,7 @@ const Post = (props) => {
     const stopPropagation = (e) => e.stopPropagation();
 
     return (
-        <PostWrapper preview = {preview} onClick = {preview ? handlePreviewClick : null}>
+        <PostWrapper preview = {preview} hasImg = {other.images} onClick = {preview ? handlePreviewClick : null}>
             {
                 isDeleting ? 
                 <ConfirmationOverlay 
@@ -118,6 +120,14 @@ const Post = (props) => {
                             {moment(createdAt).fromNow()}
                         </time>
                     </div>
+
+                    {
+                        other.images ? 
+                        <ImageCarousel imgs = {other.images}/>
+                        :
+                        null
+                    }
+                    
                     <Editor
                         ref = {editor}
                         editorState = {editorState}
@@ -127,7 +137,7 @@ const Post = (props) => {
                     />
                     {preview ? null :
                         <>
-                            <div id = "icons-container">
+                            <OptionsBar className = "icons-container">
                                 <Tippy content = "copied link" trigger = "click">
                                     <div>
                                         <Link2 className = "postLink" title = "copy link" data-clipboard-text = {`${window.location.href}`}/>
@@ -143,7 +153,7 @@ const Post = (props) => {
                                                 focusEditor();
                                             }} text = "Edit" />
                                             :
-                                            <OptionsBar>
+                                            <>
                                                 <Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
                                                 <Button onClick = {handleUpdateClick} text = "Update"/>
                                                 <XSquare onClick = {handleDeleteClick} className = "delete" style = {{margin: "5px"}}/>
@@ -151,20 +161,17 @@ const Post = (props) => {
                                                     <EmojiPicker 
                                                         set = "emojione"
                                                         onSelect = {handleEmojiClick}
-                                                        style = {{
-                                                            left: "-100px"
-                                                        }}
                                                     />
                                                     :
                                                     null
                                                 }
-                                            </OptionsBar>
+                                            </>
                                         }
                                     </div>
                                     :
                                     null
                                 }
-                            </div>
+                            </OptionsBar>
 
                             <Comments post = {expandedPost}/>
                         </>
@@ -213,14 +220,8 @@ const PostWrapper = styled.div`
         align-items: center;
     }
 
-    #icons-container {
-        border-top: 1px solid #d2d6d7;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        align-self: center;
-        margin-top: 10px;
+    .icons-container {
+        border-bottom: 1px solid #d2d6d7;
     }
 
     #content {
@@ -254,14 +255,6 @@ const PostWrapper = styled.div`
         }
     }
 
-    .postLink {
-        color: grey;
-        &:hover {
-            color: black;
-            cursor: pointer;
-        }
-    }
-
     .delete {
         color: #e86813;
         &:hover {
@@ -292,7 +285,7 @@ const PostWrapper = styled.div`
     }
 
     ${props => props.preview === true && css`
-        max-height: 150px;
+        max-height: ${props.hasImg ? "600px" : "150px" };
         overflow: hidden;
         margin: 20px 0;
         #preview-overlay {
