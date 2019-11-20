@@ -39,7 +39,10 @@ const ImageCarousel = (props) => {
 					index > 0 ? 
 					<span 
 						className = "left"
-						onClick = {() => changeIndex(-1)}
+						onClick = {(e) => {
+							e.stopPropagation();
+							changeIndex(-1)
+						}}
 					>
 						<ChevronLeft/>
 					</span>
@@ -50,7 +53,10 @@ const ImageCarousel = (props) => {
 					index < imgs.length - 1 ?
 					<span 
 						className = "right"
-						onClick = {() => changeIndex(1)}
+						onClick = {(e) => {
+							e.stopPropagation();
+							changeIndex(1)
+						}}
 					>
 						<ChevronRight/>
 					</span>
@@ -85,6 +91,9 @@ const ImageCarouselWrapper = styled.div`
 		width: 100%;
 		height: 480px;
 		position: relative;
+		
+		margin: 10px 0;
+
 		img {
 			width: 100%;
 		}
