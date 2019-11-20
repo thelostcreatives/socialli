@@ -264,7 +264,7 @@ export const OptionsBar = styled.div`
 		display: none;
 	}
 
-	@media only screen and (max-width: ${breakpoint.a}) {
+	@media only screen and (max-width: ${breakpoint.b}) {
 		.emoji-mart {
 			left: 0;
 			width: 80vw !important;
