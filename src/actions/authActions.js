@@ -60,7 +60,8 @@ export const getCustomUser = ({profile, username}) => async (dispatch) => {
             username,
             description: profile.description,
             other : {
-                avatarUrl: profile.image[0].contentUrl || null
+                avatarUrl: profile.image[0].contentUrl || null,
+                lastSeenNotif: Date.now()
             }
         });
 

@@ -12,5 +12,6 @@ export { default as PostComp } from './Post';
 export { default as Comments, FakeLink} from './Comments';
 export { default as Comment} from './Comment';
 export { default as NewCommentForm} from './NewCommentForm';
+export { default as ImageCarousel} from './ImageCarousel';
 
 export * from './minor_comps';

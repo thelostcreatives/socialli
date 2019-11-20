@@ -3,26 +3,30 @@ import { connect } from 'react-redux';
 import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
+import { Image } from 'react-feather';
 
-import { Button } from './index';
-import { createPost, setActiveList, followPost } from '../actions';
+import { Button, ImageCarousel } from './index';
+import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
+import { readUrl } from '../utils/helpers';
+import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
 	const { 
-		createPost,
-		setActiveList,
-		followPost,
-		anylistUser,
-		listData,
-		match,
-		done
+		anylistUser, userSession, listData,
+		match, done
+	} = props;
+
+	const {
+		createPost, setActiveList, followPost,
+		uploadImages
 	} = props;
 
 	const { author, title } = listData;
 
-	const [media, setMedia] = useState("");
+	const [images, setImages] = useState();
+	const [tempImgUrls, setTempImgUrls] = useState();
 
 	const [creatingPost, setCreatingPost] = useState(false);
 
@@ -52,17 +56,32 @@ const NewPostForm = (props) => {
 		focusEditor();
 	}, []);
 
+	useEffect(() => {
+		return () => {
+			if ( tempImgUrls ) {
+				tempImgUrls.forEach( url => window.URL.revokeObjectURL(url) );
+			}
+		}
+	},[tempImgUrls]);
+
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
 			setCreatingPost(true);
+			let imageGaiaLinks = images
+
+			if ( images ) {
+				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
+			}
+
 			const newPost = await createPost(
 				listData._id,
 				{
 					listAuthor: author,
 					listTitle: title
 				},
-				convertToRaw(contentState)
+				convertToRaw(contentState),
+				imageGaiaLinks
 			);
 			done();
 			followPost(anylistUser, newPost._id);
@@ -83,21 +102,48 @@ const NewPostForm = (props) => {
 		setEditorState(state);
 	}
 
+	const handleImageIconClick = () => {
+		document.getElementById("image-input").click();
+	}
+
+	const handleImageUpload = async (e) => {
+		const files = [...e.target.files].filter( file => {
+			const fileNameSplit = file.name.split(".");
+			const fileFormat = fileNameSplit[fileNameSplit.length - 1].toLowerCase();
+			return SUPPORTED_IMAGE_FORMATS.includes(fileFormat);
+		});
+
+		setImages(files.length > 0 ? files : null);
+
+		const tempUrls = files.map( file => window.URL.createObjectURL(file) );
+		setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
+	}
+
 	return (
 		<NewPostFormWrapper onClick = {focusEditor}>
+			{
+				tempImgUrls ? 
+				<ImageCarousel imgs = {tempImgUrls}/>
+				:
+				null
+			}
 			<Editor
 				ref = {editor}
 				editorState = {editorState}
 				onChange = {editorState => setEditorState(editorState)}
 				placeholder = {"Share your story..."}
 			/>
+
+			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageUpload} multiple/>
+
 			<OptionsBar onClick = {e => e.stopPropagation()}>
 				<div>
 					<Button onClick = {done} text = "Cancel"/>
 				</div>
 				<div>
+					<Image onClick = {handleImageIconClick} className = "image"/>
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
-					<Button onClick = {handlePost} text = "Post" disabled = {creatingPost}/>
+					<Button onClick = {handlePost} text = {creatingPost ? "Posting..." : "Post"} disabled = {creatingPost}/>
 					{ isEmojiPickerVisible ? 
 						<EmojiPicker 
 							set = "emojione"
@@ -115,11 +161,12 @@ const NewPostForm = (props) => {
 const mstp = (state) => {
 	return {
 		anylistUser: state.auth.anylistUser,
+		userSession: state.auth.userSession,
 		listData: state.lists.activeList.attrs
 	}
 }
 
-export default connect(mstp, {createPost, setActiveList, followPost})(NewPostForm);
+export default connect(mstp, {createPost, setActiveList, followPost, uploadImages})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
@@ -152,6 +199,21 @@ export const OptionsBar = styled.div`
 	display: flex;
 	justify-content: space-between;
 	position: relative;
+
+	svg {
+		margin: 5px;
+		color: grey;
+        &:hover {
+            color: black;
+            cursor: pointer;
+        }
+	}
+
+	& > div {
+		display: flex;
+	}
+
+	margin: 5px 0;
 
 	.emoji-mart {
 		position: absolute;
@@ -202,7 +264,7 @@ export const OptionsBar = styled.div`
 		display: none;
 	}
 
-	@media only screen and (max-width: ${breakpoint.a}) {
+	@media only screen and (max-width: ${breakpoint.b}) {
 		.emoji-mart {
 			left: 0;
 			width: 80vw !important;

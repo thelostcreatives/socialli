@@ -1,5 +1,6 @@
 import { Post } from '../models';
 import { USER_UPDATED } from './index';
+import { uploadFile } from '../utils/helpers';
 
 export const CREATING_POST = "CREATING_POST";
 export const POST_CREATED = "POST_CREATED";
@@ -22,15 +23,24 @@ export const SET_EXPANDED_POST = "SET_EXPANDED_POST";
 export const ADDING_POST_TO_FOllOWS = "ADDING_POST_TO_FOllOWS";
 export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 
-export const createPost = (listId, metadata, content) => async (dispatch) => {
+export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
+export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
+
+export const createPost = (listId, metadata, content, imgs) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
-    });
+	});
 
 	const newPost = new Post({
 		listId,
 		metadata,
-		content
+		content,
+		other: imgs ? 
+			{
+				images: imgs
+			}
+			:
+			{}
 	});
 
 	const post = await newPost.save();
@@ -175,5 +185,19 @@ export const unfollowPost = (anylistUser, postId) => async (dispatch) => {
     dispatch({
         type: USER_UPDATED,
         payload: updatedUser 
-    })
+    });
+}
+
+export const uploadImages = (userSession, user, images) => async (dispatch) => {
+	dispatch({
+		type: UPLOADING_IMAGES
+	});
+
+	const links = await Promise.all(images.map(image => uploadFile(userSession, "img_posts", image, {encrypt:false})));
+
+    dispatch({
+        type: IMAGES_UPLOADED,
+	});
+	
+	return links;
 }
