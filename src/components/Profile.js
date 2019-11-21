@@ -9,7 +9,7 @@ import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } from '../actions';
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { isImageFileSizeAcceptable } from '../utils/helpers';
+import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
@@ -96,12 +96,15 @@ const Profile = (props) => {
 	}
 
 	const handleAvatarUpload = (e) => {
-		const file = e.target.files[0];
+		let file = e.target.files[0];
+		
 		if (isImageFileSizeAcceptable(file.size)) {
 			uploadAvatar(userSession, user, file);
 		} else {
-			e.target.value = "";
-			alert("Images are limited to 50kb");
+			compressImage(file, (compressed) => { 
+				file = compressed;
+				uploadAvatar(userSession, user, file);
+			});
 		}
 	}
 
