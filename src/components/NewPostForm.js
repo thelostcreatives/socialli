@@ -9,7 +9,7 @@ import { Button, ImageCarousel } from './index';
 import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { readUrl } from '../utils/helpers';
+import { areAllImageFileSizesAcceptable } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -68,7 +68,7 @@ const NewPostForm = (props) => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
 			setCreatingPost(true);
-			let imageGaiaLinks = images
+			let imageGaiaLinks = images;
 
 			if ( images ) {
 				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
@@ -106,17 +106,25 @@ const NewPostForm = (props) => {
 		document.getElementById("image-input").click();
 	}
 
-	const handleImageUpload = async (e) => {
+	const handleImageInputChange = async (e) => {
 		const files = [...e.target.files].filter( file => {
 			const fileNameSplit = file.name.split(".");
 			const fileFormat = fileNameSplit[fileNameSplit.length - 1].toLowerCase();
 			return SUPPORTED_IMAGE_FORMATS.includes(fileFormat);
 		});
 
-		setImages(files.length > 0 ? files : null);
+		if (areAllImageFileSizesAcceptable(files)) {
 
-		const tempUrls = files.map( file => window.URL.createObjectURL(file) );
-		setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
+			setImages(files.length > 0 ? files : null);
+
+			const tempUrls = files.map( file => window.URL.createObjectURL(file) );
+			setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
+		} else {
+			setImages();
+			setTempImgUrls();
+			e.target.value = "";
+			alert("Images are limited to 50kb")
+		}
 	}
 
 	return (
@@ -134,7 +142,7 @@ const NewPostForm = (props) => {
 				placeholder = {"Share your story..."}
 			/>
 
-			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageUpload} multiple/>
+			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageInputChange} multiple/>
 
 			<OptionsBar onClick = {e => e.stopPropagation()}>
 				<div>
