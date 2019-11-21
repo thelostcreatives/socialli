@@ -120,6 +120,9 @@ const ListPage = (props) => {
 		const file = e.target.files[0];
 		if (isImageFileSizeAcceptable(file.size)) {
 			uploadBanner(userSession, listData, file);
+		} else {
+			e.target.value = "";
+			alert("Images are limited to 50kb");
 		}
 	}
 

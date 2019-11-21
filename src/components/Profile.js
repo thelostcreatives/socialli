@@ -99,6 +99,9 @@ const Profile = (props) => {
 		const file = e.target.files[0];
 		if (isImageFileSizeAcceptable(file.size)) {
 			uploadAvatar(userSession, user, file);
+		} else {
+			e.target.value = "";
+			alert("Images are limited to 50kb");
 		}
 	}
 

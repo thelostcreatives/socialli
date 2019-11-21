@@ -123,7 +123,7 @@ const NewPostForm = (props) => {
 			setImages();
 			setTempImgUrls();
 			e.target.value = "";
-			alert("Images are limited to 50kb")
+			alert("Images are limited to 50kb");
 		}
 	}
 
