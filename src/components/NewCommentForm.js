@@ -23,7 +23,7 @@ const NewCommentForm = (props) => {
 		followPost
 	} = props
 
-	const { username, followedPosts } = anylistUser.attrs;
+	const { username, followedPosts = [] } = anylistUser.attrs;
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
