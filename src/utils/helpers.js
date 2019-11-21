@@ -34,9 +34,8 @@ export const compressImage = (imgFile, callback) => {
 		img.src = event.target.result;
 		
         img.onload = () => {
-			const width = img.width > 1000 ? 1000 : img.width;
-			const scaleFactor = width / img.width;
-			const height = img.height * scaleFactor;
+			const width = img.width;
+			const height = img.height ;
 
 			const elem = document.createElement('canvas');
 			elem.width = width;
