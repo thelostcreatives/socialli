@@ -9,7 +9,7 @@ import { Button, ImageCarousel } from './index';
 import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { areAllImageFileSizesAcceptable } from '../utils/helpers';
+import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -113,17 +113,33 @@ const NewPostForm = (props) => {
 			return SUPPORTED_IMAGE_FORMATS.includes(fileFormat);
 		});
 
+		const appendImageToImages = (image) => {
+			setImages(images => {
+				if (!images) {
+					return [image];
+				} else {
+					return  [...images, image];
+				}
+			});
+		}
+
+		const tempUrls = files.map( file => window.URL.createObjectURL(file) );
+		setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
+
 		if (areAllImageFileSizesAcceptable(files)) {
-
 			setImages(files.length > 0 ? files : null);
-
-			const tempUrls = files.map( file => window.URL.createObjectURL(file) );
-			setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
 		} else {
-			setImages();
-			setTempImgUrls();
-			e.target.value = "";
-			alert("Images are limited to 50kb");
+			files.forEach( (image) => {
+				const nameSplit = image.name.split('.');
+				const fileType = nameSplit[nameSplit.length - 1];
+				if(isImageFileSizeAcceptable(image.size) || fileType === 'gif') {
+					appendImageToImages(image);
+				} else {
+					compressImage(image, (compressed) => {
+						appendImageToImages(compressed);
+					});
+				}
+			});
 		}
 	}
 
