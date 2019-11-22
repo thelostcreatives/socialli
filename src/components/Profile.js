@@ -97,15 +97,7 @@ const Profile = (props) => {
 
 	const handleAvatarUpload = (e) => {
 		let file = e.target.files[0];
-		
-		if (isImageFileSizeAcceptable(file.size)) {
-			uploadAvatar(userSession, user, file);
-		} else {
-			compressImage(file, (compressed) => { 
-				file = compressed;
-				uploadAvatar(userSession, user, file);
-			});
-		}
+		uploadAvatar(userSession, user, file);
 	}
 
 	return (
