@@ -1,5 +1,5 @@
 import  { AnyListUser } from '../models';
-import { uploadFile } from '../utils/helpers';
+import { uploadFile, isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
 
 import { ERROR } from './index';
 
@@ -102,19 +102,32 @@ export const uploadAvatar = (userSession, user, file) => async (dispatch) => {
         type: UPLOADING_AVATAR
     });
 
-    const link = await uploadFile(userSession, "avatars", file, {encrypt:false});
+    let link;
 
-    user.update({
-        other: {
-            ...user.attrs.other,
-            avatarUrl: link
-        }
-    });
+    const process = async () => {
+        user.update({
+            other: {
+                ...user.attrs.other,
+                avatarUrl: link
+            }
+        });
 
-    const updatedUser = await user.save();
+        const updatedUser = await user.save();
 
-    dispatch({
-        type: USER_UPDATED,
-        payload: updatedUser
-    });
+        dispatch({
+            type: USER_UPDATED,
+            payload: updatedUser
+        });
+    }
+
+    if (isImageFileSizeAcceptable(file.size)) {
+        link = await uploadFile(userSession, "avatars", file, {encrypt:false});
+        process();
+    } else {
+        compressImage(file, async (compressed) => { 
+            file = compressed;
+            link = await uploadFile(userSession, "avatars", file, {encrypt:false});
+            process();
+        });
+    }
 }

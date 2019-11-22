@@ -7,7 +7,7 @@ import { PostComp } from './index';
 
 const UserFeed = (props) => {
 
-    const { getFeedPosts, followedLists, posts, hasMore } = props;
+    const { getFeedPosts, followedLists = [], posts, hasMore } = props;
 
     useEffect(() => {
         if (posts.length === 0) {

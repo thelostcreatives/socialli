@@ -26,8 +26,6 @@ const Post = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
-    console.log(other)
-
     new ClipBoard('.postLink');
 
     useEffect (() => {
