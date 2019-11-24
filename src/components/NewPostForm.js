@@ -9,7 +9,7 @@ import { Button, ImageCarousel } from './index';
 import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { readUrl } from '../utils/helpers';
+import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -68,7 +68,7 @@ const NewPostForm = (props) => {
 		const contentState = editorState.getCurrentContent(); 
 		if (contentState.hasText()) {
 			setCreatingPost(true);
-			let imageGaiaLinks = images
+			let imageGaiaLinks = images;
 
 			if ( images ) {
 				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
@@ -106,17 +106,41 @@ const NewPostForm = (props) => {
 		document.getElementById("image-input").click();
 	}
 
-	const handleImageUpload = async (e) => {
+	const handleImageInputChange = async (e) => {
 		const files = [...e.target.files].filter( file => {
 			const fileNameSplit = file.name.split(".");
 			const fileFormat = fileNameSplit[fileNameSplit.length - 1].toLowerCase();
 			return SUPPORTED_IMAGE_FORMATS.includes(fileFormat);
 		});
 
-		setImages(files.length > 0 ? files : null);
+		const appendImageToImages = (image) => {
+			setImages(images => {
+				if (!images) {
+					return [image];
+				} else {
+					return  [...images, image];
+				}
+			});
+		}
 
 		const tempUrls = files.map( file => window.URL.createObjectURL(file) );
 		setTempImgUrls(tempUrls.length > 0 ? tempUrls : null);
+
+		if (areAllImageFileSizesAcceptable(files)) {
+			setImages(files.length > 0 ? files : null);
+		} else {
+			files.forEach( (image) => {
+				const nameSplit = image.name.split('.');
+				const fileType = nameSplit[nameSplit.length - 1];
+				if(isImageFileSizeAcceptable(image.size) || fileType === 'gif') {
+					appendImageToImages(image);
+				} else {
+					compressImage(image, (compressed) => {
+						appendImageToImages(compressed);
+					});
+				}
+			});
+		}
 	}
 
 	return (
@@ -134,7 +158,7 @@ const NewPostForm = (props) => {
 				placeholder = {"Share your story..."}
 			/>
 
-			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageUpload} multiple/>
+			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageInputChange} multiple/>
 
 			<OptionsBar onClick = {e => e.stopPropagation()}>
 				<div>

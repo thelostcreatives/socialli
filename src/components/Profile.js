@@ -9,6 +9,7 @@ import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } from '../actions';
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
+import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
 
@@ -95,7 +96,7 @@ const Profile = (props) => {
 	}
 
 	const handleAvatarUpload = (e) => {
-		const file = e.target.files[0];
+		let file = e.target.files[0];
 		uploadAvatar(userSession, user, file);
 	}
 

@@ -9,6 +9,7 @@ import { Header } from './Profile';
 import { setActiveList, followList, unfollowList, getPosts, updateList, deleteList, uploadBanner } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
+import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
 import PostComp from './Post';
 
 const ListPage = (props) => {
@@ -116,7 +117,7 @@ const ListPage = (props) => {
 	}
 
 	const handleBannerUpload = (e) => {
-		const file = e.target.files[0];
+		let file = e.target.files[0];
 		uploadBanner(userSession, listData, file);
 	}
 
