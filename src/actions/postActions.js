@@ -174,12 +174,10 @@ export const unfollowPost = (anylistUser, postId) => async (dispatch) => {
     });
 
     const { followedPosts } = anylistUser.attrs;
-	const posts = followedPosts;
-
-    posts.splice(followedPosts.indexOf(postId), 1);
+    followedPosts.splice(followedPosts.indexOf(postId), 1);
 
     anylistUser.update({
-        followedLists: posts
+        followedPosts: [...followedPosts]
     });
 
     const updatedUser = await anylistUser.save();
