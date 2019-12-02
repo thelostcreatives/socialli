@@ -4,16 +4,18 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { User, Compass, Bell, Home } from 'react-feather';
 
-import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp, LoadingScreen } from './index';
+import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp, LoadingScreen, Settings } from './index';
 import { getNotifs, getNewNotifsCount } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
+import socialli_config from '../socialli_config'
+
 const Main = (props) => {
 
-    const { anylistUser, notifs, newNotifs } = props;
+    const { anylistUser, newNotifs } = props;
     const { getNotifs, getNewNotifsCount } = props;
 
-	const { username, followedLists = [], followedPosts = [], other } = anylistUser.attrs;
+    const { username, followedLists = [], followedPosts = [], other } = anylistUser.attrs;
 
     useEffect (() => {
 		if (anylistUser._id) {
@@ -52,6 +54,14 @@ const Main = (props) => {
                             <User/>
                             <span>Profile</span>
                         </NavLink>
+                        {
+                            socialli_config.host === username ? 
+                            <NavLink exact to = "/settings" activeStyle = { NavActiveStyle }>
+                                <span>Settings</span>
+                            </NavLink>
+                            :
+                            null
+                        }
                     </div>
                 </nav>
                 <div id = "main">
@@ -61,6 +71,12 @@ const Main = (props) => {
                         <Route exact path = "/notifications" component = {Notifications}/>
                         <Route exact path = "/follows" render = {(props) => (<div></div>)}/>
                         <Route path = "/newList" component = {NewListForm}/>
+                        {
+                            socialli_config.host === username ? 
+                            <Route exact path = "/settings" component = {Settings}/>
+                            :
+                            null
+                        }
                         <Route exact path = "/:id" component = {Profile}/>
                         <Route exact path = {`/list/:id`} component = {ListPage}/>
                         <Route path = {`/${username}/:id/newPost`} component = {NewPostForm}/>
