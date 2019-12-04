@@ -11,7 +11,7 @@ export class SocialliConfig extends Model {
             type: Boolean,
             decrypted: true
         },
-        blocked_users: {
+        blockedUsers: {
             type: Array,
             decrypted: true
         },
@@ -23,7 +23,7 @@ export class SocialliConfig extends Model {
 
     static defaults = {
         isPublic: true,
-        blocked_users: [],
+        blockedUsers: [],
         members: []
     }
 }
