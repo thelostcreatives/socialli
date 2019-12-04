@@ -8,7 +8,7 @@ import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPost
 import { getNotifs, getNewNotifsCount } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
-import socialli_config from '../socialli_config'
+import socialli_config from '../socialli_config';
 
 const Main = (props) => {
 
