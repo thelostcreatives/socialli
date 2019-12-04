@@ -1,7 +1,9 @@
 import * as actions from '../actions';
 
 const initialState = {
-	socialliConfig: null
+	socialliConfig: {
+		attrs: {}
+	}
 }
 
 const branchTable = {
@@ -9,6 +11,18 @@ const branchTable = {
 		return {
 			...state, 
 			socialliConfig: action.payload ? action.payload : state.socialliConfig
+		}
+	},
+	[actions.SOCIALLI_CONFIG_UPDATED]: (state, action) => {
+		return {
+			...state,
+			socialliConfig: {...state.socialliConfig}
+		}
+	},
+	[actions.SOCIALLI_CONFIG_UPDATED]: (state, action) => {
+		return {
+			...state,
+			socialliConfig: action.payload
 		}
 	}
 }
