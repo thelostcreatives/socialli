@@ -13,6 +13,7 @@ const Settings = (props) => {
 
 	const { _id } = socialliConfig ? socialliConfig.attrs: {};
 
+	const [isPublicIndicator, setIsPublicIndicator] = useState(isPublic);
 	const [updatedBlockedUsers, setUpdatedBlockedUsers] = useState(blockedUsers);
 	const [updatedMembers, setUpdatedMembers] = useState(members);
 
@@ -26,6 +27,7 @@ const Settings = (props) => {
 
 	useEffect (() => {
 		if (_id) {
+			setIsPublicIndicator(isPublic);
 			setUpdatedBlockedUsers(blockedUsers);
 			setUpdatedMembers(members);
 		}
@@ -37,6 +39,7 @@ const Settings = (props) => {
 	}
 
 	const toggleIsPublic = () => {
+		setIsPublicIndicator(!isPublicIndicator);
 		updateSocialliConfig(socialliConfig, {
 			isPublic: !isPublic
 		});
@@ -94,21 +97,21 @@ const Settings = (props) => {
 					<div>
 						<span>public:</span> 
 						<div onClick = {toggleIsPublic}>
-							{isPublic ? 
+							{isPublicIndicator ? 
 								<ToggleRight/> 
 								: 
 								<ToggleLeft/>
 							}
 						</div>
 					</div>
-					<h2>{isPublic ? "Blocked Users" : "Members"}</h2>
+					<h2>{isPublicIndicator ? "Blocked Users" : "Members"}</h2>
 					<form onSubmit = { e => e.preventDefault()}>
 						<input type = "text" placeholder = "blockstack ID" value = {usernameInputVal} onChange = {handleUsernameInputChange}/> 
-						<Button onClick = {manageUsername} text = {isPublic ? "block user" : "add member"}/>
+						<Button onClick = {manageUsername} text = {isPublicIndicator ? "block user" : "add member"}/>
 					</form>
 					<ul>
 						{
-							isPublic ?
+							isPublicIndicator ?
 							updatedBlockedUsers.map(user => {
 								return <li key = {user}>{user} <button onClick={() => removeUsername(user)}>x</button></li>
 							})
