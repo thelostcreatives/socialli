@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ToggleLeft, ToggleRight } from 'react-feather';
+import { ToggleLeft, ToggleRight, XSquare } from 'react-feather';
+import styled from 'styled-components';
 
 import { Button } from './index';
 import { createSocialliConfig, getSocialliConfig, updateSocialliConfig } from '../actions';
@@ -89,13 +90,13 @@ const Settings = (props) => {
 	}
 
 	return (
-		<div>
+		<SettingsWrapper>
 			{
 				_id ? 
 				<div>
 					<h1>Your Socialli Settings</h1>
-					<div>
-						<span>public:</span> 
+					<Option>
+						<span>Public:</span> 
 						<div onClick = {toggleIsPublic}>
 							{isPublicIndicator ? 
 								<ToggleRight/> 
@@ -103,7 +104,7 @@ const Settings = (props) => {
 								<ToggleLeft/>
 							}
 						</div>
-					</div>
+					</Option>
 					<h2>{isPublicIndicator ? "Blocked Users" : "Members"}</h2>
 					<form onSubmit = { e => e.preventDefault()}>
 						<input type = "text" placeholder = "blockstack ID" value = {usernameInputVal} onChange = {handleUsernameInputChange}/> 
@@ -113,11 +114,11 @@ const Settings = (props) => {
 						{
 							isPublicIndicator ?
 							updatedBlockedUsers.map(user => {
-								return <li key = {user}>{user} <button onClick={() => removeUsername(user)}>x</button></li>
+								return <li key = {user}>{user} <XSquare onClick={() => removeUsername(user)} className = "delete" /></li>
 							})
 							:
 							updatedMembers.map(member => {
-								return <li key = {member}>{member} <button onClick={() => removeUsername(member)}>x</button></li>
+								return <li key = {member}>{member} <XSquare onClick={() => removeUsername(member)} className = "delete" /></li>
 							})
 						}
 
@@ -128,7 +129,7 @@ const Settings = (props) => {
 					<h1>Loading...</h1>
 				</div>
 			}
-		</div>
+		</SettingsWrapper>
 	);
 }
 
@@ -143,3 +144,47 @@ const mstp = (state) => {
 }
 
 export default connect(mstp, { createSocialliConfig, getSocialliConfig, updateSocialliConfig})(Settings);
+
+const SettingsWrapper = styled.div`
+	width: 500px;
+	
+	form {
+		display: flex;
+		justify-content: space-between;
+
+		margin: 10px 0;
+
+		input {
+			border: 1px solid #d2d6d7;
+			padding: 5px;
+			font-family: inherit;
+			font-size: 15px;
+			width: 300px;
+		}
+	}
+
+	ul {
+		margin: 10px 0;
+
+		li {
+			display: flex;
+			justify-content: space-between;
+		}
+	}
+
+	.delete {
+		&:hover {
+			cursor: pointer; 
+		}
+	}
+
+`;
+
+const Option = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-self: center;
+	margin-top: 10px;
+	padding: 5px;
+	align-items: center;
+`;
