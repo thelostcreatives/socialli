@@ -9,15 +9,16 @@ import socialli_config from '../socialli_config';
 
 const Settings = (props) => {
 
-	const { socialliConfig, isPublic = true, blockedUsers = [], members = [] } = props;
+	const { socialliConfig } = props;
 	const { createSocialliConfig, getSocialliConfig, updateSocialliConfig } = props;
+	const { _id } = socialliConfig;
 
-	const { _id } = socialliConfig ? socialliConfig.attrs: {};
+	const { isPublic = true, blockedUsers = [], members = [], other } = socialliConfig.attrs;
 
 	const [isPublicIndicator, setIsPublicIndicator] = useState(isPublic);
 	const [updatedBlockedUsers, setUpdatedBlockedUsers] = useState(blockedUsers);
 	const [updatedMembers, setUpdatedMembers] = useState(members);
-
+	const [message, setMessage] = useState("");
 	const [usernameInputVal, setUsernameInputVal] = useState("");
 
 	useEffect(() => {
@@ -31,6 +32,12 @@ const Settings = (props) => {
 			setIsPublicIndicator(isPublic);
 			setUpdatedBlockedUsers(blockedUsers);
 			setUpdatedMembers(members);
+
+			if (isPublic) {
+				setMessage(other.blockedMessage);
+			} else {
+				setMessage(other.memberRequestMessage);
+			}
 		}
 	}, [socialliConfig]);
 
@@ -39,11 +46,22 @@ const Settings = (props) => {
 		setUsernameInputVal(username.replace(/\s/g, ''));
 	}
 
+	const handleMessageInputChange = (e) => {
+		setMessage(e.target.value);
+	}
+
 	const toggleIsPublic = () => {
+		if (!isPublicIndicator) {
+			setMessage(other.blockedMessage ? other.blockedMessage : "");
+		} else {
+			setMessage(other.memberRequestMessage ? other.memberRequestMessage : "");
+		}
 		setIsPublicIndicator(!isPublicIndicator);
 		updateSocialliConfig(socialliConfig, {
 			isPublic: !isPublic
 		});
+
+		
 	}
 
 	const manageUsername = () => {
@@ -69,6 +87,24 @@ const Settings = (props) => {
 		};
 
 		setUsernameInputVal("");
+	}
+
+	const manageMessage = () => {
+		if (isPublicIndicator) {
+			updateSocialliConfig(socialliConfig, {
+				other: {
+					...other,
+					blockedMessage: message
+				}
+			});
+		} else {
+			updateSocialliConfig(socialliConfig, {
+				other: {
+					...other,
+					memberRequestMessage: message
+				}
+			});
+		}
 	}
 
 	const removeUsername = (username) => {
@@ -105,24 +141,35 @@ const Settings = (props) => {
 							}
 						</div>
 					</Option>
-					<h2>{isPublicIndicator ? "Blocked Users" : "Members"}</h2>
-					<form onSubmit = { e => e.preventDefault()}>
-						<input type = "text" placeholder = "blockstack ID" value = {usernameInputVal} onChange = {handleUsernameInputChange}/> 
-						<Button onClick = {manageUsername} text = {isPublicIndicator ? "block user" : "add member"}/>
-					</form>
-					<ul>
-						{
-							isPublicIndicator ?
-							updatedBlockedUsers.map(user => {
-								return <li key = {user}>{user} <XSquare onClick={() => removeUsername(user)} className = "delete" /></li>
-							})
-							:
-							updatedMembers.map(member => {
-								return <li key = {member}>{member} <XSquare onClick={() => removeUsername(member)} className = "delete" /></li>
-							})
-						}
 
-					</ul>
+					<h2>{isPublicIndicator ? "Blocked Message" : "Membership Request Message"}</h2>
+					<textarea id = "message" placeholder = "Message" value = {message} onChange = {handleMessageInputChange}/> 
+					{
+						(isPublicIndicator && other.blockedMessage !== message) || (!isPublicIndicator && other.memberRequestMessage !== message) ?
+						<Button onClick = {manageMessage} text = "Save"/>
+						:
+						null
+					}
+					<div className = "userlist">
+						<h2>{isPublicIndicator ? "Blocked Users" : "Members"}</h2>
+						<form onSubmit = { e => e.preventDefault()}>
+							<input type = "text" placeholder = "blockstack ID" value = {usernameInputVal} onChange = {handleUsernameInputChange}/> 
+							<Button onClick = {manageUsername} text = {isPublicIndicator ? "block user" : "add member"}/>
+						</form>
+						<ul>
+							{
+								isPublicIndicator ?
+								updatedBlockedUsers.map(user => {
+									return <li key = {user}>{user} <XSquare onClick={() => removeUsername(user)} className = "delete" /></li>
+								})
+								:
+								updatedMembers.map(member => {
+									return <li key = {member}>{member} <XSquare onClick={() => removeUsername(member)} className = "delete" /></li>
+								})
+							}
+
+						</ul>
+					</div>
 				</div>
 				:
 				<div>
@@ -134,12 +181,8 @@ const Settings = (props) => {
 }
 
 const mstp = (state) => {
-	const config = state.settings.socialliConfig.attrs;
 	return {
 		socialliConfig: state.settings.socialliConfig,
-		isPublic: config.isPublic,
-		blockedUsers: config.blockedUsers,
-		members: config.members
 	}
 }
 
@@ -148,19 +191,34 @@ export default connect(mstp, { createSocialliConfig, getSocialliConfig, updateSo
 const SettingsWrapper = styled.div`
 	width: 500px;
 	
+	input {
+		border: 1px solid #d2d6d7;
+		padding: 5px;
+		font-family: inherit;
+		font-size: 15px;
+		width: 300px;
+	}
+
+	#message {
+		border: 1px solid #d2d6d7;
+		font-family: inherit;
+		font-size: 15px;
+		max-width: 100%;
+		min-width: 100%;
+		margin: 10px 0;
+		padding: 5px;
+		height: 100px;
+	}
+
 	form {
 		display: flex;
 		justify-content: space-between;
 
 		margin: 10px 0;
+	}
 
-		input {
-			border: 1px solid #d2d6d7;
-			padding: 5px;
-			font-family: inherit;
-			font-size: 15px;
-			width: 300px;
-		}
+	.userlist {
+		margin-top: 30px;
 	}
 
 	ul {
@@ -175,6 +233,12 @@ const SettingsWrapper = styled.div`
 	.delete {
 		&:hover {
 			cursor: pointer; 
+		}
+	}
+
+	svg {
+		&:hover {
+			cursor: pointer;
 		}
 	}
 

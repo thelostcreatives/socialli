@@ -16,7 +16,9 @@ const Main = (props) => {
     const { getNotifs, getNewNotifsCount, getSocialliConfig } = props;
 
     const { username, followedLists = [], followedPosts = [], other } = anylistUser.attrs;
-    const { _id, isPublic, blockedUsers, members } = socialliConfig.attrs;
+    const { _id, isPublic, blockedUsers = [], members = [], other: otherSocialliConfig } = socialliConfig.attrs;
+
+    const isOwner = username === socialli_config.host;
 
     useEffect (() => {
 		if (anylistUser._id && socialliConfig._id) {
@@ -33,8 +35,8 @@ const Main = (props) => {
     (
         <Router>
             {
-                _id ?
-                    (isPublic && !blockedUsers.includes(username)) || (!isPublic && members.includes(username)) || username === socialli_config.host ?
+                _id || isOwner ?
+                    (isPublic && !blockedUsers.includes(username)) || (!isPublic && members.includes(username)) || isOwner ?
                     <MainWrapper>
                         <nav id = "nav">
                             <div>
@@ -107,9 +109,9 @@ const Main = (props) => {
                                 </h1>
                                 <p>
                                     { isPublic ?
-                                        socialli_config.blocked_message
+                                        otherSocialliConfig.blockedMessage
                                         :
-                                        socialli_config.membership_request_message
+                                        otherSocialliConfig.memberRequestMessage
                                     }
                                 </p>
                                 <Button onClick = { (e) => handleSignOut(e, userSession)} text = "Log Out"/>
