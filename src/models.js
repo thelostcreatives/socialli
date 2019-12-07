@@ -18,13 +18,21 @@ export class SocialliConfig extends Model {
         members: {
             type: Array,
             decrypted: true
+        },
+        other: {
+            type: Object,
+            decrypted: true
         }
     }
 
     static defaults = {
         isPublic: true,
         blockedUsers: [],
-        members: []
+        members: [],
+        other: {
+            blockedMessage: "",
+            memberRequestMessage: ""
+        }
     }
 }
 
