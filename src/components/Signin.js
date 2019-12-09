@@ -5,13 +5,26 @@ import styled from 'styled-components';
 import { handleSignIn } from '../actions';
 import logo from '../imgs/socialli_no_bg.png'
 
+import socialli_config from '../socialli_config';
+
 const SignIn = (props) => {
 
     return (
       <SigninWrapper>
         <div className = "section">
           <img src = {logo} alt = "logo" id = "logo"/>
-          <h1 className="heading">Socialli</h1>
+          <div className = "heading">
+            <h1>Socialli</h1>
+
+            {
+              window.location.href !== "https://socialli.st/" ?
+              <p>
+                {socialli_config.instance_description}
+              </p>
+              :
+              null
+            }
+          </div>
           <button
               onClick={ (e) => props.handleSignIn(e, props.userSession)}
               className = "signin-button"
@@ -19,45 +32,67 @@ const SignIn = (props) => {
             Sign In with Blockstack
           </button>
         </div>
+        {
+          window.location.href === "https://socialli.st/" ?
+          <>
+            <div className = "section">
+              <div>
+                <h1>
+                  What is socialli?
+                </h1>
+                <p>
+                  Socialli is an opensource decentralized social media app built with Blockstack.
+                </p>
+                <h2>
+                  Features
+                </h2>
+                <h3>
+                  Data Ownership
+                </h3>
+                <p>
+                  Your data is your own. Private data, like the "lists" you follow are only accessible by you. Thus, can't be exploited.
+                </p>
 
-        <div className = "section">
-          <div>
-            <h2>
-              What is socialli?
-            </h2>
-            <p>
-              Socialli is just another social media app. But decentralized.
-            </p>
-            <h4>
-              What does that mean for you?
-            </h4>
-            <p>
-              Your data is your own. Private data, like the "lists" you follow are only accessible by you.
-              Thus, can't be exploited. 
-            </p>
-          </div>
-        </div>
+                <h3>
+                  Host Independent Socialli Instances
+                </h3>
+                <p>
+                  You are not stuck with <a href = "https://socialli.st/">socialli.st</a>. 
+                  If you want to host or join an instance of Socialli exclusively for your family, friends, or community, you can do so.
+                  As a host, you can choose to make it public or private where only people you add as members can access. 
+                </p>
 
-        <div className = "section">
-          <div>
-            <h2>
-              What is Blockstack?
-            </h2>
-            <p>
-              Blockstack provides user-controlled login and storage that enable you to take back control of your identity and data.
-            </p>
-            <a href="https://blockstack.org/try-blockstack" target="_blank" rel="noopener noreferrer">Learn more</a>
-          </div>
-        </div>
+                <h3>
+                  Universal Login
+                </h3>
+                <p>
+                  As a user, you don't need to make multiple accounts, you only need your Blockstack account to access different socialli instances. 
+                </p>
+                <a href="https://www.notion.so/socialli/Socialli-55db29d73b7e43118b65167b4b1691dd" target="_blank" rel="noopener noreferrer">More</a>
+              </div>
+            </div>
 
-        <div className = "footer">
-          <h3>
-            {/* Join <a href="https://discord.gg/zYzh9Zy">discord</a> for development discussions and other things. */}
-          </h3>     
-          <p>
-          Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://twitter.com/xanderjakeq">xanderjakeq</a>
-          </p>
-        </div>
+            <div className = "section">
+              <div>
+                <h1>
+                  What is Blockstack?
+                </h1>
+                <p>
+                  Blockstack provides user-controlled login and storage that enable you to take back control of your identity and data.
+                </p>
+                <a href="https://blockstack.org/try-blockstack" target="_blank" rel="noopener noreferrer">Learn more</a>
+              </div>
+            </div>
+
+            <div className = "footer">
+              <p>
+              Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://twitter.com/xanderjakeq" target="_blank" rel="noopener noreferrer">xanderjakeq</a>
+              </p>
+            </div>
+          </>
+          :
+          null
+        } 
       </SigninWrapper>
     );
 }
@@ -83,7 +118,15 @@ const SigninWrapper = styled.div`
     width: 200px;
   }
   .heading {
-    font-size: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    h1 {
+      font-size: 50px;
+      margin-bottom: 0;
+    }
+
+    margin-bottom: 50px;
   }
 
   .section {
@@ -91,10 +134,11 @@ const SigninWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 66vh;
+    min-height: 80vh;
     width: 100%;
 
     p {
+      margin: 10px 0;
       max-width: 500px;
       line-height: 1.5;
     }
