@@ -124,8 +124,9 @@ const Main = (props) => {
                 <MainWrapper>
                     <div id = "main">
                         <div id = "message">
-                                <h1>The host needs to set the rules before anyone can enter.</h1>
+                                <h1>The host needs to set the rules before anyone can use this socialli instance.</h1>
                         </div>
+                        <Button onClick = { (e) => handleSignOut(e, userSession)} text = "Log Out"/>
                     </div>
                 </MainWrapper>
             }
