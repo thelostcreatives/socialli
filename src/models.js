@@ -1,5 +1,41 @@
 import { Model } from 'radiks';
 
+export class SocialliConfig extends Model {
+    static className = 'SocialliConfig';
+    static schema = {
+        host: {
+            type: String,
+            decrypted: true
+        },
+        isPublic: {
+            type: Boolean,
+            decrypted: true
+        },
+        blockedUsers: {
+            type: Array,
+            decrypted: true
+        },
+        members: {
+            type: Array,
+            decrypted: true
+        },
+        other: {
+            type: Object,
+            decrypted: true
+        }
+    }
+
+    static defaults = {
+        isPublic: true,
+        blockedUsers: [],
+        members: [],
+        other: {
+            blockedMessage: "",
+            memberRequestMessage: ""
+        }
+    }
+}
+
 export class AnyListUser extends Model {
     static className = 'AnyListUser';
     static schema = {

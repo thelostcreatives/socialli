@@ -13,5 +13,6 @@ export { default as Comments, FakeLink} from './Comments';
 export { default as Comment} from './Comment';
 export { default as NewCommentForm} from './NewCommentForm';
 export { default as ImageCarousel} from './ImageCarousel';
+export { default as Settings} from './Settings';
 
 export * from './minor_comps';
