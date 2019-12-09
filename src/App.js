@@ -10,6 +10,8 @@ import { Main, Signin } from './components';
 import { storeUserSession, getCustomUser } from './actions';
 import { List } from './models';
 
+import socialli_config from './socialli_config';
+
 const appConfig = new AppConfig(
   ["store_write", "publish_data"],
 )
@@ -22,6 +24,9 @@ configure({
 })
 
 const App = (props) => {
+
+    document.title = socialli_config.instance_name;
+    
     const [userData, setUserData] = useState({});
 
     props.storeUserSession(userSession);
