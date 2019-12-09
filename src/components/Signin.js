@@ -52,7 +52,7 @@ const SignIn = (props) => {
 
         <div className = "footer">
           <h3>
-            Join <a href="https://discord.gg/zYzh9Zy">discord</a> for development discussions and other things.
+            {/* Join <a href="https://discord.gg/zYzh9Zy">discord</a> for development discussions and other things. */}
           </h3>     
           <p>
           Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://twitter.com/xanderjakeq">xanderjakeq</a>
@@ -91,11 +91,12 @@ const SigninWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 66vh;
     width: 100%;
 
     p {
       max-width: 500px;
+      line-height: 1.5;
     }
   }
 
@@ -116,6 +117,8 @@ const SigninWrapper = styled.div`
   }
   
   .footer {
-    margin: 10px 0;
+    margin: 50px 0;
+    max-width: 500px;
+    width: 100%;
   }
 `;
