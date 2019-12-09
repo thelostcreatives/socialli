@@ -108,11 +108,13 @@ const Main = (props) => {
                                     }
                                 </h1>
                                 <p>
+                                    <pre>
                                     { isPublic ?
                                         otherSocialliConfig.blockedMessage
                                         :
                                         otherSocialliConfig.memberRequestMessage
                                     }
+                                    </pre>
                                 </p>
                                 <Button onClick = { (e) => handleSignOut(e, userSession)} text = "Log Out"/>
                             </div>
@@ -263,12 +265,17 @@ const MainWrapper = styled.div`
         justify-content: center;
 
         margin: 10px;
+
+        p {
+            margin: 20px 0;
+        }
     }
 
     
 
     @media only screen and (max-width: ${breakpoint.a}) {
         display: unset;
+        width: 100%;
         #nav {
             grid-area: none;
             position: fixed;
@@ -296,6 +303,10 @@ const MainWrapper = styled.div`
                         display: none;
                     }
                 }
+            }
+
+            .other-links {
+                display: none;
             }
         }
         #main {

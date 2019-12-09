@@ -204,7 +204,6 @@ const ProfileWrapper = styled.div`
 `;
 
 export const Header = styled.div`
-	width: 500px;
 	font-family: 'Work Sans', sans-serif;
 
 	#name {

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { Button } from './index';
 import { createSocialliConfig, getSocialliConfig, updateSocialliConfig } from '../actions';
+import { breakpoint } from '../utils/styleConsts';
 import socialli_config from '../socialli_config';
 
 const Settings = (props) => {
@@ -242,6 +243,14 @@ const SettingsWrapper = styled.div`
 		}
 	}
 
+    @media only screen and (max-width: ${breakpoint.a}) {
+		width: 100%;
+		padding: 10px;
+
+		form {
+			flex-direction: column;
+		}
+	}
 `;
 
 const Option = styled.div`
