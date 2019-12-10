@@ -272,10 +272,7 @@ const MainWrapper = styled.div`
             margin: 20px 0;
         }
 
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+        
     }
 
     
