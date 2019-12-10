@@ -15,13 +15,18 @@ import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../action
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
+import { POST_PREVIEW_LIMIT } from '../utils/constants';
+
 const Post = (props) => {
 
     const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+    const newEditorState = EditorState.createWithContent(convertFromRaw(content));
+
+    const [editorState, setEditorState] = useState(newEditorState);
+    const [plainTextContent, setPlainTextContent] = useState(newEditorState.getCurrentContent().getPlainText());
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
@@ -35,7 +40,7 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)))
+                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)));
             }
         }
     }, [expandedPost])
@@ -126,13 +131,31 @@ const Post = (props) => {
                         null
                     }
                     
-                    <Editor
-                        ref = {editor}
-                        editorState = {editorState}
-                        onChange = {editorState => setEditorState(editorState)}
-                        readOnly = {!isEditing}
+                    {
+                        preview ? 
+                        <p>
+                            { 
+                                plainTextContent.length <= POST_PREVIEW_LIMIT ? 
+                                <pre>
+                                    {plainTextContent}
+                                </pre>
+                                :
+                                <pre>
+                                    {`${plainTextContent.substr(0, POST_PREVIEW_LIMIT)}`}
+                                    <span id = "more-content-indicator"> ...more</span>
+                                </pre>
+                            }
+                        </p>
+                        :
+                        <Editor
+                            ref = {editor}
+                            editorState = {editorState}
+                            onChange = {editorState => setEditorState(editorState)}
+                            readOnly = {!isEditing}
 
-                    />
+                        />
+                    }
+                    
                     {preview ? null :
                         <>
                             <OptionsBar className = "icons-container">
@@ -212,6 +235,11 @@ const PostWrapper = styled.div`
         align-items: center;
     }
 
+    #more-content-indicator {
+        margin-top: 10px;
+        color: grey;
+    }
+
     .edit-options {
         display: flex;
         justify-content: space-evenly;
@@ -283,7 +311,6 @@ const PostWrapper = styled.div`
     }
 
     ${props => props.preview === true && css`
-        max-height: ${props.hasImg ? "600px" : "150px" };
         overflow: hidden;
         margin: 20px 0;
         #preview-overlay {
