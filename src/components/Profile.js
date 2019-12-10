@@ -104,7 +104,9 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ other.avatarUrl || avatarFallbackImage } id = "avatar-image" alt = "Avatar"/>
+					<div id = "avatar-image">
+						<img src={ other.avatarUrl || avatarFallbackImage } alt = "Avatar"/>
+					</div>
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
@@ -198,8 +200,18 @@ const ProfileWrapper = styled.div`
 	align-items: center;
 	margin: 10px 0;
 	#avatar-image {
+		display: flex;
+		align-items: center;
+		
 		width: 100px;
+		height: 100px;
 		border-radius: 50%;
+
+		overflow: hidden;
+
+		img {
+			width: 100%;
+		}
 	}
 `;
 
