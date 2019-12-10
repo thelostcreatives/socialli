@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
 import { connect } from 'react-redux';
-import { Link2, Edit, XSquare } from 'react-feather';
+import { Link2, Edit, XSquare, ChevronRight } from 'react-feather';
 import ClipBoard from 'clipboard';
 import moment from 'moment';
 import Tippy from '@tippy.js/react';
@@ -110,18 +110,27 @@ const Post = (props) => {
                 <>
                     <div id = "post-header">
                         <div className = "metadata">
-                            <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
-                                <h4 className = "list-title">
-                                    {metadata ? metadata.listTitle : listId}
-                                </h4>
-                            </Link>
-                            <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
-                                {metadata ? `@${metadata.listAuthor}` : null}
-                            </Link>
+                            <div className = "author-img">
+                                <img src = "#"></img>
+                            </div>
+                            <div>
+                                <Link to = {`/${metadata ? metadata.listAuthor : null}`} onClick = {stopPropagation}>
+                                    {metadata ? metadata.listAuthor : null}
+                                </Link>
+
+                                <ChevronRight size = {15}/>
+
+                                <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
+                                        {metadata ? metadata.listTitle : listId}
+                                </Link>
+                                <div>
+                                    <time>
+                                        {moment(createdAt).fromNow()}
+                                    </time>
+                                </div>
+                            </div>
                         </div>
-                        <time>
-                            {moment(createdAt).fromNow()}
-                        </time>
+                        
                     </div>
 
                     {
@@ -264,15 +273,40 @@ const PostWrapper = styled.div`
 
         .metadata {
             display: flex;
-            align-items: baseline;
+            align-items: center;
 
-            .list-title {
-                margin: 10px 0;
-                margin-bottom: 5px;
+            position: relative;
+
+
+            .author-img {
+                display: flex;
+                align-items: center;
+                
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                overflow: hidden;
+                
+                margin-right: 10px;
+
+                img {
+                    width: 100%;
+                }
             }
-            .author {
-                font-size: 13px;
-                margin-left: 10px;
+
+            a {
+                font-size: 14px;
+                font-weight: bold;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline
+                }
+            }
+
+            svg {
+                position: relative;
+                bottom: -3px;
             }
         }
 
