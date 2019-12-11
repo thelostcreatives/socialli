@@ -268,8 +268,11 @@ const MainWrapper = styled.div`
         margin: 10px;
 
         p {
+            max-width: 500px;
             margin: 20px 0;
         }
+
+        
     }
 
     

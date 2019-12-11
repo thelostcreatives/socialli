@@ -10,6 +10,9 @@ export const STOREUSERSESSION = "STOREUSERSESSION";
 export const GETTING_CUSTOM_USER = "GETTING_CUSTOM_USER";
 export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
+export const GETTING_USER_DATA = "GETTING_USER_DATA";
+export const USER_DATA_RECIEVED = "USER_DATA_RECIEVED";
+
 export const UPDATING_USER = "UPDATING_USER";
 export const USER_UPDATED = "USER_UPDATED";
 
@@ -72,6 +75,21 @@ export const getCustomUser = ({profile, username}) => async (dispatch) => {
     dispatch({
         type: CUSTOM_USER_FOUND,
         payload: user
+    });
+}
+
+export const getUserData = (signingKeyId) => async (dispatch) => {
+    dispatch({
+        type: GETTING_USER_DATA
+    });
+
+    const user = await AnyListUser.fetchList({
+        signingKeyId
+    });
+
+    dispatch({
+        type: USER_DATA_RECIEVED,
+        payload: user[0]
     });
 }
 

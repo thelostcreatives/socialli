@@ -10,8 +10,7 @@ import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAva
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
-
-const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
+import { AVATAR_FALLBACK_IMG } from '../utils/constants';
 
 const Profile = (props) => {
 
@@ -25,7 +24,7 @@ const Profile = (props) => {
 
 	if ( !other ) {
 		other = {
-			avatarUrl: avatarFallbackImage
+			avatarUrl: AVATAR_FALLBACK_IMG
 		}
 	}
 
@@ -34,7 +33,7 @@ const Profile = (props) => {
 			return 'Anonymous';
 		},
 		avatarUrl() {
-			return avatarFallbackImage;
+			return AVATAR_FALLBACK_IMG;
 		},
 	});
 
@@ -104,7 +103,9 @@ const Profile = (props) => {
 		<ProfileWrapper>
 			<Header>
 				<div className="info-section">
-					<img src={ other.avatarUrl || avatarFallbackImage } id = "avatar-image" alt = "Avatar"/>
+					<div id = "avatar-image">
+						<img src={ other.avatarUrl || AVATAR_FALLBACK_IMG } alt = "Avatar"/>
+					</div>
 					{
 						isEditing ? 
 						<div className = "profile-inputs">
@@ -198,8 +199,18 @@ const ProfileWrapper = styled.div`
 	align-items: center;
 	margin: 10px 0;
 	#avatar-image {
+		display: flex;
+		align-items: center;
+		
 		width: 100px;
+		height: 100px;
 		border-radius: 50%;
+
+		overflow: hidden;
+
+		img {
+			width: 100%;
+		}
 	}
 `;
 
