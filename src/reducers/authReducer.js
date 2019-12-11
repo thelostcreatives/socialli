@@ -11,6 +11,7 @@ const initialState = {
 
         }
     },
+    users: {},
     uploadingAvatar: false
 }
 
@@ -31,7 +32,20 @@ const branchTable = {
         return {
             ...state,
             findingUser: false,
-            anylistUser: actions.payload
+            anylistUser: actions.payload,
+            users: {
+                ...state.users, 
+                [actions.payload.attrs.signingKeyId]: actions.payload
+            }
+        }
+    },
+    [actions.USER_DATA_RECIEVED]: (state, actions) => {
+        return {
+            ...state,
+            users: {
+                ...state.users, 
+                [actions.payload.attrs.signingKeyId]: actions.payload
+            }
         }
     },
     [actions.USER_UPDATED]: (state, actions) => {

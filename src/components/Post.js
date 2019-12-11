@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
 import { connect } from 'react-redux';
-import { Link2, Edit, XSquare } from 'react-feather';
+import { Link2, Edit, XSquare, ChevronRight } from 'react-feather';
 import ClipBoard from 'clipboard';
 import moment from 'moment';
 import Tippy from '@tippy.js/react';
@@ -11,17 +11,27 @@ import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
-import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
+import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
+import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
+
 const Post = (props) => {
 
-    const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
+    const { anylistUser, preview, post, 
+            match, history, expandedPost, 
+            userSigningKeyId, users, lists } = props;
+
+    const { setExpandedPost, updatePost, deletePost, 
+            unfollowPost, getUserData, getListData } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(convertFromRaw(content)));
+    const newEditorState = EditorState.createWithContent(convertFromRaw(content));
+
+    const [editorState, setEditorState] = useState(newEditorState);
+    const [plainTextContent, setPlainTextContent] = useState(newEditorState.getCurrentContent().getPlainText());
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
@@ -35,10 +45,22 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)))
+                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)));
             }
         }
-    }, [expandedPost])
+    }, [expandedPost]);
+
+    useEffect (() => {
+        if (!users[signingKeyId]) {
+            getUserData(signingKeyId);
+        }
+    }, []);
+
+    useEffect (() => {
+        if (!lists[listId]) {
+            getListData(listId);
+        }
+    }, []);
 
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
@@ -105,18 +127,27 @@ const Post = (props) => {
                 <>
                     <div id = "post-header">
                         <div className = "metadata">
-                            <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
-                                <h4 className = "list-title">
-                                    {metadata ? metadata.listTitle : listId}
-                                </h4>
-                            </Link>
-                            <Link to = {`/${metadata ? metadata.listAuthor : null}`} className = "author" onClick = {stopPropagation}>
-                                {metadata ? `@${metadata.listAuthor}` : null}
-                            </Link>
+                            <div className = "author-img">
+                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl : AVATAR_FALLBACK_IMG} alt = "avatar"/>
+                            </div>
+                            <div>
+                                <Link to = {`/${metadata ? metadata.listAuthor : null}`} onClick = {stopPropagation}>
+                                    {metadata ? metadata.listAuthor : null}
+                                </Link>
+
+                                <ChevronRight size = {15}/>
+
+                                <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
+                                        {lists[listId] ? lists[listId].attrs.title : `...`}
+                                </Link>
+                                <div>
+                                    <time>
+                                        {moment(createdAt).fromNow()}
+                                    </time>
+                                </div>
+                            </div>
                         </div>
-                        <time>
-                            {moment(createdAt).fromNow()}
-                        </time>
+                        
                     </div>
 
                     {
@@ -126,13 +157,31 @@ const Post = (props) => {
                         null
                     }
                     
-                    <Editor
-                        ref = {editor}
-                        editorState = {editorState}
-                        onChange = {editorState => setEditorState(editorState)}
-                        readOnly = {!isEditing}
+                    {
+                        preview ? 
+                        <p>
+                            { 
+                                plainTextContent.length <= POST_PREVIEW_LIMIT ? 
+                                <pre>
+                                    {plainTextContent}
+                                </pre>
+                                :
+                                <pre>
+                                    {`${plainTextContent.substr(0, POST_PREVIEW_LIMIT)}`}
+                                    <span id = "more-content-indicator"> ...more</span>
+                                </pre>
+                            }
+                        </p>
+                        :
+                        <Editor
+                            ref = {editor}
+                            editorState = {editorState}
+                            onChange = {editorState => setEditorState(editorState)}
+                            readOnly = {!isEditing}
 
-                    />
+                        />
+                    }
+                    
                     {preview ? null :
                         <>
                             <OptionsBar className = "icons-container">
@@ -184,12 +233,14 @@ const mstp = (state) => {
     return {
         anylistUser: state.auth.anylistUser,
         userSigningKeyId: state.auth.anylistUser.attrs.signingKeyId, 
-        expandedPost: state.posts.expandedPost
+        expandedPost: state.posts.expandedPost,
+        users: state.auth.users,
+        lists: state.lists.allLists
     }
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, updatePost, deletePost, unfollowPost})(Post)
+    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData})(Post)
 );
 
 const PostWrapper = styled.div`
@@ -210,6 +261,11 @@ const PostWrapper = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    #more-content-indicator {
+        margin-top: 10px;
+        color: grey;
     }
 
     .edit-options {
@@ -236,15 +292,42 @@ const PostWrapper = styled.div`
 
         .metadata {
             display: flex;
-            align-items: baseline;
+            align-items: center;
 
-            .list-title {
-                margin: 10px 0;
-                margin-bottom: 5px;
+            position: relative;
+
+            margin-bottom: 10px;
+
+            .author-img {
+                display: flex;
+                align-items: center;
+                
+                min-width: 40px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                overflow: hidden;
+                
+                margin-right: 10px;
+
+                img {
+                    width: 100%;
+                }
             }
-            .author {
-                font-size: 13px;
-                margin-left: 10px;
+
+            a {
+                font-size: 14px;
+                font-weight: bold;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline
+                }
+            }
+
+            svg {
+                position: relative;
+                bottom: -3px;
             }
         }
 
@@ -283,7 +366,6 @@ const PostWrapper = styled.div`
     }
 
     ${props => props.preview === true && css`
-        max-height: ${props.hasImg ? "600px" : "150px" };
         overflow: hidden;
         margin: 20px 0;
         #preview-overlay {
