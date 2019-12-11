@@ -11,15 +11,20 @@ import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
-import { setExpandedPost, updatePost, deletePost, unfollowPost } from '../actions';
+import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
-import { POST_PREVIEW_LIMIT } from '../utils/constants';
+import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
 
 const Post = (props) => {
 
-    const { anylistUser, preview, post, match, history, expandedPost, setExpandedPost, updatePost, deletePost, unfollowPost, userSigningKeyId } = props;
+    const { anylistUser, preview, post, 
+            match, history, expandedPost, 
+             userSigningKeyId, users } = props;
+
+    const { setExpandedPost, updatePost, deletePost, 
+            unfollowPost, getUserData } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
@@ -43,7 +48,13 @@ const Post = (props) => {
                 setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)));
             }
         }
-    }, [expandedPost])
+    }, [expandedPost]);
+
+    useEffect (() => {
+        if (!users[signingKeyId]) {
+            getUserData(signingKeyId);
+        }
+    }, [users]);
 
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
@@ -111,7 +122,7 @@ const Post = (props) => {
                     <div id = "post-header">
                         <div className = "metadata">
                             <div className = "author-img">
-                                <img src = "#"></img>
+                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl : AVATAR_FALLBACK_IMG} alt = "avatar"/>
                             </div>
                             <div>
                                 <Link to = {`/${metadata ? metadata.listAuthor : null}`} onClick = {stopPropagation}>
@@ -216,12 +227,13 @@ const mstp = (state) => {
     return {
         anylistUser: state.auth.anylistUser,
         userSigningKeyId: state.auth.anylistUser.attrs.signingKeyId, 
-        expandedPost: state.posts.expandedPost
+        expandedPost: state.posts.expandedPost,
+        users: state.auth.users
     }
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, updatePost, deletePost, unfollowPost})(Post)
+    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost})(Post)
 );
 
 const PostWrapper = styled.div`
@@ -277,11 +289,13 @@ const PostWrapper = styled.div`
 
             position: relative;
 
+            margin-bottom: 10px;
 
             .author-img {
                 display: flex;
                 align-items: center;
                 
+                min-width: 40px;
                 width: 40px;
                 height: 40px;
                 border-radius: 50%;
