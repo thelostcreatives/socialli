@@ -11,7 +11,7 @@ import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
-import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost } from '../actions';
+import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -21,10 +21,10 @@ const Post = (props) => {
 
     const { anylistUser, preview, post, 
             match, history, expandedPost, 
-             userSigningKeyId, users } = props;
+            userSigningKeyId, users, lists } = props;
 
     const { setExpandedPost, updatePost, deletePost, 
-            unfollowPost, getUserData } = props;
+            unfollowPost, getUserData, getListData } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
@@ -54,7 +54,13 @@ const Post = (props) => {
         if (!users[signingKeyId]) {
             getUserData(signingKeyId);
         }
-    }, [users]);
+    }, []);
+
+    useEffect (() => {
+        if (!lists[listId]) {
+            getListData(listId);
+        }
+    }, []);
 
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
@@ -132,7 +138,7 @@ const Post = (props) => {
                                 <ChevronRight size = {15}/>
 
                                 <Link to = {`/list/${listId}`} onClick = {stopPropagation}>
-                                        {metadata ? metadata.listTitle : listId}
+                                        {lists[listId] ? lists[listId].attrs.title : `...`}
                                 </Link>
                                 <div>
                                     <time>
@@ -228,12 +234,13 @@ const mstp = (state) => {
         anylistUser: state.auth.anylistUser,
         userSigningKeyId: state.auth.anylistUser.attrs.signingKeyId, 
         expandedPost: state.posts.expandedPost,
-        users: state.auth.users
+        users: state.auth.users,
+        lists: state.lists.allLists
     }
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost})(Post)
+    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData})(Post)
 );
 
 const PostWrapper = styled.div`
