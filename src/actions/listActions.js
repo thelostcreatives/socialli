@@ -5,6 +5,9 @@ import { uploadFile, isImageFileSizeAcceptable, compressImage } from '../utils/h
 export const CREATING_LIST = "CREATING_LIST";
 export const LIST_CREATED = "LIST_CREATED";
 
+export const GETTING_LIST_DATA = "GETTING_LIST_DATA";
+export const LIST_DATA_RECEIVED = "LIST_DATA_RECEIVED";
+
 export const GETTING_PROFILE_LISTS = "GETTING_PROFILE_LISTS";
 export const RECEIVED_PROFILE_LISTS = "RECEIVED_PROFILE_LISTS";
 
@@ -41,7 +44,22 @@ export const createList = (title, description, author, posts_type) => async (dis
         type: LIST_CREATED    
     });
 
-	return listdata;
+    return listdata;
+}
+
+export const getListData = (listId) => async (dispatch) => {
+    dispatch({
+        type: GETTING_LIST_DATA
+    });
+
+    const list = await List.fetchList({
+        _id: listId
+    });
+
+    dispatch({
+        type: LIST_DATA_RECEIVED,
+        payload: list[0]
+    });
 }
 
 export const getProfileLists = (username) => async (dispatch) => {

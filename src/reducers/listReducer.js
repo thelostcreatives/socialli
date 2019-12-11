@@ -7,6 +7,7 @@ const initialState = {
 		}
 	},
 	profileLists: [],
+	allLists: {},
 	uploadingBanner: false,
 	deletingList: false
 }
@@ -15,6 +16,15 @@ const branchTable = {
 	[actions.SET_ACTIVE_LIST]: (state, action) => {
 		return {
 			...state, activeList: action.payload
+		}
+	},
+	[actions.LIST_DATA_RECEIVED]: (state, action) => {
+		return {
+			...state, 
+			allLists: {
+				...state.allLists,
+				[action.payload._id]: action.payload
+			}
 		}
 	},
 	[actions.RECEIVED_PROFILE_LISTS]: (state, action) => {
