@@ -13,10 +13,10 @@ const ListPreview = (props) => {
     const { title, other } = list.attrs;
 
 	return (
-		<StyledLink to = { `list/${list._id}` }>
+		<StyledLink to = { `list/${list._id}`} title = { title }>
 			<ListPreviewWrapper onClick = { () => setActiveList(list)} >
                 <h2>
-                { title }
+                { title.length > 20 ? `${title.substr(0, 20)}...` : title }
                 </h2>
                 {
                     other && other.bannerLink ?
