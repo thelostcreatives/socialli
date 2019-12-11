@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
+import { Editor, EditorState, ContentState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
 import { Image } from 'react-feather';
@@ -9,7 +9,7 @@ import { Button, ImageCarousel } from './index';
 import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage } from '../utils/helpers';
+import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, removeExtraNewLines } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -66,6 +66,10 @@ const NewPostForm = (props) => {
 
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
+		const cleanText = removeExtraNewLines(contentState.getPlainText());
+
+		const cleanContentState = ContentState.createFromText(cleanText);
+
 		if (contentState.hasText()) {
 			setCreatingPost(true);
 			let imageGaiaLinks = images;
@@ -80,7 +84,7 @@ const NewPostForm = (props) => {
 					listAuthor: author,
 					listTitle: title
 				},
-				convertToRaw(contentState),
+				convertToRaw(cleanContentState),
 				imageGaiaLinks
 			);
 			done();
