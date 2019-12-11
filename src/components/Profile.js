@@ -10,8 +10,7 @@ import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAva
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
-
-const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
+import { AVATAR_FALLBACK_IMG } from '../utils/constants';
 
 const Profile = (props) => {
 
@@ -25,7 +24,7 @@ const Profile = (props) => {
 
 	if ( !other ) {
 		other = {
-			avatarUrl: avatarFallbackImage
+			avatarUrl: AVATAR_FALLBACK_IMG
 		}
 	}
 
@@ -34,7 +33,7 @@ const Profile = (props) => {
 			return 'Anonymous';
 		},
 		avatarUrl() {
-			return avatarFallbackImage;
+			return AVATAR_FALLBACK_IMG;
 		},
 	});
 
@@ -105,7 +104,7 @@ const Profile = (props) => {
 			<Header>
 				<div className="info-section">
 					<div id = "avatar-image">
-						<img src={ other.avatarUrl || avatarFallbackImage } alt = "Avatar"/>
+						<img src={ other.avatarUrl || AVATAR_FALLBACK_IMG } alt = "Avatar"/>
 					</div>
 					{
 						isEditing ? 
