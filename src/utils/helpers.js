@@ -67,3 +67,21 @@ export const compressImage = (imgFile, callback) => {
 		reader.onerror = error => console.log(error);
 	};
 }
+
+export const removeExtraNewLines = (plainText) => {
+	const cleanText = plainText.split("\n").filter((text, idx, arr) => {
+		let returnVal;
+		if (idx > 0 && idx < arr.length - 1) {
+			if (text.length > 0 || arr[idx + 1].length > 0) {
+				returnVal = true;
+			}
+		} else if (idx === arr.length - 1 || idx === 0) {
+			returnVal = true;
+		} else {
+			returnVal = false;
+		}
+		return returnVal;
+	}).join('\n');
+
+	return cleanText;
+}
