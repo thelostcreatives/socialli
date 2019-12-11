@@ -85,7 +85,6 @@ export const getUserData = (signingKeyId) => async (dispatch) => {
 
     const user = await AnyListUser.fetchList({
         signingKeyId
-
     });
 
     dispatch({
