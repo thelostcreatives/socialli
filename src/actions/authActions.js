@@ -11,7 +11,7 @@ export const GETTING_CUSTOM_USER = "GETTING_CUSTOM_USER";
 export const CUSTOM_USER_FOUND = "CUSTOM_USER_FOUND";
 
 export const GETTING_USER_DATA = "GETTING_USER_DATA";
-export const USER_DATA_RECIEVED = "USER_DATA_RECIEVED";
+export const USER_DATA_RECEIVED = "USER_DATA_RECEIVED";
 
 export const UPDATING_USER = "UPDATING_USER";
 export const USER_UPDATED = "USER_UPDATED";
@@ -88,7 +88,7 @@ export const getUserData = (signingKeyId) => async (dispatch) => {
     });
 
     dispatch({
-        type: USER_DATA_RECIEVED,
+        type: USER_DATA_RECEIVED,
         payload: user[0]
     });
 }
