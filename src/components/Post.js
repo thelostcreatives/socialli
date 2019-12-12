@@ -128,7 +128,7 @@ const Post = (props) => {
                     <div id = "post-header">
                         <div className = "metadata">
                             <div className = "author-img">
-                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl : AVATAR_FALLBACK_IMG} alt = "avatar"/>
+                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl || AVATAR_FALLBACK_IMG : AVATAR_FALLBACK_IMG} alt = "avatar"/>
                             </div>
                             <div>
                                 <Link to = {`/${metadata ? metadata.listAuthor : null}`} onClick = {stopPropagation}>
