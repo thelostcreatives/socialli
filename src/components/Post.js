@@ -45,7 +45,9 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)));
+                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content));
+                setEditorState(newEditorState);
+                setPlainTextContent(newEditorState.getCurrentContent().getPlainText());
             }
         }
     }, [expandedPost]);
