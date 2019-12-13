@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
-import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
+import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier, CompositeDecorator, ContentState } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link2, Edit, XSquare, ChevronRight } from 'react-feather';
 import ClipBoard from 'clipboard';
@@ -10,12 +10,13 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, TagSpan, ExternalLink, Highlighter } from './index';
 import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
+import { handleStrategy, hashtagStrategy, linkStrategy } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -28,7 +29,22 @@ const Post = (props) => {
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
-    const newEditorState = EditorState.createWithContent(convertFromRaw(content));
+    const decorator = new CompositeDecorator([
+        {
+            strategy: handleStrategy,
+            component: TagSpan,
+        },
+        {
+            strategy: hashtagStrategy,
+            component: TagSpan,
+        },
+        {
+            strategy: linkStrategy,
+            component: ExternalLink,
+        }
+    ]);
+
+    const newEditorState = EditorState.createWithContent(convertFromRaw(content), decorator);
 
     const [editorState, setEditorState] = useState(newEditorState);
     const [plainTextContent, setPlainTextContent] = useState(newEditorState.getCurrentContent().getPlainText());
@@ -45,7 +61,7 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content));
+                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content), decorator);
                 setEditorState(newEditorState);
                 setPlainTextContent(newEditorState.getCurrentContent().getPlainText());
             }
@@ -105,7 +121,28 @@ const Post = (props) => {
 		const newState =  Modifier.insertText(contentState, selection, emoji.native);
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
-	}
+    }
+    
+    const handleEditClick = () => {
+        const basicDecorator = new CompositeDecorator([
+            {
+                strategy: handleStrategy,
+                component: Highlighter,
+            },
+            {
+                strategy: hashtagStrategy,
+                component: Highlighter,
+            },
+            {
+                strategy: linkStrategy,
+                component: Highlighter,
+            }
+        ]);
+
+        setEditorState(EditorState.createWithContent(ContentState.createFromText(plainTextContent), decorator))
+        setIsEditing(true);
+        focusEditor();
+    }
 
     const editor = useRef(null);
 
@@ -197,10 +234,7 @@ const Post = (props) => {
                                     <div>
                                         {
                                             !isEditing ?
-                                            <Button onClick = { () => {
-                                                setIsEditing(true);
-                                                focusEditor();
-                                            }} text = "Edit" />
+                                            <Button onClick = { handleEditClick } text = "Edit" />
                                             :
                                             <>
                                                 <Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
