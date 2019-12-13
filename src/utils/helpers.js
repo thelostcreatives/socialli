@@ -1,3 +1,4 @@
+import { CompositeDecorator } from 'draft-js';
 import { IMAGE_FILE_SIZE_LIMIT } from './constants';
 
 export const uploadFile = async (userSession, dir, file, options) => {
@@ -85,3 +86,41 @@ export const removeExtraNewLines = (plainText) => {
 
 	return cleanText;
 }
+
+const HANDLE_REGEX = /\s\@[\w\.]+/g;
+const HASHTAG_REGEX = /(?:\s|^)?#[A-Za-z0-9\-\.\_]+(?:\s|$)/g;
+const LINK_REGEX = /(?:(?:https?):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g;
+
+export const findWithRegex = (regex, contentBlock, callback) => {
+	const text = contentBlock.getText();
+	let matchArr, start;
+	while ((matchArr = regex.exec(text)) !== null) {
+		start = matchArr.index;
+		callback(start, start + matchArr[0].length);
+	}
+}
+
+export const handleStrategy = (contentBlock, callback, contentState) => {
+  findWithRegex(HANDLE_REGEX, contentBlock, callback);
+}
+export const hashtagStrategy = (contentBlock, callback, contentState) => {
+  findWithRegex(HASHTAG_REGEX, contentBlock, callback);
+}
+export const linkStrategy = (contentBlock, callback, contentState) => {
+  findWithRegex(LINK_REGEX, contentBlock, callback);
+}
+
+// from https://stackoverflow.com/questions/11300906/check-if-a-string-starts-with-http-using-javascript
+export const getValidUrl = (url = "") => {
+    let newUrl = window.decodeURIComponent(url);
+    newUrl = newUrl.trim().replace(/\s/g, "");
+
+    if(/^(:\/\/)/.test(newUrl)){
+        return `http${newUrl}`;
+    }
+    if(!/^(f|ht)tps?:\/\//i.test(newUrl)){
+        return `http://${newUrl}`;
+    }
+
+    return newUrl;
+};
