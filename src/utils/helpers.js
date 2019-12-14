@@ -86,11 +86,11 @@ export const removeExtraNewLines = (plainText) => {
 	return cleanText;
 }
 
-const HANDLE_REGEX = /\s|^\@[\w\.]+/g;
 // from https://erictarn.com/post/1060722347/the-best-twitter-hashtag-regular-expression
+const HANDLE_REGEX = /\B@\w*[a-zA-Z\.]+\w*/g;
 const HASHTAG_REGEX = /\B#\w*[a-zA-Z]+\w*/g;
-// from https://www.regextester.com/96504
-const LINK_REGEX = /(?:(?:https?):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g;
+// modified from https://www.regextester.com/96504
+const LINK_REGEX = /(?:(?:https?):\/\/|\b(?:[a-z\d]+\.\w*[^\.\.\s]))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g;
 
 export const findWithRegex = (regex, contentBlock, callback) => {
 	const text = contentBlock.getText();
