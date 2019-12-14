@@ -10,7 +10,7 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, TagSpan, ExternalLink, Highlighter } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, InternalLink, ExternalLink, Highlighter } from './index';
 import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
@@ -32,15 +32,30 @@ const Post = (props) => {
     const decorator = new CompositeDecorator([
         {
             strategy: handleStrategy,
-            component: TagSpan,
+            component: InternalLink,
         },
         {
             strategy: hashtagStrategy,
-            component: TagSpan,
+            component: InternalLink,
         },
         {
             strategy: linkStrategy,
             component: ExternalLink,
+        }
+    ]);
+
+    const basicDecorator = new CompositeDecorator([
+        {
+            strategy: handleStrategy,
+            component: Highlighter,
+        },
+        {
+            strategy: hashtagStrategy,
+            component: Highlighter,
+        },
+        {
+            strategy: linkStrategy,
+            component: Highlighter,
         }
     ]);
 
@@ -80,6 +95,12 @@ const Post = (props) => {
         }
     }, []);
 
+    useEffect (() => {
+        if (isEditing) { 
+            setEditorState(EditorState.set(editorState, {decorator: basicDecorator}))
+        }
+    }, [isEditing])
+
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
             props.setExpandedPost(post);
@@ -92,6 +113,7 @@ const Post = (props) => {
     }
 
     const handleUpdateClick = () => {
+        setEditorState(EditorState.set(editorState, {decorator: decorator}))
         const contentState = editorState.getCurrentContent(); 
         updatePost(
             expandedPost,
@@ -124,22 +146,6 @@ const Post = (props) => {
     }
     
     const handleEditClick = () => {
-        const basicDecorator = new CompositeDecorator([
-            {
-                strategy: handleStrategy,
-                component: Highlighter,
-            },
-            {
-                strategy: hashtagStrategy,
-                component: Highlighter,
-            },
-            {
-                strategy: linkStrategy,
-                component: Highlighter,
-            }
-        ]);
-
-        setEditorState(EditorState.createWithContent(ContentState.createFromText(plainTextContent), decorator))
         setIsEditing(true);
         focusEditor();
     }
@@ -151,6 +157,10 @@ const Post = (props) => {
 	}
 
     const stopPropagation = (e) => e.stopPropagation();
+
+    const handleEditorChange = (editorState) => { 
+        setEditorState(editorState);
+    }
 
     return (
         <PostWrapper preview = {preview} hasImg = {other.images} onClick = {preview ? handlePreviewClick : null}>
@@ -215,9 +225,8 @@ const Post = (props) => {
                         <Editor
                             ref = {editor}
                             editorState = {editorState}
-                            onChange = {editorState => setEditorState(editorState)}
+                            onChange = {handleEditorChange}
                             readOnly = {!isEditing}
-
                         />
                     }
                     
