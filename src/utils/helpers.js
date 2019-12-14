@@ -102,13 +102,13 @@ export const findWithRegex = (regex, contentBlock, callback) => {
 }
 
 export const handleStrategy = (contentBlock, callback, contentState) => {
-  findWithRegex(HANDLE_REGEX, contentBlock, callback);
+	findWithRegex(HANDLE_REGEX, contentBlock, callback);
 }
 export const hashtagStrategy = (contentBlock, callback, contentState) => {
-  findWithRegex(HASHTAG_REGEX, contentBlock, callback);
+	findWithRegex(HASHTAG_REGEX, contentBlock, callback);
 }
 export const linkStrategy = (contentBlock, callback, contentState) => {
-  findWithRegex(LINK_REGEX, contentBlock, callback);
+	findWithRegex(LINK_REGEX, contentBlock, callback);
 }
 
 // from https://stackoverflow.com/questions/11300906/check-if-a-string-starts-with-http-using-javascript
