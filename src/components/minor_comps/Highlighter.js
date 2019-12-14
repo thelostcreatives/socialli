@@ -1,20 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const TagSpan = (props) => {
-	const { decoratedText } = props;
+import { POST_LINK_COLOR } from '../../utils/constants';
 
-	const cleanText = decoratedText.replace(/\s/g, '');
-
+const Highlighter = (props) => {
 	return (
-		<TagSpanWrapper>
-			{ decoratedText }
-		</TagSpanWrapper>
+		<HighlighterWrapper>
+			{ props.children }
+		</HighlighterWrapper>
 	);
 };
 
-export default TagSpan;
+export default Highlighter;
 
-const TagSpanWrapper = styled.span`
-	color: blue;
+const HighlighterWrapper = styled.span`
+	color: ${POST_LINK_COLOR};
 `;
