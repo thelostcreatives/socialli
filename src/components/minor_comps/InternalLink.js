@@ -9,11 +9,27 @@ const InternalLink = (props) => {
 
 	const cleanText = decoratedText.replace(/\s/g, '');
 
+	let username, tag;
+
+	if (cleanText.includes("@")) {
+		username = cleanText.split('@')[1];
+	} else {
+		tag = cleanText.split('#')[1];
+	}
+
 	return (
 		<InternalLinkWrapper>
-			<Link to = {`/explore/${cleanText}`}> 
+			{
+				username ?
+				<Link to = {`/${username}`}> 
 					{ props.children }
-			</Link>
+				</Link>
+				:
+				<Link to = {`/explore/#${tag}`}> 
+					{ props.children }
+				</Link>
+			}
+			
 		</InternalLinkWrapper>
 	);
 };
