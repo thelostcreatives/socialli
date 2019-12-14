@@ -16,7 +16,7 @@ import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
-import { handleStrategy, hashtagStrategy, linkStrategy } from '../utils/helpers';
+import { handleStrategy, hashtagStrategy, linkStrategy, removeExtraNewLines } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -113,11 +113,15 @@ const Post = (props) => {
     }
 
     const handleUpdateClick = () => {
-        setEditorState(EditorState.set(editorState, {decorator: decorator}))
         const contentState = editorState.getCurrentContent(); 
+        const cleanText = removeExtraNewLines(contentState.getPlainText());
+        const cleanContentState = ContentState.createFromText(cleanText);
+
+        setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: decorator}))
+
         updatePost(
             expandedPost,
-            convertToRaw(contentState)
+            convertToRaw(cleanContentState)
         );
         setIsEditing(false);
     }
