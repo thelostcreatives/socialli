@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { getValidUrl } from '../../utils/helpers';
+import { POST_LINK_COLOR } from '../../utils/constants';
 
 const ExternalLink = (props) => {
 	const { decoratedText } = props;
@@ -11,7 +12,7 @@ const ExternalLink = (props) => {
 	return (
 		<ExternalLinkWrapper>
 			<a href = { link } target = "_blank" rel = "noopener noreferrer"> 
-					{ decoratedText }
+					{ props.children }
 			</a>
 		</ExternalLinkWrapper>
 	);
@@ -24,6 +25,6 @@ const ExternalLinkWrapper = styled.div`
 	
 	a {
 		text-decoration: none;
-		color: blue;
+		color: ${POST_LINK_COLOR};
 	}
 `;
