@@ -2,27 +2,29 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const TagSpan = (props) => {
+import { POST_LINK_COLOR } from '../../utils/constants';
+
+const InternalLink = (props) => {
 	const { decoratedText } = props;
 
 	const cleanText = decoratedText.replace(/\s/g, '');
 
 	return (
-		<TagSpanWrapper>
+		<InternalLinkWrapper>
 			<Link to = {`/explore/${cleanText}`}> 
-					{ decoratedText }
+					{ props.children }
 			</Link>
-		</TagSpanWrapper>
+		</InternalLinkWrapper>
 	);
 };
 
-export default TagSpan;
+export default InternalLink;
 
-const TagSpanWrapper = styled.div`
+const InternalLinkWrapper = styled.div`
 	display: inline-block;
 	
 	a {
 		text-decoration: none;
-		color: blue;
+		color: ${POST_LINK_COLOR};
 	}
 `;
