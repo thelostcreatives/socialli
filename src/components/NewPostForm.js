@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Editor, EditorState, ContentState, Modifier, convertToRaw, CompositeDecorator } from 'draft-js';
+import { Editor, EditorState, ContentState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
 import { Image } from 'react-feather';
 
-import { Button, ImageCarousel, Highlighter } from './index';
+import { Button, ImageCarousel } from './index';
 import { createPost, setActiveList, followPost, uploadImages } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, 
-		 removeExtraNewLines, handleStrategy, hashtagStrategy, linkStrategy  } from '../utils/helpers';
+		 removeExtraNewLines, getCompositeDecorator } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -24,21 +24,6 @@ const NewPostForm = (props) => {
 		uploadImages
 	} = props;
 
-	const basicDecorator = new CompositeDecorator([
-		{
-			strategy: handleStrategy,
-			component: Highlighter
-		}, 
-		{ 
-			strategy: hashtagStrategy,
-			component: Highlighter
-		},
-		{ 
-			strategy: linkStrategy,
-			component: Highlighter
-		}
-	]);
-
 	const { author, title } = listData;
 
 	const [images, setImages] = useState();
@@ -48,7 +33,7 @@ const NewPostForm = (props) => {
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
-	const [editorState, setEditorState] = useState(EditorState.createEmpty(basicDecorator));
+	const [editorState, setEditorState] = useState(EditorState.createEmpty(getCompositeDecorator('editor')));
 
 	const editor = useRef(null);
 

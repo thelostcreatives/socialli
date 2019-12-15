@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
-import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier, CompositeDecorator, ContentState } from 'draft-js';
+import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier, ContentState } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link2, Edit, XSquare, ChevronRight } from 'react-feather';
 import ClipBoard from 'clipboard';
@@ -10,13 +10,13 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, InternalLink, ExternalLink, Highlighter } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
 import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
-import { handleStrategy, hashtagStrategy, linkStrategy, removeExtraNewLines } from '../utils/helpers';
+import { removeExtraNewLines, getCompositeDecorator } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -29,37 +29,10 @@ const Post = (props) => {
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
-    const decorator = new CompositeDecorator([
-        {
-            strategy: handleStrategy,
-            component: InternalLink,
-        },
-        {
-            strategy: hashtagStrategy,
-            component: InternalLink,
-        },
-        {
-            strategy: linkStrategy,
-            component: ExternalLink,
-        }
-    ]);
+    const postDecorator = getCompositeDecorator('post');
+    const editorDecorator = getCompositeDecorator('editor');
 
-    const basicDecorator = new CompositeDecorator([
-        {
-            strategy: handleStrategy,
-            component: Highlighter,
-        },
-        {
-            strategy: hashtagStrategy,
-            component: Highlighter,
-        },
-        {
-            strategy: linkStrategy,
-            component: Highlighter,
-        }
-    ]);
-
-    const newEditorState = EditorState.createWithContent(convertFromRaw(content), decorator);
+    const newEditorState = EditorState.createWithContent(convertFromRaw(content), postDecorator);
 
     const [editorState, setEditorState] = useState(newEditorState);
     const [plainTextContent, setPlainTextContent] = useState(newEditorState.getCurrentContent().getPlainText());
@@ -76,7 +49,7 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content), decorator);
+                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content), postDecorator);
                 setEditorState(newEditorState);
                 setPlainTextContent(newEditorState.getCurrentContent().getPlainText());
             }
@@ -97,7 +70,7 @@ const Post = (props) => {
 
     useEffect (() => {
         if (isEditing) { 
-            setEditorState(EditorState.set(editorState, {decorator: basicDecorator}))
+            setEditorState(EditorState.set(editorState, {decorator: editorDecorator}))
         }
     }, [isEditing])
 
@@ -117,7 +90,7 @@ const Post = (props) => {
         const cleanText = removeExtraNewLines(contentState.getPlainText());
         const cleanContentState = ContentState.createFromText(cleanText);
 
-        setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: decorator}))
+        setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: postDecorator}));
 
         updatePost(
             expandedPost,

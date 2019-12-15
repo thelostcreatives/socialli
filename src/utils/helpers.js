@@ -1,4 +1,7 @@
+import { CompositeDecorator } from 'draft-js';
+
 import { IMAGE_FILE_SIZE_LIMIT } from './constants';
+import { Highlighter, InternalLink, ExternalLink } from '../components';
 
 export const uploadFile = async (userSession, dir, file, options) => {
 	const gaialink = await userSession.putFile(`${dir}/${file.name}`, file, options);
@@ -109,6 +112,46 @@ export const hashtagStrategy = (contentBlock, callback, contentState) => {
 }
 export const linkStrategy = (contentBlock, callback, contentState) => {
 	findWithRegex(LINK_REGEX, contentBlock, callback);
+}
+
+/**
+ * Current types:
+ * 'editor': highlights hashtags, mentions and links
+ * 'post': renders hashtags, mentions and links text with achor tags
+ */
+export const getCompositeDecorator = (type) => {
+	const decorators = {
+		editor: () => new CompositeDecorator([ 
+			{ 
+				strategy: handleStrategy,
+				component: Highlighter
+			},
+			{ 
+				strategy: hashtagStrategy,
+				component: Highlighter
+			},
+			{ 
+				strategy: linkStrategy,
+				component: Highlighter
+			}
+		]),
+		post: () => new CompositeDecorator([
+			{
+				strategy: handleStrategy,
+				component: InternalLink,
+			},
+			{
+				strategy: hashtagStrategy,
+				component: InternalLink,
+			},
+			{
+				strategy: linkStrategy,
+				component: ExternalLink,
+			}
+		])
+	};
+
+	return decorators[type]();
 }
 
 // from https://stackoverflow.com/questions/11300906/check-if-a-string-starts-with-http-using-javascript
