@@ -11,7 +11,7 @@ import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
-import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
+import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData, deleteNotif } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -25,7 +25,7 @@ const Post = (props) => {
             userSigningKeyId, users, lists } = props;
 
     const { setExpandedPost, updatePost, deletePost, 
-            unfollowPost, getUserData, getListData } = props;
+            unfollowPost, getUserData, getListData, deleteNotif } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
@@ -111,6 +111,7 @@ const Post = (props) => {
     const handleDelete = () => {
         deletePost(expandedPost);
         unfollowPost(anylistUser, expandedPost._id);
+        deleteNotif(expandedPost._id);
         history.push(`/list/${listId}`);
     }
 
@@ -262,7 +263,7 @@ const mstp = (state) => {
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData})(Post)
+    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData, deleteNotif})(Post)
 );
 
 const PostWrapper = styled.div`
