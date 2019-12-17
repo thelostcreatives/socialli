@@ -1,11 +1,6 @@
 import { Notification } from '../models';
 import { USER_UPDATED } from './index';
 
-export const notif_types= {
-	post: "POST",
-	comment: "COMMENT",
-}
-
 export const CREATING_NOTIF = "CREATING_NOTIF";
 export const NOTIF_CREATED = "NOTIF_CREATED";
 

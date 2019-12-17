@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, OptionsBar } from './index';
-import { notif_types } from '../actions';
+import { NOTIF_TYPES } from '../utils/constants';
 import { createComment, createNotif, followPost } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -51,7 +51,7 @@ const NewCommentForm = (props) => {
 			);
 			setEditorState(EditorState.createEmpty());
 
-			createNotif(username, post._id, newComment._id, notif_types.comment, {
+			createNotif(username, post._id, newComment._id, NOTIF_TYPES.comment, {
 				...post.attrs.metadata,
 				commentAuthor: username
 			});

@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Editor, EditorState, Modifier, convertToRaw } from 'draft-js';
+import { Editor, EditorState, ContentState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
 import { Image } from 'react-feather';
 
 import { Button, ImageCarousel } from './index';
-import { createPost, setActiveList, followPost, uploadImages } from '../actions';
+import { createPost, setActiveList, followPost, uploadImages, createNotif } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage } from '../utils/helpers';
-import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
+import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, 
+		 removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, getMatchesFromString } from '../utils/helpers';
+import { SUPPORTED_IMAGE_FORMATS, NOTIF_TYPES } from '../utils/constants';
 
 const NewPostForm = (props) => {
 	const { 
@@ -20,10 +21,11 @@ const NewPostForm = (props) => {
 
 	const {
 		createPost, setActiveList, followPost,
-		uploadImages
+		uploadImages, createNotif
 	} = props;
 
-	const { author, title } = listData;
+	const { author: listAuthor, title, _id: listId } = listData;
+	const { username } = anylistUser.attrs;
 
 	const [images, setImages] = useState();
 	const [tempImgUrls, setTempImgUrls] = useState();
@@ -32,7 +34,7 @@ const NewPostForm = (props) => {
 
 	const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
-	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+	const [editorState, setEditorState] = useState(EditorState.createEmpty(getCompositeDecorator('editor')));
 
 	const editor = useRef(null);
 
@@ -66,6 +68,10 @@ const NewPostForm = (props) => {
 
 	const handlePost = async () => {
 		const contentState = editorState.getCurrentContent(); 
+		const cleanText = removeExtraNewLines(contentState.getPlainText());
+
+		const cleanContentState = ContentState.createFromText(cleanText);
+
 		if (contentState.hasText()) {
 			setCreatingPost(true);
 			let imageGaiaLinks = images;
@@ -77,14 +83,21 @@ const NewPostForm = (props) => {
 			const newPost = await createPost(
 				listData._id,
 				{
-					listAuthor: author,
-					listTitle: title
+					listAuthor,
+					listTitle: title,
+					author: username
 				},
-				convertToRaw(contentState),
+				convertToRaw(cleanContentState),
 				imageGaiaLinks
 			);
 			done();
 			followPost(anylistUser, newPost._id);
+
+			const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
+
+			createNotif(username, listId, newPost._id, NOTIF_TYPES.post, { 
+				...newPost.attrs.metadata
+			}, mentions);
 		} else {
 			console.log("Tell us stories meyn");
 		}
@@ -190,7 +203,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {createPost, setActiveList, followPost, uploadImages})(NewPostForm);
+export default connect(mstp, {createPost, setActiveList, followPost, uploadImages, createNotif})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;

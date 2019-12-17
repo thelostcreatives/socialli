@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
-import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
+import { Editor, EditorState, convertFromRaw, convertToRaw, Modifier, ContentState } from 'draft-js';
 import { connect } from 'react-redux';
 import { Link2, Edit, XSquare, ChevronRight } from 'react-feather';
 import ClipBoard from 'clipboard';
@@ -16,6 +16,7 @@ import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
+import { removeExtraNewLines, getCompositeDecorator } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -28,7 +29,10 @@ const Post = (props) => {
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
-    const newEditorState = EditorState.createWithContent(convertFromRaw(content));
+    const postDecorator = getCompositeDecorator('post');
+    const editorDecorator = getCompositeDecorator('editor');
+
+    const newEditorState = EditorState.createWithContent(convertFromRaw(content), postDecorator);
 
     const [editorState, setEditorState] = useState(newEditorState);
     const [plainTextContent, setPlainTextContent] = useState(newEditorState.getCurrentContent().getPlainText());
@@ -45,7 +49,9 @@ const Post = (props) => {
                     setExpandedPost(post)
                 })
             } else {
-                setEditorState(EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content)));
+                const newEditorState = EditorState.createWithContent(convertFromRaw(expandedPost.attrs.content), postDecorator);
+                setEditorState(newEditorState);
+                setPlainTextContent(newEditorState.getCurrentContent().getPlainText());
             }
         }
     }, [expandedPost]);
@@ -62,6 +68,12 @@ const Post = (props) => {
         }
     }, []);
 
+    useEffect (() => {
+        if (isEditing) { 
+            setEditorState(EditorState.set(editorState, {decorator: editorDecorator}))
+        }
+    }, [isEditing])
+
     const handlePreviewClick = () => {
         if (window.getSelection().toString().length === 0) {
             props.setExpandedPost(post);
@@ -75,9 +87,14 @@ const Post = (props) => {
 
     const handleUpdateClick = () => {
         const contentState = editorState.getCurrentContent(); 
+        const cleanText = removeExtraNewLines(contentState.getPlainText());
+        const cleanContentState = ContentState.createFromText(cleanText);
+
+        setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: postDecorator}));
+
         updatePost(
             expandedPost,
-            convertToRaw(contentState)
+            convertToRaw(cleanContentState)
         );
         setIsEditing(false);
     }
@@ -103,7 +120,12 @@ const Post = (props) => {
 		const newState =  Modifier.insertText(contentState, selection, emoji.native);
 		const state = EditorState.push(editorState, newState, "insert-characters");
 		setEditorState(state);
-	}
+    }
+    
+    const handleEditClick = () => {
+        setIsEditing(true);
+        focusEditor();
+    }
 
     const editor = useRef(null);
 
@@ -112,6 +134,10 @@ const Post = (props) => {
 	}
 
     const stopPropagation = (e) => e.stopPropagation();
+
+    const handleEditorChange = (editorState) => { 
+        setEditorState(editorState);
+    }
 
     return (
         <PostWrapper preview = {preview} hasImg = {other.images} onClick = {preview ? handlePreviewClick : null}>
@@ -128,7 +154,7 @@ const Post = (props) => {
                     <div id = "post-header">
                         <div className = "metadata">
                             <div className = "author-img">
-                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl : AVATAR_FALLBACK_IMG} alt = "avatar"/>
+                                <img src = {users[signingKeyId] ? users[signingKeyId].attrs.other.avatarUrl || AVATAR_FALLBACK_IMG : AVATAR_FALLBACK_IMG} alt = "avatar"/>
                             </div>
                             <div>
                                 <Link to = {`/${metadata ? metadata.listAuthor : null}`} onClick = {stopPropagation}>
@@ -176,9 +202,8 @@ const Post = (props) => {
                         <Editor
                             ref = {editor}
                             editorState = {editorState}
-                            onChange = {editorState => setEditorState(editorState)}
+                            onChange = {handleEditorChange}
                             readOnly = {!isEditing}
-
                         />
                     }
                     
@@ -195,10 +220,7 @@ const Post = (props) => {
                                     <div>
                                         {
                                             !isEditing ?
-                                            <Button onClick = { () => {
-                                                setIsEditing(true);
-                                                focusEditor();
-                                            }} text = "Edit" />
+                                            <Button onClick = { handleEditClick } text = "Edit" />
                                             :
                                             <>
                                                 <Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>

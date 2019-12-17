@@ -14,7 +14,7 @@ const branchTable = {
 			socialliConfig: action.payload
 		}
 	},
-	[actions.SOCIALLI_CONFIG_RECIEVED]: (state, action) => {
+	[actions.SOCIALLI_CONFIG_RECEIVED]: (state, action) => {
 		return {
 			...state, 
 			socialliConfig: action.payload ? action.payload : state.socialliConfig

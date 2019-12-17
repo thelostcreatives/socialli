@@ -1,4 +1,7 @@
+import { CompositeDecorator } from 'draft-js';
+
 import { IMAGE_FILE_SIZE_LIMIT } from './constants';
+import { Highlighter, InternalLink, ExternalLink } from '../components';
 
 export const uploadFile = async (userSession, dir, file, options) => {
 	const gaialink = await userSession.putFile(`${dir}/${file.name}`, file, options);
@@ -67,3 +70,111 @@ export const compressImage = (imgFile, callback) => {
 		reader.onerror = error => console.log(error);
 	};
 }
+
+export const removeExtraNewLines = (plainText) => {
+	const cleanText = plainText.split("\n").filter((text, idx, arr) => {
+		let returnVal;
+		if (idx > 0 && idx < arr.length - 1) {
+			if (text.length > 0 || arr[idx + 1].length > 0) {
+				returnVal = true;
+			}
+		} else if (idx === arr.length - 1 || idx === 0) {
+			returnVal = true;
+		} else {
+			returnVal = false;
+		}
+		return returnVal;
+	}).join('\n');
+
+	return cleanText;
+}
+
+// from https://erictarn.com/post/1060722347/the-best-twitter-hashtag-regular-expression
+export const HANDLE_REGEX = /\B@\w*[a-zA-Z\.]+\w*/g;
+export const HASHTAG_REGEX = /\B#\w*[a-zA-Z]+\w*/g;
+// modified from https://www.regextester.com/96504
+export const LINK_REGEX = /(?:(?:https?):\/\/|\b(?:[a-z\d]+\.\w*[^\.\.\s]))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g;
+
+export const findWithRegex = (regex, contentBlock, callback) => {
+	const text = contentBlock.getText();
+	let matchArr, start;
+	while ((matchArr = regex.exec(text)) !== null) {
+		start = matchArr.index;
+		callback(start, start + matchArr[0].length);
+	}
+}
+
+export const getMatchesFromString = (regex, string) => {
+	const matches = [];
+	let matchArr;
+
+	while ((matchArr = regex.exec(string)) !== null) {
+		matches.push(matchArr[0]);
+	}
+	return matches;
+}
+
+export const handleStrategy = (contentBlock, callback, contentState) => {
+	findWithRegex(HANDLE_REGEX, contentBlock, callback);
+}
+export const hashtagStrategy = (contentBlock, callback, contentState) => {
+	findWithRegex(HASHTAG_REGEX, contentBlock, callback);
+}
+export const linkStrategy = (contentBlock, callback, contentState) => {
+	findWithRegex(LINK_REGEX, contentBlock, callback);
+}
+
+/**
+ * Current types:
+ * 'editor': highlights hashtags, mentions and links
+ * 'post': renders hashtags, mentions and links text with achor tags
+ */
+export const getCompositeDecorator = (type) => {
+	const decorators = {
+		editor: () => new CompositeDecorator([ 
+			{ 
+				strategy: handleStrategy,
+				component: Highlighter
+			},
+			{ 
+				strategy: hashtagStrategy,
+				component: Highlighter
+			},
+			{ 
+				strategy: linkStrategy,
+				component: Highlighter
+			}
+		]),
+		post: () => new CompositeDecorator([
+			{
+				strategy: handleStrategy,
+				component: InternalLink,
+			},
+			{
+				strategy: hashtagStrategy,
+				component: InternalLink,
+			},
+			{
+				strategy: linkStrategy,
+				component: ExternalLink,
+			}
+		])
+	};
+
+	return decorators[type]();
+}
+
+// from https://stackoverflow.com/questions/11300906/check-if-a-string-starts-with-http-using-javascript
+export const getValidUrl = (url = "") => {
+    let newUrl = window.decodeURIComponent(url);
+    newUrl = newUrl.trim().replace(/\s/g, "");
+
+    if(/^(:\/\/)/.test(newUrl)){
+        return `http${newUrl}`;
+    }
+    if(!/^(f|ht)tps?:\/\//i.test(newUrl)){
+        return `http://${newUrl}`;
+    }
+
+    return newUrl;
+};

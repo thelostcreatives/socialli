@@ -39,7 +39,7 @@ const branchTable = {
             }
         }
     },
-    [actions.USER_DATA_RECIEVED]: (state, actions) => {
+    [actions.USER_DATA_RECEIVED]: (state, actions) => {
         return {
             ...state,
             users: {
