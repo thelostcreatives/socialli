@@ -6,12 +6,12 @@ import { Picker as EmojiPicker } from 'emoji-mart';
 import { Image } from 'react-feather';
 
 import { Button, ImageCarousel } from './index';
-import { createPost, setActiveList, followPost, uploadImages } from '../actions';
+import { createPost, setActiveList, followPost, uploadImages, createNotif } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, 
-		 removeExtraNewLines, getCompositeDecorator } from '../utils/helpers';
-import { SUPPORTED_IMAGE_FORMATS } from '../utils/constants';
+		 removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, getMatchesFromString } from '../utils/helpers';
+import { SUPPORTED_IMAGE_FORMATS, NOTIF_TYPES } from '../utils/constants';
 
 const NewPostForm = (props) => {
 	const { 
@@ -21,10 +21,11 @@ const NewPostForm = (props) => {
 
 	const {
 		createPost, setActiveList, followPost,
-		uploadImages
+		uploadImages, createNotif
 	} = props;
 
-	const { author, title } = listData;
+	const { author: listAuthor, title, _id: listId } = listData;
+	const { username } = anylistUser.attrs;
 
 	const [images, setImages] = useState();
 	const [tempImgUrls, setTempImgUrls] = useState();
@@ -82,14 +83,21 @@ const NewPostForm = (props) => {
 			const newPost = await createPost(
 				listData._id,
 				{
-					listAuthor: author,
-					listTitle: title
+					listAuthor,
+					listTitle: title,
+					author: username
 				},
 				convertToRaw(cleanContentState),
 				imageGaiaLinks
 			);
 			done();
 			followPost(anylistUser, newPost._id);
+
+			const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
+
+			createNotif(username, listId, newPost._id, NOTIF_TYPES.post, { 
+				...newPost.attrs.metadata
+			}, mentions);
 		} else {
 			console.log("Tell us stories meyn");
 		}
@@ -195,7 +203,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {createPost, setActiveList, followPost, uploadImages})(NewPostForm);
+export default connect(mstp, {createPost, setActiveList, followPost, uploadImages, createNotif})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;
