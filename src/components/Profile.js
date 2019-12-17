@@ -18,9 +18,12 @@ const Profile = (props) => {
 
 	const { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } = props;
 
-	const isOwned = user.attrs.signingKeyId === activeProfile.attrs.signingKeyId;
+	let isOwned;
+	if (activeProfile) {
+		isOwned = user.attrs.signingKeyId === activeProfile.attrs.signingKeyId;
+	}
 
-	let { username, name, description, other } = activeProfile.attrs;
+	let { username, name, description, other } = activeProfile ? activeProfile.attrs : {};
 
 	if ( !other ) {
 		other = {
@@ -53,7 +56,7 @@ const Profile = (props) => {
 
 	useEffect (() => {
 		setProfileData({username, name, description, other})
-	}, [activeProfile.attrs]);
+	}, [activeProfile]);
 
 	useEffect(() => {
 		getProfileLists(match.params.id);
@@ -104,7 +107,12 @@ const Profile = (props) => {
 			<Header>
 				<div className="info-section">
 					<div id = "avatar-image">
-						<img src={ other.avatarUrl || AVATAR_FALLBACK_IMG } alt = "Avatar"/>
+						{
+							activeProfile ?
+							<img src={ other.avatarUrl || AVATAR_FALLBACK_IMG } alt = "Avatar"/>
+							:
+							null
+						}
 					</div>
 					{
 						isEditing ? 
@@ -117,9 +125,17 @@ const Profile = (props) => {
 						</div>
 						:
 						<div>
-							<h1 id = "name">{ name || "Anonymous" }</h1>
-							<h2 id = "username">{ username }</h2>
-							<p id = "description">{ description }</p>
+							{
+								activeProfile ?
+								<>
+								<h1 id = "name">{ name || "Anonymous" }</h1>
+								<h2 id = "username">{ username }</h2>
+								<p id = "description">{ description }</p>
+								</>
+								:
+								<h1>User does not exist in this Socialli instance</h1>
+							}
+							
 						</div>
 					}
 				</div>
