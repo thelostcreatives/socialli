@@ -171,6 +171,14 @@ export class Notification extends Model {
         content: {
             type: Object,
             decrypted: true
+        },
+        mentions: {
+            type: Array,
+            decrypted: true
         }
+    }
+
+    static defaults = {
+        mentions: []
     }
 }
