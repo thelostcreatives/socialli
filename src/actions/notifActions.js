@@ -88,27 +88,32 @@ export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (d
 		type: GETTING_NEW_NOTIFS_COUNT
 	});
 
-	if (subbed_models.length > 0) {
-		const notifs = await Notification.count({
-			author: {
-				$ne: username
-			},
-			notif_for: subbed_models,
-			createdAt: {
-				$gt: lastSeen
-			}
-		});
+	const subbed_models_notifs = await Notification.fetchList({
+		author: {
+			$ne: username
+		},
+		notif_for: subbed_models,
+		createdAt: {
+			$gt: lastSeen
+		}
+	});
 
-		dispatch({
-			type: NEW_NOTIFS_COUNT_RECEIVED,
-			payload: notifs
-		});
-	} else {
-		dispatch({
-			type: NEW_NOTIFS_COUNT_RECEIVED,
-			payload: []
-		});
-	}
+	const mentions_notifs = await Notification.fetchList({
+		author: {
+			$ne: username
+		},
+		mentions: username,
+		createdAt: {
+			$gt: lastSeen
+		}
+	});
+
+	const notifs = [...subbed_models_notifs, ...mentions_notifs];
+
+	dispatch({
+		type: NEW_NOTIFS_COUNT_RECEIVED,
+		payload: notifs.length
+	});
 }
 
 export const setLastSeenNotif = (anylistUser, notif) => async (dispatch) => {
