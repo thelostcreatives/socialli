@@ -11,12 +11,11 @@ import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
 import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel } from './index';
-import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData } from '../actions';
+import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData, updateNotif, deleteNotif } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
-
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
-import { removeExtraNewLines, getCompositeDecorator } from '../utils/helpers';
+import { removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, getMatchesFromString } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -25,7 +24,7 @@ const Post = (props) => {
             userSigningKeyId, users, lists } = props;
 
     const { setExpandedPost, updatePost, deletePost, 
-            unfollowPost, getUserData, getListData } = props;
+            unfollowPost, getUserData, getListData, updateNotif, deleteNotif } = props;
     
     const { listId, metadata, content, signingKeyId, createdAt, other = {} } = post ? post.attrs: expandedPost.attrs;
 
@@ -60,13 +59,13 @@ const Post = (props) => {
         if (!users[signingKeyId]) {
             getUserData(signingKeyId);
         }
-    }, []);
+    }, [expandedPost]);
 
     useEffect (() => {
         if (!lists[listId]) {
             getListData(listId);
         }
-    }, []);
+    }, [lists]);
 
     useEffect (() => {
         if (isEditing) { 
@@ -90,12 +89,17 @@ const Post = (props) => {
         const cleanText = removeExtraNewLines(contentState.getPlainText());
         const cleanContentState = ContentState.createFromText(cleanText);
 
+        const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
+
         setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: postDecorator}));
 
         updatePost(
             expandedPost,
             convertToRaw(cleanContentState)
         );
+
+        updateNotif(expandedPost._id, {mentions});
+        
         setIsEditing(false);
     }
 
@@ -111,6 +115,7 @@ const Post = (props) => {
     const handleDelete = () => {
         deletePost(expandedPost);
         unfollowPost(anylistUser, expandedPost._id);
+        deleteNotif(expandedPost._id);
         history.push(`/list/${listId}`);
     }
 
@@ -262,7 +267,7 @@ const mstp = (state) => {
 }
 
 export default withRouter(
-    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData})(Post)
+    connect(mstp, {setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData, deleteNotif, updateNotif})(Post)
 );
 
 const PostWrapper = styled.div`

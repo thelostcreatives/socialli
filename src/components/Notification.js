@@ -4,22 +4,29 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { breakpoint } from '../utils/styleConsts';
+import { NOTIF_TYPES } from '../utils/constants';
 
 const Notification = (props) => {
 
-	const { notif, lastSeenNotif} = props;
+	const { username, notif, lastSeenNotif } = props;
 
-	const { notif_for, author, type, content, createdAt } = notif.attrs;
+	let { notif_for, notif_with, author, type, content, mentions, createdAt } = notif.attrs;
+
+	if (mentions && mentions.includes(username)) { 
+		type = NOTIF_TYPES.mention;
+	}
 
 	const typeToContent = {
-		"COMMENT": "commented",
+		[NOTIF_TYPES.comment]: "commented on a post from",
+		[NOTIF_TYPES.post]: "posted to ",
+		[NOTIF_TYPES.mention]: "mentioned you on a post from",
 	}
 
 	return (
-		<CleanLink to={`/post/${notif_for}`}>
+		<CleanLink to={`/post/${type === NOTIF_TYPES.post || type === NOTIF_TYPES.mention ? notif_with : notif_for}`}>
 			<NotifWrapper isNew = {createdAt > lastSeenNotif}>
 					<span className = "author">@{author} </span>
-					{typeToContent[type]} on a post from
+					{typeToContent[type]}
 					<span className = "list-title"> {content.listTitle} </span>
 					| @{content.listAuthor}
 			</NotifWrapper>
@@ -29,6 +36,7 @@ const Notification = (props) => {
 
 const mstp = (state) => {
 	return {
+		username: state.auth.anylistUser.attrs.username,
 		lastSeenNotif: state.auth.anylistUser.attrs.other.lastSeenNotif
 	}
 }
