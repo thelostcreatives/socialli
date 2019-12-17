@@ -10,12 +10,15 @@ export const NOTIFS_RECEIVED = "NOTIFS_RECEIVED";
 export const GETTING_NEW_NOTIFS_COUNT = "GETTING_NEW_NOTIFS_COUNT";
 export const NEW_NOTIFS_COUNT_RECEIVED = "NEW_NOTIFS_COUNT_RECEIVED";
 
+export const UPDATING_NOTIF = "UPDATING_NOTIF";
+export const NOTIF_UPDATED = "NOTIF_UPDATED";
+
 export const DELETING_NOTIF = "DELETING_NOTIF";
 export const NOTIF_DELETED = "NOTIF_DELETED";
 
 export const SETTING_LAST_SEEN_NOTIF = "SETTING_LAST_SEEN_NOTIF";
 
-export const createNotif = (author, notif_for, notif_with, type, content) => async (dispatch) => {
+export const createNotif = (author, notif_for, notif_with, type, content, mentions = []) => async (dispatch) => {
 	dispatch({
 		type: CREATING_NOTIF
 	});
@@ -25,7 +28,8 @@ export const createNotif = (author, notif_for, notif_with, type, content) => asy
 		notif_for,
 		notif_with,
 		type,
-		content
+		content,
+		mentions
 	});
 
 	const notif = await newNotif.save();
@@ -41,27 +45,42 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 		type: GETTING_NOTIFS
 	});
 
-	if (subbed_models.length > 0) {
-		const notifs = await Notification.fetchList({
-			offset,
-			limit,
-			author: {
-				$ne: username
-			},
-			notif_for: subbed_models,
-			sort: '-createdAt'
-		});
+	const subbed_models_notifs = await Notification.fetchList({
+		offset,
+		limit,
+		author: {
+			$ne: username
+		},
+		notif_for: subbed_models,
+		sort: '-createdAt'
+	});
 
-		dispatch({
-			type: NOTIFS_RECEIVED,
-			payload: notifs
-		});
-	} else {
-		dispatch({
-			type: NOTIFS_RECEIVED,
-			payload: []
-		});
-	}
+	const mentions_notifs = await Notification.fetchList({
+		offset,
+		limit,
+		author: {
+			$ne: username
+		},
+		mentions: username,
+		sort: '-createdAt'
+	});
+
+	const notifs = [...subbed_models_notifs, ...mentions_notifs].sort((a, b) => {
+		if (a.attrs.createdAt > b.attrs.createdAt) {
+			return -1;
+		}
+
+		if (a.attrs.createdAt < b.attrs.createdAt) {
+			return 1;
+		}
+
+		return 0;
+	}); 
+
+	dispatch({
+		type: NOTIFS_RECEIVED,
+		payload: notifs
+	});
 }
 
 export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (dispatch) => {
@@ -111,6 +130,25 @@ export const setLastSeenNotif = (anylistUser, notif) => async (dispatch) => {
 		payload: updatedUser
 	});
 
+}
+
+export const updateNotif = (notif_with, updates) => async (dispatch) => {
+	dispatch({ 
+		type: UPDATING_NOTIF
+	});
+
+	const notif = await Notification.fetchList({
+		notif_with
+	});
+
+	if (notif[0]) {
+		notif[0].update(updates);
+		await notif[0].save();
+	}
+
+	dispatch({ 
+		type: NOTIF_UPDATED,
+	});
 }
 
 export const deleteNotif = (notif_with) => async (dispatch) => {
