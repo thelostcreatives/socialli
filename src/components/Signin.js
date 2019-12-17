@@ -41,6 +41,10 @@ const SignIn = (props) => {
                   What is socialli?
                 </h1>
                 <p>
+                  Nobody is one-dimensional, why should we only have one social media feed? On socialli we can have multiple "lists", a feed for our different interests. 
+                  We might like a person's art, but not their politics, then just follow their "art list". :)
+                </p>
+                <p>
                   Socialli is an opensource decentralized social media app built with Blockstack.
                 </p>
                 <h2>
