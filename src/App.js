@@ -6,7 +6,7 @@ import {
   AppConfig
 } from 'blockstack';
 
-import { Main, Signin } from './components';
+import { Main, Signin, NoAccessMessage } from './components';
 import { storeUserSession, getCustomUser } from './actions';
 import { List } from './models';
 
@@ -44,6 +44,7 @@ const App = (props) => {
                 props.getCustomUser(data)
             } else if (userSession.isUserSignedIn()) {
                 data = userSession.loadUserData();
+                setUserData(data);
                 props.getCustomUser(data)
             }
         }
@@ -53,7 +54,11 @@ const App = (props) => {
       <div>
         { !userSession.isUserSignedIn() ?
           <Signin/>
-          : <Main/>
+          : 
+          userData.username ?
+          <Main/>
+          :
+          <NoAccessMessage fullWidth/>
         }
       </div>
     );

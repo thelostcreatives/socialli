@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { User, Compass, Bell, Home } from 'react-feather';
 
-import { UserFeed, Explore, Profile, Notifications, Button, NewListForm, NewPostForm, ListPage, PostComp, LoadingScreen, Settings } from './index';
+import { UserFeed, Explore, Profile, Notifications, 
+         Button, NewListForm, NewPostForm, ListPage, 
+         PostComp, LoadingScreen, Settings, NoAccessMessage } from './index';
 import { handleSignOut, getNotifs, getNewNotifsCount, getSocialliConfig } from '../actions';
 import { breakpoint } from '../utils/styleConsts';
 
@@ -15,16 +17,17 @@ const Main = (props) => {
     const { anylistUser, userSession, newNotifs, socialliConfig } = props;
     const { getNotifs, getNewNotifsCount, getSocialliConfig } = props;
 
-    const { username, followedLists = [], followedPosts = [], other } = anylistUser.attrs;
-    const { _id, isPublic, blockedUsers = [], members = [], other: otherSocialliConfig } = socialliConfig.attrs;
+    const { username, followedLists = [], followedPosts = [], other } = anylistUser ? anylistUser.attrs : {};
+    const { _id, isPublic, blockedUsers = [], members = [] } = socialliConfig ?  socialliConfig.attrs : {};
 
     const isOwner = username === socialli_config.host;
 
     useEffect (() => {
-		if (anylistUser._id && socialliConfig._id) {
+		if (anylistUser._id) {
 			getNotifs(username, [...followedLists, ...followedPosts], 0, 20);
             getNewNotifsCount(username, [...followedLists, ...followedPosts], other.lastSeenNotif);
-        } else {
+        } 
+        if (!socialliConfig._id){
             getSocialliConfig(socialli_config.host);
         }
 	}, [anylistUser, socialliConfig]);
@@ -99,34 +102,13 @@ const Main = (props) => {
                     :
                     <MainWrapper>
                         <div id = "main">
-                            <div id = "message">
-                                <h1>
-                                    { isPublic ?
-                                        "You are blocked from this socialli instance."
-                                        :
-                                        "You are not a member of this socialli instance."
-                                    }
-                                </h1>
-                                <p>
-                                    <pre>
-                                    { isPublic ?
-                                        otherSocialliConfig.blockedMessage
-                                        :
-                                        otherSocialliConfig.memberRequestMessage
-                                    }
-                                    </pre>
-                                </p>
-                                <Button onClick = { (e) => handleSignOut(e, userSession)} text = "Log Out"/>
-                            </div>
+                            <NoAccessMessage socialliConfig = {socialliConfig} />
                         </div>
                     </MainWrapper>
                 :
                 <MainWrapper>
                     <div id = "main">
-                        <div id = "message">
-                            <h1>The host needs to set the rules before anyone can use this socialli instance.</h1>
-                            <Button onClick = { (e) => handleSignOut(e, userSession)} text = "Log Out"/>
-                        </div>
+                        <NoAccessMessage/>
                     </div>
                 </MainWrapper>
             }

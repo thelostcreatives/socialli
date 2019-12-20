@@ -45,15 +45,19 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 		type: GETTING_NOTIFS
 	});
 
-	const subbed_models_notifs = await Notification.fetchList({
-		offset,
-		limit,
-		author: {
-			$ne: username
-		},
-		notif_for: subbed_models,
-		sort: '-createdAt'
-	});
+	let subbed_models_notifs = [];
+
+	if (subbed_models.length > 0) { 
+		subbed_models = await Notification.fetchList({
+			offset,
+			limit,
+			author: {
+				$ne: username
+			},
+			notif_for: subbed_models,
+			sort: '-createdAt'
+		});
+	}
 
 	const mentions_notifs = await Notification.fetchList({
 		offset,

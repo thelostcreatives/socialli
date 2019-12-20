@@ -6,3 +6,4 @@ export { default as SuggestionList} from './SuggestionList';
 export { default as InternalLink} from './InternalLink';
 export { default as ExternalLink} from './ExternalLink';
 export { default as Highlighter} from './Highlighter';
+export { default as NoAccessMessage} from './NoAccessMessage';

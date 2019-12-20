@@ -9,14 +9,16 @@ import { ListPreview, Button, NewListForm  } from './index';
 import { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } from '../actions';
 import { AnyListUser } from '../models';
 import { breakpoint } from '../utils/styleConsts';
-import { isImageFileSizeAcceptable, compressImage } from '../utils/helpers';
 import { AVATAR_FALLBACK_IMG } from '../utils/constants';
 
 const Profile = (props) => {
 
-	const { user, userSession, activeProfile, match, history, lists, uploadingAvatar } = props;
+	const { user, userSession, activeProfile, 
+			match, history, lists, 
+			uploadingAvatar } = props;
 
-	const { handleSignOut, setActiveProfile, updateUser, getProfileLists, uploadAvatar } = props;
+	const { handleSignOut, setActiveProfile, updateUser, 
+			getProfileLists, uploadAvatar } = props;
 
 	let isOwned;
 	if (activeProfile) {
