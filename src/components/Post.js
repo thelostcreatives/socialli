@@ -15,7 +15,7 @@ import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, get
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { AVATAR_FALLBACK_IMG, POST_PREVIEW_LIMIT } from '../utils/constants';
-import { removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, getMatchesFromString } from '../utils/helpers';
+import { removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, HASHTAG_REGEX, getMatchesFromString } from '../utils/helpers';
 
 const Post = (props) => {
 
@@ -90,12 +90,15 @@ const Post = (props) => {
         const cleanContentState = ContentState.createFromText(cleanText);
 
         const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
+        const hashtags = getMatchesFromString(HASHTAG_REGEX, cleanText).map(hashtag => hashtag.substr(1));
 
         setEditorState(EditorState.set(EditorState.createWithContent(cleanContentState), {decorator: postDecorator}));
 
         updatePost(
             expandedPost,
-            convertToRaw(cleanContentState)
+            convertToRaw(cleanContentState),
+            mentions,
+            hashtags
         );
 
         updateNotif(expandedPost._id, {mentions});

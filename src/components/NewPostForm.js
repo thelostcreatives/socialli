@@ -10,7 +10,7 @@ import { createPost, setActiveList, followPost, uploadImages, createNotif } from
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, 
-		 removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, getMatchesFromString } from '../utils/helpers';
+		 removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, HASHTAG_REGEX, getMatchesFromString } from '../utils/helpers';
 import { SUPPORTED_IMAGE_FORMATS, NOTIF_TYPES } from '../utils/constants';
 
 const NewPostForm = (props) => {
@@ -75,6 +75,8 @@ const NewPostForm = (props) => {
 		if (contentState.hasText()) {
 			setCreatingPost(true);
 			let imageGaiaLinks = images;
+			const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
+			const hashtags = getMatchesFromString(HASHTAG_REGEX, cleanText).map(hashtag => hashtag.substr(1));
 
 			if ( images ) {
 				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
@@ -88,12 +90,13 @@ const NewPostForm = (props) => {
 					author: username
 				},
 				convertToRaw(cleanContentState),
+				mentions,
+				hashtags,
 				imageGaiaLinks
 			);
 			done();
 			followPost(anylistUser, newPost._id);
 
-			const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
 
 			createNotif(username, listId, newPost._id, NOTIF_TYPES.post, { 
 				...newPost.attrs.metadata

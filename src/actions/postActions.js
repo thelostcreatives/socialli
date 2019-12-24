@@ -26,7 +26,7 @@ export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
 export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
 
-export const createPost = (listId, metadata, content, imgs) => async (dispatch) => {
+export const createPost = (listId, metadata, content, mentions, hashtags, imgs ) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
 	});
@@ -35,6 +35,8 @@ export const createPost = (listId, metadata, content, imgs) => async (dispatch) 
 		listId,
 		metadata,
 		content,
+		mentions,
+		hashtags,
 		other: imgs ? 
 			{
 				images: imgs
@@ -118,13 +120,15 @@ export const setExpandedPost = (post) => {
 	}
 }
 
-export const updatePost = (post, content) => async (dispatch) => {
+export const updatePost = (post, content, mentions, hashtags) => async (dispatch) => {
 	dispatch({
 		type: UPDATING_POST
 	});
 
 	post.update({
-		content
+		content,
+		mentions,
+		hashtags
 	});
 
 	const updatedPost = await post.save();
