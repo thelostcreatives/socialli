@@ -108,6 +108,14 @@ export class Post extends Model {
             type: Object,
             decrypted: true
         },
+        mentions: { 
+            type: Array,
+            decrypted: true
+        },
+        hashtags: { 
+            type: Array,
+            decrypted: true
+        },
         other: {
             type: Object,
             decrypted: true
@@ -115,6 +123,8 @@ export class Post extends Model {
     }
 
     static defaults = {
+        mentions: [],
+        hashtags: [],
         other: {}
     }
 }
