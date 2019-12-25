@@ -5,6 +5,7 @@ const initialState = {
 	feedPosts: [],
 	listPosts: [],
 	lists: {},
+	searchResults: [],
 	isGettingPosts: false,
 	expandedPost: {
 		attrs: {
@@ -41,6 +42,12 @@ const branchTable = {
 				}
 			}),
 			feedHasMore: hasMore
+		}
+	},
+	[actions.RECEIVED_SEARCHED_POSTS]: (state, action) => {
+		return {
+			...state, 
+			searchResults: action.payload
 		}
 	},
 	[actions.RECEIVED_POSTS]: (state, action) => {
