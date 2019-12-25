@@ -26,6 +26,8 @@ export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
 export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
 
+export const SET_SEARCH_STRING = "SET_SEARCH_STRING";
+
 export const SEARCHING_POSTS = "SEARCHING_POSTS";
 export const RECEIVED_SEARCHED_POSTS = "RECEIVED_SEARCHED_POSTS";
 
@@ -113,6 +115,13 @@ export const getFeedPosts = (followedLists, offset, limit = 5) => async (dispatc
 			type: RECEIVED_FEED_POSTS,
 			payload: []
 		});
+	}
+}
+
+export const setSearchString = (searchString) => { 
+	return {
+		type: SET_SEARCH_STRING,
+		payload: searchString
 	}
 }
 
