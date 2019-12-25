@@ -1,6 +1,6 @@
 import { Post } from '../models';
 import { USER_UPDATED } from './index';
-import { uploadFile } from '../utils/helpers';
+import { uploadFile, HANDLE_REGEX, HASHTAG_REGEX, getMatchesFromString, descendSortModels } from '../utils/helpers';
 
 export const CREATING_POST = "CREATING_POST";
 export const POST_CREATED = "POST_CREATED";
@@ -25,6 +25,9 @@ export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 
 export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
 export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
+
+export const SEARCHING_POSTS = "SEARCHING_POSTS";
+export const RECEIVED_SEARCHED_POSTS = "RECEIVED_SEARCHED_POSTS";
 
 export const createPost = (listId, metadata, content, mentions, hashtags, imgs ) => async (dispatch) => {
     dispatch({
@@ -56,7 +59,7 @@ export const createPost = (listId, metadata, content, mentions, hashtags, imgs )
 	return post;
 }
 
-export const getPosts = (offset, limit, listId) => async (dispatch) => {
+export const getPosts = (offset, limit = 5, listId) => async (dispatch) => {
 	dispatch({
 		type: GETTING_POSTS
 	});
@@ -88,7 +91,7 @@ export const getPosts = (offset, limit, listId) => async (dispatch) => {
 	}
 }
 
-export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) => {
+export const getFeedPosts = (followedLists, offset, limit = 5) => async (dispatch) => {
 	dispatch({
 		type: GETTING_FEED_POSTS 
 	}); 
@@ -112,6 +115,44 @@ export const getFeedPosts = (followedLists, offset, limit) => async (dispatch) =
 		});
 	}
 }
+
+export const searchPosts = (searchString, offset, limit = 5) => async (dispatch) => { 
+	dispatch({ 
+		type: SEARCHING_POSTS
+	});
+
+	const mentions = getMatchesFromString(HANDLE_REGEX, searchString).map(mention => mention.substr(1));
+	const hashtags = getMatchesFromString(HASHTAG_REGEX, searchString).map(hashtag => hashtag.substr(1));
+
+	let postsWithMentions = [];
+	let postsWithHashtags = [];
+
+	if (mentions.length > 0) {
+		postsWithMentions = await Post.fetchList({ 
+			offset,
+			limit,
+			mentions: mentions,
+			sort: '-createdAt'
+		});
+	}
+
+	if (hashtags.length > 0) { 
+		postsWithHashtags = await Post.fetchList({ 
+			offset,
+			limit,
+			hashtags: hashtags,
+			sort: '-createdAt'
+		});
+	}
+
+	const searchResults = [...postsWithMentions, ...postsWithHashtags].sort(descendSortModels);
+
+	dispatch({ 
+		type: RECEIVED_SEARCHED_POSTS,
+		payload: searchResults
+	});
+}
+
 
 export const setExpandedPost = (post) => {
 	return {
