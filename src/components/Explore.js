@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { debounce } from 'underscore';
 
 import { getPosts, searchPosts } from '../actions';
-import { PostComp } from './index';
+import { PostComp, SearchBar } from './index';
 
 const Explore = (props) => {
 
@@ -45,7 +45,7 @@ const Explore = (props) => {
             hasMore = {hasMore}
             loader = {<div className="loader" key={0}>Loading ...</div>}
         >
-            <input type = "text" placeholder = "Search #tags and @mentions" name = "search" onChange = {handleSearch}/>
+            <SearchBar placeholder = "Search #tags and @mentions" onChange = {handleSearch}/>
 
             {
                 searchString.length > 0 ?
