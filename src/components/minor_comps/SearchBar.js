@@ -5,11 +5,17 @@ import { breakpoint } from '../../utils/styleConsts';
 
 const SearchBar = (props) => { 
 
-	const { placeholder, onChange } = props;
+	const { placeholder, value} = props;
+	const { onChange, onSubmit } = props;
 
 	return ( 
 		<SearchBarWrapper> 
-			<input type = "text" placeholder = {placeholder} onChange = {onChange}/>
+			<form onSubmit = {(e) => { 
+				e.preventDefault();
+				onSubmit(value, 0);
+			}}>
+				<input type = "text" placeholder = {placeholder} value = {value} onChange = {onChange}/>
+			</form>
 		</SearchBarWrapper>
 	)
 }
