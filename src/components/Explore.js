@@ -1,22 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
+import { debounce } from 'underscore';
 
-import { getPosts } from '../actions';
+import { getPosts, searchPosts } from '../actions';
 import { PostComp } from './index';
 
 const Explore = (props) => {
 
-    const { getPosts, posts, hasMore } = props;
+    const { posts, searchResults, hasMore } = props;
+
+    const { getPosts, searchPosts } = props;
+    
+    const [searchString, setSearchString] = useState("");
 
     useEffect(() => {
         if (posts.length === 0) {
-            getPosts(props.posts.length, 5)
+            getPosts(posts.length);
         }
-    }, [])
+    }, []);
 
     const loadMore = () => {
-        getPosts(props.posts.length, 5);
+        if (searchString.lenth > 0) { 
+            searchPosts(searchString, searchResults.length);
+        } else { 
+            getPosts(posts.length);
+        }
+    }
+
+    const debouncedSearch = debounce((value) => { 
+        setSearchString(value);
+        searchPosts(value, searchResults.length);
+    }, 1000);
+
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        debouncedSearch(value);
     }
 
     return (
@@ -26,8 +45,15 @@ const Explore = (props) => {
             hasMore = {hasMore}
             loader = {<div className="loader" key={0}>Loading ...</div>}
         >
+            <input type = "text" placeholder = "Search #tags and @mentions" name = "search" onChange = {handleSearch}/>
+
             {
-                props.posts.map(post => {
+                searchString.length > 0 ?
+                searchResults.map(post => {
+                    return <PostComp key = {post._id} post={post} preview = {true}/>;
+                })
+                :
+                posts.map(post => {
                     return <PostComp key = {post._id} post={post} preview = {true}/>;
                 })
             }
@@ -38,9 +64,10 @@ const Explore = (props) => {
 const mstp = (state) => {
     return {
         posts: state.posts.listPosts,
+        searchResults: state.posts.searchResults,
         followedLists: state.auth.anylistUser.attrs.followedLists,
         hasMore: state.posts.hasMore
     }
 }
 
-export default connect(mstp, {getPosts})(Explore);
+export default connect(mstp, {getPosts, searchPosts})(Explore);
