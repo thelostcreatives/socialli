@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
-import { debounce } from 'underscore';
 
-import { getPosts, searchPosts } from '../actions';
+import { getPosts, setSearchString, searchPosts } from '../actions';
 import { PostComp, SearchBar } from './index';
 
 const Explore = (props) => {
 
-    const { posts, searchResults, hasMore } = props;
+    const { posts, searchString, searchResults, hasMore } = props;
 
-    const { getPosts, searchPosts } = props;
+    const { getPosts, setSearchString, searchPosts } = props;
     
-    const [searchString, setSearchString] = useState("");
-
     useEffect(() => {
         if (posts.length === 0) {
             getPosts(posts.length);
@@ -21,21 +18,11 @@ const Explore = (props) => {
     }, []);
 
     const loadMore = () => {
-        if (searchString.lenth > 0) { 
+        if (searchString.length > 0) { 
             searchPosts(searchString, searchResults.length);
         } else { 
             getPosts(posts.length);
         }
-    }
-
-    const debouncedSearch = debounce((value) => { 
-        setSearchString(value);
-        searchPosts(value, searchResults.length);
-    }, 1000);
-
-    const handleSearch = (e) => {
-        const value = e.target.value;
-        debouncedSearch(value);
     }
 
     return (
@@ -45,7 +32,8 @@ const Explore = (props) => {
             hasMore = {hasMore}
             loader = {<div className="loader" key={0}>Loading ...</div>}
         >
-            <SearchBar placeholder = "Search #tags and @mentions" onChange = {handleSearch}/>
+
+            <SearchBar placeholder = "Search #tags and @mentions" value = {searchString} onChange = {e => setSearchString(e.target.value)} onSubmit = {searchPosts}/>
 
             {
                 searchString.length > 0 ?
@@ -64,10 +52,11 @@ const Explore = (props) => {
 const mstp = (state) => {
     return {
         posts: state.posts.listPosts,
+        searchString: state.posts.searchString,
         searchResults: state.posts.searchResults,
         followedLists: state.auth.anylistUser.attrs.followedLists,
-        hasMore: state.posts.hasMore
+        hasMore: state.posts.hasMore,
     }
 }
 
-export default connect(mstp, {getPosts, searchPosts})(Explore);
+export default connect(mstp, {getPosts, setSearchString, searchPosts})(Explore);
