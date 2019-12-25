@@ -1,5 +1,6 @@
 import { Notification } from '../models';
 import { USER_UPDATED } from './index';
+import { descendSortModels } from '../utils/helpers';
 
 export const CREATING_NOTIF = "CREATING_NOTIF";
 export const NOTIF_CREATED = "NOTIF_CREATED";
@@ -69,17 +70,7 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 		sort: '-createdAt'
 	});
 
-	const notifs = [...subbed_models_notifs, ...mentions_notifs].sort((a, b) => {
-		if (a.attrs.createdAt > b.attrs.createdAt) {
-			return -1;
-		}
-
-		if (a.attrs.createdAt < b.attrs.createdAt) {
-			return 1;
-		}
-
-		return 0;
-	}); 
+	const notifs = [...subbed_models_notifs, ...mentions_notifs].sort(descendSortModels); 
 
 	dispatch({
 		type: NOTIFS_RECEIVED,

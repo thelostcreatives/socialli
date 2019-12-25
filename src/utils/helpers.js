@@ -178,3 +178,16 @@ export const getValidUrl = (url = "") => {
 
     return newUrl;
 };
+
+// array.sort() callback to sort radiks models in descending order
+export const descendSortModels = (a, b) => {
+	if (a.attrs.createdAt > b.attrs.createdAt) {
+		return -1;
+	}
+
+	if (a.attrs.createdAt < b.attrs.createdAt) {
+		return 1;
+	}
+
+	return 0;
+}
