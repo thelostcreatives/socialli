@@ -33,8 +33,20 @@ const SignIn = (props) => {
           </button>
         </div>
         {
-          window.location.href === "https://socialli.st/" ?
+          window.location.href.includes("https://socialli.st/") ?
           <>
+            <div className = "section">
+              <div>
+                <h1>
+                  Social Media Problem
+                </h1>
+                <p>
+                  Big social media companies collect your data to optimize for advertisements. 
+                  You are using their services for free in exchange for your data. How much your 
+                  data is worth? Who knows.
+                </p>
+              </div>
+            </div>
             <div className = "section">
               <div>
                 <h1>
@@ -42,7 +54,7 @@ const SignIn = (props) => {
                 </h1>
                 <p>
                   Nobody is one-dimensional, why should we only have one social media feed? On socialli we can have multiple "lists", a feed for our different interests. 
-                  We might like a person's art, but not their politics, then just follow their "art list". :)
+                  We might like a person's art, but not their politics, then just follow their "art list".
                 </p>
                 <p>
                   Socialli is an opensource decentralized social media app built with Blockstack.
@@ -138,7 +150,7 @@ const SigninWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    min-height: 45vh;
     width: 100%;
 
     p {
