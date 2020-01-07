@@ -6,7 +6,7 @@ const Audio = (props) => {
 	const { src } = props;
 
 	return (
-		<AudioWrapper controls>
+		<AudioWrapper controls controlsList = "nodownload">
 			<source src = {src}/>
 		</AudioWrapper>
 	);
