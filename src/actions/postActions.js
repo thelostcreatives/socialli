@@ -26,12 +26,15 @@ export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
 export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
 
+export const UPLOADING_AUDIO = "UPLOADING_AUDIO";
+export const AUDIO_UPLOADED = "AUDIO_UPLOADED";
+
 export const SET_SEARCH_STRING = "SET_SEARCH_STRING";
 
 export const SEARCHING_POSTS = "SEARCHING_POSTS";
 export const RECEIVED_SEARCHED_POSTS = "RECEIVED_SEARCHED_POSTS";
 
-export const createPost = (listId, metadata, content, mentions, hashtags, imgs ) => async (dispatch) => {
+export const createPost = (listId, metadata, content, mentions, hashtags, imgs, audio) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
 	});
@@ -42,12 +45,10 @@ export const createPost = (listId, metadata, content, mentions, hashtags, imgs )
 		content,
 		mentions,
 		hashtags,
-		other: imgs ? 
-			{
-				images: imgs
-			}
-			:
-			{}
+		other: {
+			images: imgs,
+			audio
+		}
 	});
 
 	const post = await newPost.save();
@@ -254,4 +255,18 @@ export const uploadImages = (userSession, user, images) => async (dispatch) => {
 	});
 	
 	return links;
+}
+
+export const uploadAudio = (userSession, user, audio) => async (dispatch) => {
+	dispatch({
+		type: UPLOADING_AUDIO
+	});
+
+	const link = await uploadFile(userSession, "audio_posts", audio, {encrypt:false});
+
+    dispatch({
+        type: AUDIO_UPLOADED,
+	});
+	
+	return link;
 }
