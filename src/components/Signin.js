@@ -104,6 +104,9 @@ const SignIn = (props) => {
               <p>
               Made with <span role="img" aria-label="coffee">☕</span> by <a href="https://twitter.com/xanderjakeq" target="_blank" rel="noopener noreferrer">xanderjakeq</a>
               </p>
+              <p>
+                <a href = "https://github.com/thelostcreatives/socialli">code on github</a>
+              </p>
             </div>
           </>
           :

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+var bodyParser = require('body-parser');
 const { setup } = require('radiks-server');
 
 var whitelist = ['http://localhost:3000', 'https://socialli.st', 'http://127.0.0.1:3000'];
@@ -15,6 +16,9 @@ var corsOptions = {
 }
 
 const app = express();
+
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', parameterLimit: 100000, extended: true}));
 
 app.use(cors(corsOptions));
 
