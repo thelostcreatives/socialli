@@ -191,3 +191,14 @@ export const descendSortModels = (a, b) => {
 
 	return 0;
 }
+
+// chunk 1d array. https://medium.com/@Dragonza/four-ways-to-chunk-an-array-e19c889eac4
+export const chunk = (array, size) => {
+	if (!array) return [];
+
+	const firstChunk = array.slice(0, size);
+	if (!firstChunk.length) {
+		return array;
+	}
+	return [firstChunk].concat(chunk(array.slice(size, array.length), size)); 
+}

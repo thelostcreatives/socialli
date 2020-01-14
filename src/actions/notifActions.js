@@ -1,6 +1,6 @@
 import { Notification } from '../models';
 import { USER_UPDATED } from './index';
-import { descendSortModels } from '../utils/helpers';
+import { descendSortModels, chunk } from '../utils/helpers';
 
 export const CREATING_NOTIF = "CREATING_NOTIF";
 export const NOTIF_CREATED = "NOTIF_CREATED";
@@ -46,18 +46,24 @@ export const getNotifs = (username, subbed_models, offset, limit) => async (disp
 		type: GETTING_NOTIFS
 	});
 
+	const chunkedSubbedModels = chunk(subbed_models, 100);
+
 	let subbed_models_notifs = [];
 
 	if (subbed_models.length > 0) { 
-		subbed_models_notifs = await Notification.fetchList({
-			offset,
-			limit,
-			author: {
-				$ne: username
-			},
-			notif_for: subbed_models,
-			sort: '-createdAt'
-		});
+		const chunked_subbed_models_notifs = await Promise.all(chunkedSubbedModels.map( async (chunk) => {
+			return await Notification.fetchList({
+				offset,
+				limit,
+				author: {
+					$ne: username
+				},
+				notif_for: chunk,
+				sort: '-createdAt'
+			});
+		}));
+
+		subbed_models_notifs = chunked_subbed_models_notifs.flat();
 	}
 
 	const mentions_notifs = await Notification.fetchList({
@@ -83,18 +89,24 @@ export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (d
 		type: GETTING_NEW_NOTIFS_COUNT
 	});
 
+	const chunkedSubbedModels = chunk(subbed_models, 100);
+
 	let subbed_models_notifs = [];
 
-	if (subbed_models.length > 0 ) {
-		subbed_models_notifs = await Notification.fetchList({
-			author: {
-				$ne: username
-			},
-			notif_for: subbed_models,
-			createdAt: {
-				$gt: lastSeen
-			}
-		});
+	if (subbed_models.length > 0) { 
+		const chunked_subbed_models_notifs = await Promise.all(chunkedSubbedModels.map( async (chunk) => {
+			return await Notification.fetchList({
+				author: {
+					$ne: username
+				},
+				notif_for: chunk,
+				createdAt: {
+					$gt: lastSeen
+				}
+			});
+		}));
+
+		subbed_models_notifs = chunked_subbed_models_notifs.flat();
 	}
 
 	const mentions_notifs = await Notification.fetchList({
@@ -107,7 +119,7 @@ export const getNewNotifsCount = (username, subbed_models, lastSeen) => async (d
 		}
 	});
 
-	const notifs = [...subbed_models_notifs, ...mentions_notifs];
+	const notifs = [...subbed_models_notifs, ...mentions_notifs].sort(descendSortModels);
 
 	dispatch({
 		type: NEW_NOTIFS_COUNT_RECEIVED,
