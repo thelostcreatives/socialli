@@ -1,3 +1,7 @@
+## Demo video
+
+[![Alt text](https://img.youtube.com/vi/8HFruukD1yg/0.jpg)](https://www.youtube.com/watch?v=8HFruukD1yg)
+
 # Socialli
 
 Nobody is one-dimensional, why should we only have one social media feed? 
