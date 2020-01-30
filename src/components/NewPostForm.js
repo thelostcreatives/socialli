@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import { Editor, EditorState, ContentState, Modifier, convertToRaw } from 'draft-js';
 import styled from 'styled-components';
 import { Picker as EmojiPicker } from 'emoji-mart';
-import { Image, Music } from 'react-feather';
+import { Image, PlayCircle, Music } from 'react-feather';
 
-import { Button, ImageCarousel, Audio } from './index';
-import { createPost, setActiveList, followPost, uploadImages, uploadAudio, createNotif } from '../actions';
+import { Button, ImageCarousel, Video, Audio } from './index';
+import { createPost, setActiveList, followPost, uploadImages, uploadVideo, uploadAudio, createNotif } from '../actions';
 import { List } from '../models';
 import { breakpoint } from '../utils/styleConsts';
 import { isImageFileSizeAcceptable, areAllImageFileSizesAcceptable, compressImage, 
 		 removeExtraNewLines, getCompositeDecorator, HANDLE_REGEX, HASHTAG_REGEX, getMatchesFromString } from '../utils/helpers';
-import { SUPPORTED_IMAGE_FORMATS, SUPPORTED_AUDIO_FORMATS, NOTIF_TYPES } from '../utils/constants';
+import { SUPPORTED_IMAGE_FORMATS, SUPPORTED_VIDEO_FORMATS, SUPPORTED_AUDIO_FORMATS, NOTIF_TYPES } from '../utils/constants';
 
 const NewPostForm = (props) => {
 	const { 
@@ -21,7 +21,7 @@ const NewPostForm = (props) => {
 
 	const {
 		createPost, setActiveList, followPost,
-		uploadImages, uploadAudio, createNotif
+		uploadImages, uploadVideo, uploadAudio, createNotif
 	} = props;
 
 	const { author: listAuthor, title, _id: listId } = listData;
@@ -29,6 +29,9 @@ const NewPostForm = (props) => {
 
 	const [images, setImages] = useState();
 	const [tempImgUrls, setTempImgUrls] = useState();
+
+	const [video, setVideo] = useState();
+	const [tempVideoUrl, setTempVideoUrl] = useState();
 
 	const [audio, setAudio] = useState();
 	const [tempAudioUrl, setTempAudioUrl] = useState();
@@ -78,12 +81,17 @@ const NewPostForm = (props) => {
 		if (contentState.hasText()) {
 			setCreatingPost(true);
 			let imageGaiaLinks = images;
+			let videoGaiaLink = video;
 			let audioGaiaLink = audio;
 			const mentions = getMatchesFromString(HANDLE_REGEX, cleanText).map(mention => mention.substr(1));
 			const hashtags = getMatchesFromString(HASHTAG_REGEX, cleanText).map(hashtag => hashtag.substr(1));
 
 			if ( images ) {
 				imageGaiaLinks = await uploadImages(userSession, anylistUser, images);
+			}
+
+			if (video) {
+				videoGaiaLink = await uploadVideo(userSession, anylistUser, video);
 			}
 
 			if ( audio ) { 
@@ -101,6 +109,7 @@ const NewPostForm = (props) => {
 				mentions,
 				hashtags,
 				imageGaiaLinks,
+				videoGaiaLink,
 				audioGaiaLink
 			);
 			done();
@@ -129,6 +138,10 @@ const NewPostForm = (props) => {
 
 	const handleImageIconClick = () => {
 		document.getElementById("image-input").click();
+	}
+
+	const handleVideoIconClick = () => {
+		document.getElementById("video-input").click();
 	}
 
 	const handleAudioIconClick = () => {
@@ -172,6 +185,22 @@ const NewPostForm = (props) => {
 		}
 	}
 
+	const handleVideoInputChange = async (e) => {
+
+		const file = e.target.files[0];
+		const fileNameSplit = file.name.split(".");
+		const fileFormat = fileNameSplit[fileNameSplit.length - 1].toLowerCase();
+
+		if (!SUPPORTED_VIDEO_FORMATS.includes(fileFormat)) {
+			return;
+		}
+
+		setVideo(file);
+
+		const tempUrl = window.URL.createObjectURL(file);
+		setTempVideoUrl(tempUrl);
+	}
+
 	const handleAudioInputChange = async (e) => {
 
 		const file = e.target.files[0];
@@ -197,6 +226,12 @@ const NewPostForm = (props) => {
 				null
 			}
 			{
+				tempVideoUrl ? 
+				<Video src = {tempVideoUrl}/>
+				:
+				null
+			}
+			{
 				tempAudioUrl ? 
 				<Audio src = {tempAudioUrl} />
 				:
@@ -210,6 +245,7 @@ const NewPostForm = (props) => {
 			/>
 
 			<input type = "file" id = "image-input" accept = "image/*" hidden = 'hidden' onChange = {handleImageInputChange} multiple/>
+			<input type = "file" id = "video-input" accept = "video/*" hidden = 'hidden' onChange = {handleVideoInputChange} multiple/>
 			<input type = "file" id = "audio-input" accept = "audio/*" hidden = 'hidden' onChange = {handleAudioInputChange} multiple/>
 
 			<OptionsBar onClick = {e => e.stopPropagation()}>
@@ -218,6 +254,7 @@ const NewPostForm = (props) => {
 				</div>
 				<div>
 					<Music onClick = {handleAudioIconClick} />
+					<PlayCircle onClick = {handleVideoIconClick} />
 					<Image onClick = {handleImageIconClick} />
 					<Button onClick = {toggleEmojiPicker} bgColor = "grey" text = "Emoji"/>
 					<Button onClick = {handlePost} text = {creatingPost ? "Posting..." : "Post"} disabled = {creatingPost}/>
@@ -243,7 +280,7 @@ const mstp = (state) => {
 	}
 }
 
-export default connect(mstp, {createPost, setActiveList, followPost, uploadImages, uploadAudio, createNotif})(NewPostForm);
+export default connect(mstp, {createPost, setActiveList, followPost, uploadImages, uploadVideo, uploadAudio, createNotif})(NewPostForm);
 
 const NewPostFormWrapper = styled.div`
 	font-family: 'Work Sans', sans-serif;

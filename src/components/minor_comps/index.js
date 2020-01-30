@@ -9,3 +9,4 @@ export { default as Highlighter} from './Highlighter';
 export { default as NoAccessMessage} from './NoAccessMessage';
 export { default as SearchBar } from './SearchBar';
 export { default as Audio } from './Audio';
+export { default as Video } from './Video';

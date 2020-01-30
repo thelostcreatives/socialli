@@ -26,6 +26,9 @@ export const REMOVING_POST_FROM_FOLLOWS = "REMOVING_POST_FROM_FOLLOWS";
 export const UPLOADING_IMAGES = "UPLOADING_IMAGES";
 export const IMAGES_UPLOADED = "IMAGES_UPLOADED";
 
+export const UPLOADING_VIDEO = "UPLOADING_VIDEO";
+export const VIDEO_UPLOADED = "VIDEO_UPLOADED";
+
 export const UPLOADING_AUDIO = "UPLOADING_AUDIO";
 export const AUDIO_UPLOADED = "AUDIO_UPLOADED";
 
@@ -34,7 +37,7 @@ export const SET_SEARCH_STRING = "SET_SEARCH_STRING";
 export const SEARCHING_POSTS = "SEARCHING_POSTS";
 export const RECEIVED_SEARCHED_POSTS = "RECEIVED_SEARCHED_POSTS";
 
-export const createPost = (listId, metadata, content, mentions, hashtags, imgs, audio) => async (dispatch) => {
+export const createPost = (listId, metadata, content, mentions, hashtags, imgs, video, audio) => async (dispatch) => {
     dispatch({
         type: CREATING_POST
 	});
@@ -47,6 +50,7 @@ export const createPost = (listId, metadata, content, mentions, hashtags, imgs, 
 		hashtags,
 		other: {
 			images: imgs,
+			video,
 			audio
 		}
 	});
@@ -255,6 +259,20 @@ export const uploadImages = (userSession, user, images) => async (dispatch) => {
 	});
 	
 	return links;
+}
+
+export const uploadVideo = (userSession, user, video) => async (dispatch) => {
+	dispatch({
+		type: UPLOADING_VIDEO
+	});
+
+	const link = await uploadFile(userSession, "video_posts", video, {encrypt:false});
+
+    dispatch({
+        type: VIDEO_UPLOADED,
+	});
+	
+	return link;
 }
 
 export const uploadAudio = (userSession, user, audio) => async (dispatch) => {

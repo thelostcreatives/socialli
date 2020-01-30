@@ -10,7 +10,7 @@ import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 import { Picker as EmojiPicker } from 'emoji-mart';
 
-import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, Audio } from './index';
+import { Button, ConfirmationOverlay, Comments, OptionsBar, ImageCarousel, Video, Audio } from './index';
 import { setExpandedPost, getUserData, updatePost, deletePost, unfollowPost, getListData, updateNotif, deleteNotif } from '../actions';
 import { Post as PostModel} from '../models';
 import { breakpoint } from '../utils/styleConsts';
@@ -187,6 +187,12 @@ const Post = (props) => {
                     {
                         other.images ? 
                         <ImageCarousel imgs = {other.images}/>
+                        :
+                        null
+                    }
+                    {
+                        other.video ? 
+                        <Video src = {other.video} />
                         :
                         null
                     }
